@@ -16,7 +16,7 @@ messages
 psutil
 psycopg2-binary
 pybase64
-pyrogram
+https://github.com/pyrogram/pyrogram/archive/refs/heads/master.zip
 python-dotenv
 python-magic
 python-telegram-bot
