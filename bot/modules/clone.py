@@ -13,18 +13,18 @@ def cloneNode(update, context):
         link = args[1]
         gd = GoogleDriveHelper()
         if CLONE_LIMIT is not None or STOP_DUPLICATE_CLONE:
-            msg1 = sendMessage(f"Checking Your Link...", context.bot, update)
+            msg1 = sendMessage(f"Memeriksa Tautan Anda...", context.bot, update)
             res, clonesize, name = gd.clonehelper(link)
             if res != "":
                deleteMessage(context.bot, msg1)
                sendMessage(res, context.bot, update)
                return
             if STOP_DUPLICATE_CLONE:
-                LOGGER.info(f"Checking File/Folder if already in Drive...")
+                LOGGER.info(f"Memeriksa File/Folder jika sudah di Drive...")
                 smsg, button = gd.drive_list(name)
                 if smsg:
                     deleteMessage(context.bot, msg1)
-                    msg3 = "File/Folder is already available in Drive.\nHere are the search results:"
+                    msg3 = "File/Folder sudah tersedia di Drive.\nBerikut adalah hasil pencariannya:"
                     sendMarkup(msg3, context.bot, update, button)
                     return
                 else:
@@ -35,7 +35,7 @@ def cloneNode(update, context):
                 limit = CLONE_LIMIT
                 limit = limit.split(' ', maxsplit=1)
                 limitint = int(limit[0])
-                msg2 = f'Failed, Clone limit is {CLONE_LIMIT}.\nYour File/Folder size is {get_readable_file_size(clonesize)}.'
+                msg2 = f'Gagal, batas Klon adalah {CLONE_LIMIT}.\nSementara FIle/folder kamu ukurannya sebesar {get_readable_file_size(clonesize)}.'
                 if 'GB' in limit or 'gb' in limit:
                     if clonesize > limitint * 1024**3:
                         deleteMessage(context.bot, msg1)
@@ -50,7 +50,7 @@ def cloneNode(update, context):
                         return
                     else:
                         deleteMessage(context.bot, msg1)                
-        msg = sendMessage(f"Cloning: <code>{link}</code>", context.bot, update)
+        msg = sendMessage(f"Klon: <code>{link}</code>", context.bot, update)
         result, button = gd.clone(link)
         deleteMessage(context.bot, msg)
         if button == "":

@@ -16,7 +16,7 @@ def cancel_mirror(update, context):
         gid = args[1]
         dl = getDownloadByGid(gid)
         if not dl:
-            sendMessage(f"GID: <code>{gid}</code> Not Found.", context.bot, update)
+            sendMessage(f"GID: <code>{gid}</code> Tidak ditemukan.", context.bot, update)
             return
         mirror_message = dl.message
     elif update.message.reply_to_message:
@@ -28,12 +28,12 @@ def cancel_mirror(update, context):
             except:
                 pass
     if len(args) == 1:
-        msg = f"Please reply to the <code>/{BotCommands.MirrorCommand}</code> message which was used to start the download or send <code>/{BotCommands.CancelMirror} GID</code> to cancel it!"
+        msg = f"Tolong balas ke <code>/{BotCommands.MirrorCommand}</code> pesan yang digunakan untuk memulai pengunduhan atau pengiriman <code>/{BotCommands.CancelMirror} GID</code> untuk membatalkannya!"
         if mirror_message and mirror_message.message_id not in keys:
             if BotCommands.MirrorCommand in mirror_message.text or \
                BotCommands.TarMirrorCommand in mirror_message.text or \
                BotCommands.UnzipMirrorCommand in mirror_message.text:
-                msg1 = "Mirror Already Have Been Cancelled"
+                msg1 = "Cermin Sudah Dibatalkan"
                 sendMessage(msg1, context.bot, update)
                 return
             else:
@@ -43,13 +43,13 @@ def cancel_mirror(update, context):
             sendMessage(msg, context.bot, update)
             return
     if dl.status() == "Uploading...📤":
-        sendMessage("Upload in Progress, You Can't Cancel It.", context.bot, update)
+        sendMessage("Upload sedang berlangsung, Anda tidak dapat membatalkannya.", context.bot, update)
         return
     elif dl.status() == "Archiving...🔐":
-        sendMessage("Archival in Progress, You Can't Cancel It.", context.bot, update)
+        sendMessage("Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
         return
     elif dl.status() == "Extracting...📂":
-        sendMessage("Extract in Progress, You Can't Cancel It.", context.bot, update)
+        sendMessage("Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
         return
     else:
         dl.download().cancel_download()
@@ -73,7 +73,7 @@ def cancel_all(update, context):
         else:
             break
     delete_all_messages()
-    sendMessage(f'{count} Download(s) has been Cancelled!', context.bot, update)
+    sendMessage(f'{count} Unduhan telah Dibatalkan!', context.bot, update)
 
 
 

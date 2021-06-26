@@ -24,12 +24,12 @@ BRANCH_ = UPSTREAM_BRANCH
 
 @app.on_message(filters.command(BotCommands.UpdateCommand) & filters.user(OWNER_ID))
 async def update_it(client, message):
-    msg_ = await message.reply_text("`Updating Please Wait!`")
+    msg_ = await message.reply_text("`Memperbarui Harap Tunggu!`")
     try:
         repo = Repo()
     except GitCommandError:
         return await msg_.edit(
-            "**Invalid Git Command. Please Report This Bug To [Support Group](https://t.me/SlamMirrorSupport)**"
+            "**Perintah Git Tidak Valid. Silakan Laporkan Bug Ini Ke [Support Group](https://t.me/SlamMirrorSupport)**"
         )
     except InvalidGitRepositoryError:
         repo = Repo.init()
@@ -43,7 +43,7 @@ async def update_it(client, message):
         repo.heads.master.checkout(True)
     if repo.active_branch.name != UPSTREAM_BRANCH:
         return await msg_.edit(
-            f"`Seems Like You Are Using Custom Branch - {repo.active_branch.name}! Please Switch To {UPSTREAM_BRANCH} To Make This Updater Function!`"
+            f"`Sepertinya Anda Menggunakan Branch custom - {repo.active_branch.name}! Tolong beralih ke {UPSTREAM_BRANCH} Untuk membuat updater berfungsi!`"
         )
     try:
         repo.create_remote("upstream", REPO_)
@@ -57,7 +57,7 @@ async def update_it(client, message):
         except GitCommandError:
             repo.git.reset("--hard", "FETCH_HEAD")
         await runcmd("pip3 install --no-cache-dir -r requirements.txt")
-        await msg_.edit("`Updated Sucessfully! Give Me Some Time To Restart!`")
+        await msg_.edit("`Berhasil Diperbarui! Beri Saya Waktu Untuk Memulai Ulang!`")
         with open("./aria.sh", 'rb') as file:
             script = file.read()
         subprocess.call("./aria.sh", shell=True)
@@ -66,7 +66,7 @@ async def update_it(client, message):
         exit()
         return
     else:
-        await msg_.edit("`Heroku Detected! Pushing, Please wait!`")
+        await msg_.edit("`Heroku Detected! Pushing, Mohon Tunggu!`")
         ups_rem.fetch(UPSTREAM_BRANCH)
         repo.git.reset("--hard", "FETCH_HEAD")
         if "heroku" in repo.remotes:
@@ -77,6 +77,6 @@ async def update_it(client, message):
         try:
             remote.push(refspec="HEAD:refs/heads/master", force=True)
         except BaseException as error:
-            await msg_.edit(f"**Updater Error** \nTraceBack : `{error}`")
+            await msg_.edit(f"**Perbarui gagal** \nTraceBack : `{error}`")
             return repo.__del__()
-        await msg_.edit(f"`Updated Sucessfully! \n\nCheck your config with` `/{BotCommands.ConfigMenuCommand}`")
+        await msg_.edit(f"`Perbarui sukses! \n\nCek config kamu dengan mengetik` `/{BotCommands.ConfigMenuCommand}`")

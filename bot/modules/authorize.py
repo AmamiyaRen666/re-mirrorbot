@@ -18,7 +18,7 @@ def authorize(update, context):
         if chat_id not in AUTHORIZED_CHATS:
             msg = DbManger().db_auth(chat_id)
         else:
-            msg = 'User already authorized'
+            msg = 'Pengguna sudah diotorisasi'
     else:
         if reply_message is None:
             # Trying to authorize a chat
@@ -26,7 +26,7 @@ def authorize(update, context):
             if chat_id not in AUTHORIZED_CHATS:
                 msg = DbManger().db_auth(chat_id)
             else:
-                msg = 'Already authorized chat'
+                msg = 'Sudah diotorisasi obrolan'
 
         else:
             # Trying to authorize someone in specific
@@ -34,7 +34,7 @@ def authorize(update, context):
             if user_id not in AUTHORIZED_CHATS:
                 msg = DbManger().db_auth(user_id)
             else:
-                msg = 'User already authorized'
+                msg = 'Pengguna sudah diotorisasi'
     sendMessage(msg, context.bot, update)
 
 
@@ -48,7 +48,7 @@ def unauthorize(update, context):
         if chat_id in AUTHORIZED_CHATS:
             msg = DbManger().db_unauth(chat_id)
         else:
-            msg = 'User already unauthorized'
+            msg = 'Pengguna sudah tidak sah'
     else:
         if reply_message is None:
             # Trying to unauthorize a chat
@@ -56,14 +56,14 @@ def unauthorize(update, context):
             if chat_id in AUTHORIZED_CHATS:
                 msg = DbManger().db_unauth(chat_id)
             else:
-                msg = 'Already unauthorized chat'
+                msg = 'Obrolan yang sudah tidak sah'
         else:
             # Trying to authorize someone in specific
             user_id = reply_message.from_user.id
             if user_id in AUTHORIZED_CHATS:
                 msg = DbManger().db_unauth(user_id)
             else:
-                msg = 'User already unauthorized'
+                msg = 'Pengguna sudah tidak sah'
     sendMessage(msg, context.bot, update)
 
 
@@ -77,17 +77,17 @@ def addSudo(update, context):
         if chat_id not in SUDO_USERS:
             msg = DbManger().db_addsudo(chat_id)
         else:
-            msg = 'Already Sudo'
+            msg = 'Sudah di kasih akses Sudo'
     else:
         if reply_message is None:
-            msg = "Give ID or Reply To message of whom you want to Promote"
+            msg = "Berikan ID atau Balas Ke pesan yang ingin Anda Promosikan"
         else:
             # Trying to authorize someone in specific
             user_id = reply_message.from_user.id
             if user_id not in SUDO_USERS:
                 msg = DbManger().db_addsudo(user_id)
             else:
-                msg = 'Already Sudo'
+                msg = 'Sudah di kasih akses Sudo'
     sendMessage(msg, context.bot, update)
 
 
@@ -101,16 +101,16 @@ def removeSudo(update, context):
         if chat_id in SUDO_USERS:
             msg = DbManger().db_rmsudo(chat_id)
         else:
-            msg = 'Not a Sudo'
+            msg = 'Tidak dikasih akses sudo'
     else:
         if reply_message is None:
-            msg = "Give ID or Reply To message of whom you want to remove from Sudo"
+            msg = "Berikan ID atau Balas Ke pesan yang ingin Anda hapus dari Sudo"
         else:
             user_id = reply_message.from_user.id
             if user_id in SUDO_USERS:
                 msg = DbManger().db_rmsudo(user_id)
             else:
-                msg = 'Not a Sudo'
+                msg = 'Tidak dikasih akses sudo'
     sendMessage(msg, context.bot, update)
 
 
@@ -118,7 +118,7 @@ def sendAuthChats(update, context):
     user = sudo = ''
     user += '\n'.join(str(id) for id in AUTHORIZED_CHATS)
     sudo += '\n'.join(str(id) for id in SUDO_USERS)
-    sendMessage(f'<b><u>Authorized Chats</u></b>\n{user}\n<b><u>Sudo Users</u></b>\n{sudo}', context.bot, update)
+    sendMessage(f'<b><u>Obrolan Resmi</u></b>\n{user}\n<b><u>Orang yang dikasih sudo</u></b>\n{sudo}', context.bot, update)
 
 
 send_auth_handler = CommandHandler(command=BotCommands.AuthorizedUsersCommand, callback=sendAuthChats,

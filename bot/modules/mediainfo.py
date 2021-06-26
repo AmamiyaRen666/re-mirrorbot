@@ -13,9 +13,9 @@ from bot.helper import post_to_telegraph, runcmd, safe_filename
 async def mediainfo(client, message):
     reply = message.reply_to_message
     if not reply:
-        await message.reply_text("Reply to Media first")
+        await message.reply_text("Balas ke Media dulu (hanya file/media telegram) bukan website")
         return
-    process = await message.reply_text("`Processing...`")
+    process = await message.reply_text("`Memproses...`")
     x_media = None
     available_media = (
         "audio",
@@ -33,7 +33,7 @@ async def mediainfo(client, message):
         if x_media is not None:
             break
     if x_media is None:
-       await process.edit_text("Reply To a Valid Media Format")
+       await process.edit_text("Membalas Format Media yang Valid")
        return
     media_type = str(type(x_media)).split("'")[1]
     file_path = safe_filename(await reply.download())
