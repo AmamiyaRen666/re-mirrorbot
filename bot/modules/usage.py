@@ -1,5 +1,4 @@
 import math
-
 import requests
 import heroku3
 
@@ -34,6 +33,7 @@ def dyno_usage(update, context):
         "Accept": "application/vnd.heroku+json; version=3.account-quotas",
     }
     path = "/accounts/" + user_id + "/actions/get-quota"
+    epath = "/users/" + user_id
     session = requests.Session()
     with session as ses:
         with ses.get(heroku_api + path, headers=headers) as r:
@@ -47,13 +47,18 @@ def dyno_usage(update, context):
             hours = math.floor(minutes_remain / 60)
             minutes = math.floor(minutes_remain % 60)
             day = math.floor(hours / 24)
+            """Account Email."""
+        with ses.get(heroku_api + epath, headers=headers) as rp:
+            resultan = rp.json()
+            email = resultan["email"]
 
             """App Quota."""
             Apps = result["apps"]
             for apps in Apps:
                 if apps.get("app_uuid") == app.id:
                     AppQuotaUsed = apps.get("quota_used") / 60
-                    AppPercent = math.floor(apps.get("quota_used") * 100 / quota)
+                    AppPercent = math.floor(
+                        apps.get("quota_used") * 100 / quota)
                     break
             else:
                 AppQuotaUsed = 0
@@ -61,14 +66,16 @@ def dyno_usage(update, context):
 
             AppHours = math.floor(AppQuotaUsed / 60)
             AppMinutes = math.floor(AppQuotaUsed % 60)
-            
+
             sendMessage(
                 f"<b>Kuota yang terpakai untuk</b> <code>{app.name}</code>:\n"
                 f"• <code>{AppHours}</code> <b>Jam dan</b> <code>{AppMinutes}</code> <b>Menit - {AppPercent}%</b>\n\n"
                 "<b>Sisa kuota buat bulan ini:</b>\n"
                 f"• <code>{hours}</code> <b>Jam dan</b> <code>{minutes}</code> <b>Menit - {quota_percent}%</b>\n\n"
                 "<b>Kapan Kartu mu mati:</b>\n"
-                f"• <code>{day}</code> <b>hari</b>",
+                f"• <code>{day}</code> <b>hari</b>\n\n"
+                "<b>Email kamu Sekarang:</b>\n"
+                f"• <code>{email}</code>",
                 context.bot,
                 update
             )
@@ -77,5 +84,5 @@ def dyno_usage(update, context):
 
 dyno_usage_handler = CommandHandler(command=BotCommands.UsageCommand, callback=dyno_usage,
                                     filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
-                                    
+
 dispatcher.add_handler(dyno_usage_handler)

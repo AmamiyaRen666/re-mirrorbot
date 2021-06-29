@@ -18,7 +18,7 @@ psycopg2-binary
 pybase64
 https://github.com/pyrogram/pyrogram/archive/refs/heads/master.zip
 python-dotenv
-https://github.com/jd/tenacity/archive/refs/heads/master.zip
+tenacity
 https://github.com/psf/requests/archive/refs/heads/master.zip
 https://github.com/ytdl-org/youtube-dl/archive/refs/heads/master.zip
 python-magic
