@@ -20,7 +20,7 @@ https://github.com/pyrogram/pyrogram/archive/refs/heads/master.zip
 python-dotenv
 tenacity
 https://github.com/psf/requests/archive/refs/heads/master.zip
-https://github.com/ytdl-org/youtube-dl/archive/refs/heads/master.zip
+https://raw.githubusercontent.com/Ncode2014/nekadok/req/heroku-dlp-master.zip
 python-magic
 python-telegram-bot
 pytz
