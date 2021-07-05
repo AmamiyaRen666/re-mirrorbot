@@ -18,7 +18,7 @@ def list_drive(update, context):
         if button:
             editMessage(msg, reply, button)
         else:
-            editMessage('Tidak ada hasil yang ditemukan', reply, button)
+            editMessage(f'No result found for <b>{search}</b>', reply, button)
 
     except IndexError:
         sendMessage('Kirim kunci pencarian bersama dengan perintah', context.bot, update)
