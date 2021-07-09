@@ -3,12 +3,12 @@ tracker_list=$(curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListColle
 export MAX_CONCURRENT_DOWNLOADS=7
 
 aria2c --enable-rpc --rpc-listen-all=false --rpc-listen-port=6800 \
-   --max-connection-per-server=10 --rpc-max-request-size=1024M \
+   --max-connection-per-server=16 --rpc-max-request-size=1024M \
    --bt-tracker="[$tracker_list]" --bt-max-peers=0 --bt-tracker-connect-timeout=300 --bt-stop-timeout=1200 --min-split-size=10M \
    --follow-torrent=mem --split=10 \
    --daemon=true --allow-overwrite=true --max-overall-download-limit=$MAX_DOWNLOAD_SPEED \
    --max-overall-upload-limit=1K --max-concurrent-downloads=$MAX_CONCURRENT_DOWNLOADS \
-   --peer-id-prefix=-qB4350- --user-agent=qBittorrent/4.3.5 --peer-agent=qBittorrent/4.3.5 --user-agent="Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Mobile/15E148 Safari/604.1" \
+   --peer-id-prefix=-qB4360- --user-agent=qBittorrent/4.3.6 --peer-agent=qBittorrent/4.3.5 --user-agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1.2 Safari/605.1.15' \
    --disk-cache=64M --file-allocation=prealloc --continue=true \
    --max-file-not-found=5 --max-tries=20 --auto-file-renaming=true \
    --bt-enable-lpd=true --seed-time=0.01 --seed-ratio=1.0 \
