@@ -117,73 +117,73 @@ def bot_help(update, context):
 
 /{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
 
-/{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
+/{BotCommands.StatsCommand}: Tampilkan Statistik Mesin The Bot diselenggarakan
 
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
+/{BotCommands.PingCommand}: Periksa berapa lama untuk melakukan ping bot
 
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+/{BotCommands.AuthorizeCommand}: Otorisasi obrolan atau pengguna untuk menggunakan BOT (hanya dapat dipanggil oleh pemilik & sudo bot)
 
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+/{BotCommands.UnAuthorizeCommand}: Tidak sah obrolan atau pengguna untuk menggunakan BOT (hanya dapat dipanggil oleh pemilik & sudo bot)
 
-/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
+/{BotCommands.AuthorizedUsersCommand}: Tampilkan pengguna yang berwenang (hanya pemilik & sudo)
 
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
+/{BotCommands.AddSudoCommand}: Tambahkan pengguna sudo (hanya pemilik)
 
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
+/{BotCommands.RmSudoCommand}: Hapus pengguna sudo (hanya pemilik)
 
-/{BotCommands.RestartCommand}: Restart the bot
+/{BotCommands.RestartCommand}: Mulai ulang bot.
 
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
+/{BotCommands.LogCommand}: Dapatkan file log bot.Berguna untuk mendapatkan laporan kecelakaan
 
-/{BotCommands.ConfigMenuCommand}: Get Info Menu about bot config (Owner Only)
+/{BotCommands.ConfigMenuCommand}: Dapatkan Info Menu Tentang Bot Config (Hanya Pemilik)
 
-/{BotCommands.UpdateCommand}: Update Bot from Upstream Repo (Owner Only)
+/{BotCommands.UpdateCommand}: Pembaruan bot dari repo upstream (hanya pemilik)
 
-/{BotCommands.UsageCommand}: To see Heroku Dyno Stats (Owner & Sudo only)
+/{BotCommands.UsageCommand}: Untuk melihat statistik Heroku Dyno (hanya pemilik & sudo)
 
-/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
+/{BotCommands.SpeedCommand}: Periksa kecepatan internet tuan rumah
 
-/{BotCommands.MediaInfoCommand}: Get detailed info about replied media (Only for Telegram file)
+/{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.ShellCommand}: Run commands in Shell (Terminal)
+/{BotCommands.ShellCommand}: Jalankan perintah di Shell (Terminal)
 
-/{BotCommands.ExecHelpCommand}: Get help for Executor module
+/{BotCommands.ExecHelpCommand}: Dapatkan bantuan untuk modul pelaksana
 
-/{BotCommands.TsHelpCommand}: Get help for Torrent search module
+/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian torrent
 '''
 
     help_string = f'''
-/{BotCommands.HelpCommand}: To get this message
+/{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
 
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Start mirroring the link to Google Drive
+/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai Mencerminkan tautan ke Google Drive
 
-/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Start mirroring and upload the archived (.tar) version of the download
+/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah diarsipkan (.tar) version of the download
 
-/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Starts mirroring and if downloaded file is any archive, extracts it to Google Drive
+/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
 
-/{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive
+/{BotCommands.CloneCommand} [drive_url]: Salin file / folder ke Google Drive
 
-/{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive Links
+/{BotCommands.CountCommand} [drive_url]: Hitung file / folder dari tautan Google Drive
 
-/{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
+/{BotCommands.WatchCommand} [youtube-dlp supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
 
-/{BotCommands.TarWatchCommand} [youtube-dl supported link]: Mirror through youtube-dl and tar before uploading
+/{BotCommands.TarWatchCommand} [youtube-dlp supported link]: Mirror through youtube-dl and tar before uploading
 
-/{BotCommands.CancelMirror}: Reply to the message by which the download was initiated and that download will be cancelled
+/{BotCommands.CancelMirror}: Membalas pesan dimana undangan diinisiasi dan unduhan akan dibatalkan
 
-/{BotCommands.ListCommand} [search term]: Searches the search term in the Google Drive, If found replies with the link
+/{BotCommands.ListCommand} [search term]: Mencari istilah pencarian di Google Drive, jika ditemukan balasan dengan tautan
 
-/{BotCommands.StatusCommand}: Shows a status of all the downloads
+/{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
 
-/{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
+/{BotCommands.StatsCommand}: Tampilkan Statistik Mesin The Bot diselenggarakan
 
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
+/{BotCommands.PingCommand}: Periksa berapa lama untuk melakukan ping bot
 
-/{BotCommands.SpeedCommand}: Check Internet Speed of the Host
+/{BotCommands.SpeedCommand}: Periksa kecepatan internet tuan rumah
 
-/{BotCommands.MediaInfoCommand}: Get detailed info about replied media (Only for Telegram file)
+/{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.TsHelpCommand}: Get help for Torrent search module
+/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian torrent
 '''
 
     if CustomFilters.sudo_user(update) or CustomFilters.owner_filter(update):

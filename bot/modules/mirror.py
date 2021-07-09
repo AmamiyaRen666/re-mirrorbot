@@ -78,7 +78,7 @@ class MirrorListener(listeners.MirrorListeners):
                 path = fs_utils.tar(m_path)
             except FileNotFoundError:
                 LOGGER.info('File to archive not found!')
-                self.onUploadError('Internal error occurred!!')
+                self.onUploadError('Terjadi kesalahan internal!!')
                 return
         elif self.extract:
             download.is_extracting = True
@@ -138,7 +138,7 @@ class MirrorListener(listeners.MirrorListeners):
             uname = f"@{self.message.from_user.username}"
         else:
             uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
-        msg = f"{uname} your download has been stopped due to: {error}"
+        msg = f"{uname} unduhan Anda telah dihentikan karena: {error}"
         sendMessage(msg, self.bot, self.update)
         if count == 0:
             self.clean()
@@ -153,13 +153,13 @@ class MirrorListener(listeners.MirrorListeners):
 
     def onUploadComplete(self, link: str, size, files, folders, typ):
         with download_dict_lock:
-            msg = f'<b>Filename: </b><code>{download_dict[self.uid].name()}</code>\n<b>Size: </b><code>{size}</code>'
+            msg = f'<b>Namafile: </b><code>{download_dict[self.uid].name()}</code>\n<b>Ukuran: </b><code>{size}</code>'
             if os.path.isdir(f'{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}'):
-                msg += '\n<b>Type: </b><code>Folder</code>'
+                msg += '\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{folders}</code>'
-                msg += f'\n<b>Files: </b><code>{files}</code>'
+                msg += f'\n<b>File: </b><code>{files}</code>'
             else:
-                msg += f'\n<b>Type: </b><code>{typ}</code>'
+                msg += f'\n<b>Tipe: </b><code>{typ}</code>'
             buttons = button_build.ButtonMaker()
             if SHORTENER is not None and SHORTENER_API is not None:
                 surl = requests.get(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={link}&format=text').text
@@ -200,7 +200,7 @@ class MirrorListener(listeners.MirrorListeners):
             else:
                 uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
             if uname is not None:
-                msg += f'\n\ncc: {uname}'
+                msg += f'\n\nDari: {uname}'
             try:
                 fs_utils.clean_download(download_dict[self.uid].path())
             except FileNotFoundError:
@@ -288,7 +288,7 @@ def _mirror(bot, update, isTar=False, extract=False):
     else:
         tag = None
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link):
-        sendMessage('No download source provided', bot, update)
+        sendMessage('Tidak ada sumber unduhan yang disediakan', bot, update)
         return
 
     try:
@@ -306,7 +306,7 @@ def _mirror(bot, update, isTar=False, extract=False):
 
     if bot_utils.is_gdrive_link(link):
         if not isTar and not extract:
-            sendMessage(f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\nUse /{BotCommands.TarMirrorCommand} to make tar of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
+            sendMessage(f"Gunakan /{BotCommands.CloneCommand} Untuk mengkloning file/folder Google Drive\nGunakan /{BotCommands.TarMirrorCommand} Untuk membuat tar folder Google Drive\nGunakan /{BotCommands.UnzipMirrorCommand} Untuk mengekstrak file arsip Google Drive", bot, update)
             return
         res, size, name = gdriveTools.GoogleDriveHelper().clonehelper(link)
         if res != "":
@@ -317,7 +317,7 @@ def _mirror(bot, update, isTar=False, extract=False):
             limit = TAR_UNZIP_LIMIT
             limit = limit.split(' ', maxsplit=1)
             limitint = int(limit[0])
-            msg = f'Failed, Tar/Unzip limit is {TAR_UNZIP_LIMIT}.\nYour File/Folder size is {get_readable_file_size(size)}.'
+            msg = f'Gagal, batas tar/unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(size)}.'
             if 'G' in limit[1] or 'g' in limit[1]:
                 if size > limitint * 1024**3:
                     sendMessage(msg, listener.bot, listener.update)
@@ -340,9 +340,9 @@ def _mirror(bot, update, isTar=False, extract=False):
     elif bot_utils.is_mega_link(link):
         link_type = get_mega_link_type(link)
         if link_type == "folder" and BLOCK_MEGA_FOLDER:
-            sendMessage("Mega folder are blocked!", bot, update)
+            sendMessage("Folder Mega diblokir!", bot, update)
         elif BLOCK_MEGA_LINKS:
-            sendMessage("Mega links are blocked!", bot, update)
+            sendMessage("Tautan Mega diblokir!", bot, update)
         else:
             mega_dl = MegaDownloadHelper()
             mega_dl.add_download(link, f'{DOWNLOAD_DIR}/{listener.uid}/', listener)
@@ -351,7 +351,7 @@ def _mirror(bot, update, isTar=False, extract=False):
            resp = requests.head(link, allow_redirects=True)
            if resp.headers["content-type"].startswith("text/html") and not resp.url.endswith(".torrent"):
                sendMessage(
-                   "Provided link returned to a webpage, download aborted.",
+                   "Tautan yang disediakan dikembalikan ke halaman web, unduhan dibatalkan.",
                    bot, update
                )
                return

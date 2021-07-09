@@ -126,18 +126,18 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError,IndexError):
-            msg = "Google Drive ID could not be found in the provided link"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
             return msg
         msg = ''
         try:
             res = self.__service.files().delete(fileId=file_id, supportsTeamDrives=IS_TEAM_DRIVE).execute()
-            msg = "Successfully deleted"
+            msg = "Berhasil dihapus"
         except HttpError as err:
             LOGGER.error(str(err))
             if "File not found" in str(err):
-                msg = "No such file exist"
+                msg = "Tidak ada file seperti itu"
             else:
-                msg = "Something went wrong check log"
+                msg = "Sesuatu salah periksa log"
         finally:
             return msg
 
@@ -243,7 +243,7 @@ class GoogleDriveHelper:
                 mime_type = get_mime_type(file_path)
                 link = self.upload_file(file_path, file_name, mime_type, parent_id)
                 if link is None:
-                    raise Exception('Upload has been manually cancelled')
+                    raise Exception('Unggah telah dibatalkan secara manual')
                 LOGGER.info("Uploaded To G-Drive: " + file_path)
             except Exception as e:
                 if isinstance(e, RetryError):
@@ -261,7 +261,7 @@ class GoogleDriveHelper:
                 dir_id = self.create_directory(os.path.basename(os.path.abspath(file_name)), parent_id)
                 result = self.upload_dir(file_path, dir_id)
                 if result is None:
-                    raise Exception('Upload has been manually cancelled!')
+                    raise Exception('Unggah telah dibatalkan secara manual')
                 LOGGER.info("Uploaded To G-Drive: " + file_name)
                 link = f"https://drive.google.com/folderview?id={dir_id}"
             except Exception as e:
@@ -346,7 +346,7 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError,IndexError):
-            msg = "Google drive ID could not be found in the provided link"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
             return msg
         msg = ""
         LOGGER.info(f"File ID: {file_id}")
@@ -355,10 +355,10 @@ class GoogleDriveHelper:
             if meta.get("mimeType") == self.__G_DRIVE_DIR_MIME_TYPE:
                 dir_id = self.create_directory(meta.get('name'), parent_id)
                 self.cloneFolder(meta.get('name'), meta.get('name'), meta.get('id'), dir_id)
-                msg += f'<b>Filename: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
-                msg += f'\n<b>Type: </b><code>Folder</code>'
+                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Ukuran: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
+                msg += f'\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
-                msg += f'\n<b>Files: </b><code>{self.total_files}</code>'
+                msg += f'\n<b>File: </b><code>{self.total_files}</code>'
                 durl = self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dir_id)
                 buttons = button_build.ButtonMaker()
                 if SHORTENER is not None and SHORTENER_API is not None:
@@ -395,8 +395,8 @@ class GoogleDriveHelper:
                 except:
                     typeee = 'File' 
                 try:
-                    msg += f'\n<b>Size: </b><code>{get_readable_file_size(int(meta.get("size")))}</code>'
-                    msg += f'\n<b>Type: </b><code>{typeee}</code>'
+                    msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(int(meta.get("size")))}</code>'
+                    msg += f'\n<b>Tipe: </b><code>{typeee}</code>'
                 except TypeError:
                     pass
                 if INDEX_URL is not None:
@@ -428,7 +428,7 @@ class GoogleDriveHelper:
             if "User rate limit exceeded" in str(err):
                 msg = "User rate limit exceeded."
             elif "File not found" in str(err):
-                msg = "File not found."
+                msg = "Berkas tidak ditemukan."
             else:
                 msg = f"Error.\n{err}"
             return msg, ""
@@ -643,7 +643,7 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError,IndexError):
-            msg = "Google drive ID could not be found in the provided link"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
             return msg
         msg = ""
         LOGGER.info(f"File ID: {file_id}")
@@ -654,13 +654,13 @@ class GoogleDriveHelper:
             LOGGER.info(f"Counting: {name}")
             if drive_file['mimeType'] == self.__G_DRIVE_DIR_MIME_TYPE:
                 self.gDrive_directory(**drive_file)
-                msg += f'<b>Filename: </b><code>{name}</code>'
-                msg += f'\n<b>Size: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
-                msg += f'\n<b>Type: </b><code>Folder</code>'
+                msg += f'<b>Namafile: </b><code>{name}</code>'
+                msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
+                msg += f'\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
-                msg += f'\n<b>Files: </b><code>{self.total_files}</code>'
+                msg += f'\n<b>File: </b><code>{self.total_files}</code>'
             else:
-                msg += f'<b>Filename: </b><code>{name}</code>'
+                msg += f'<b>Nama file: </b><code>{name}</code>'
                 try:
                     typee = drive_file['mimeType']
                 except:
@@ -668,16 +668,16 @@ class GoogleDriveHelper:
                 try:
                     self.total_files += 1
                     self.gDrive_file(**drive_file)
-                    msg += f'\n<b>Size: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
-                    msg += f'\n<b>Type: </b><code>{typee}</code>'
-                    msg += f'\n<b>Files: </b><code>{self.total_files}</code>'
+                    msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
+                    msg += f'\n<b>Tipe: </b><code>{typee}</code>'
+                    msg += f'\n<b>File: </b><code>{self.total_files}</code>'
                 except TypeError:
                     pass
         except Exception as err:
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
             if "File not found" in str(err):
-                msg = "File not found."
+                msg = "Berkas tidak ditemukan."
             else:
                 msg = f"Error.\n{err}"
             return msg
@@ -706,7 +706,7 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError,IndexError):
-            msg = "Google drive ID could not be found in the provided link"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
             return msg, "", ""
         LOGGER.info(f"File ID: {file_id}")
         try:
@@ -727,7 +727,7 @@ class GoogleDriveHelper:
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
             if "File not found" in str(err):
-                msg = "File not found."
+                msg = "Berkas tidak ditemukan."
             else:
                 msg = f"Error.\n{err}"
             return msg, "", ""
@@ -835,4 +835,4 @@ class GoogleDriveHelper:
     def cancel_download(self):
         self.is_cancelled = True
         LOGGER.info(f"Cancelling Download: {self.name}")
-        self.__listener.onDownloadError('Download stopped by user!')
+        self.__listener.onDownloadError('Unduhan dihentikan oleh pengguna!')
