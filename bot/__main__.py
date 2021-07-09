@@ -50,8 +50,8 @@ def stats(update, context):
 
 def start(update, context):
     start_string = f'''
-This bot can mirror all your links to Google Drive!
-Type /{BotCommands.HelpCommand} to get a list of available commands
+Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
+Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 '''
     buttons = button_build.ButtonMaker()
     buttons.buildbutton("Repo", "https://github.com/breakdowns/slam-mirrorbot")
@@ -61,15 +61,15 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
     uptime = get_readable_time((time.time() - botStartTime))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         if update.message.chat.type == "private" :
-            sendMessage(f"Hey I'm Alive 🙂\nSince: <code>{uptime}</code>", context.bot, update)
+            sendMessage(f"Hei aku hidup 🙂\nSejak: <code>{uptime}</code>", context.bot, update)
         else :
             update.effective_message.reply_photo(IMAGE_URL, start_string, parse_mode=ParseMode.MARKDOWN, reply_markup=reply_markup)
     else :
-        sendMessage(f"Oops! not a Authorized user.", context.bot, update)
+        sendMessage(f"Ups! bukan pengguna Resmi.", context.bot, update)
 
 
 def restart(update, context):
-    restart_message = sendMessage("Restarting, Please wait!", context.bot, update)
+    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -80,7 +80,7 @@ def restart(update, context):
 
 def ping(update, context):
     start_time = int(round(time.time() * 1000))
-    reply = sendMessage("Starting Ping", context.bot, update)
+    reply = sendMessage("Mulai Ping", context.bot, update)
     end_time = int(round(time.time() * 1000))
     editMessage(f'{end_time - start_time} ms', reply)
 
@@ -91,31 +91,31 @@ def log(update, context):
 
 def bot_help(update, context):
     help_string_adm = f'''
-/{BotCommands.HelpCommand}: To get this message
+/{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
 
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Start mirroring the link to Google Drive
+/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive
 
-/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Start mirroring and upload the archived (.tar) version of the download
+/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.tar) versi unduhan
 
-/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Starts mirroring and if downloaded file is any archive, extracts it to Google Drive
+/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
 
-/{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive
+/{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
 
-/{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive Links
+/{BotCommands.CountCommand} [drive_url]: Hitung file/folder dari Google Drive Links
 
-/{BotCommands.DeleteCommand} [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
+/{BotCommands.DeleteCommand} [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
 
-/{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
+/{BotCommands.WatchCommand} [youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /bantuan
 
-/{BotCommands.TarWatchCommand} [youtube-dl supported link]: Mirror through youtube-dl and tar before uploading
+/{BotCommands.TarWatchCommand} [youtube-dlp supported link]: Cermin melalui youtube-dlp dan tar sebelum mengunggah
 
-/{BotCommands.CancelMirror}: Reply to the message by which the download was initiated and that download will be cancelled
+/{BotCommands.CancelMirror}: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
 
-/{BotCommands.CancelAllCommand}: Cancel all running tasks
+/{BotCommands.CancelAllCommand}: Batalkan semua tugas yang sedang berjalan
 
-/{BotCommands.ListCommand} [search term]: Searches the search term in the Google Drive, If found replies with the link
+/{BotCommands.ListCommand} [search term]: Mencari istilah pencarian di Google Drive, Jika ditemukan balasan dengan tautan
 
-/{BotCommands.StatusCommand}: Shows a status of all the downloads
+/{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
 
 /{BotCommands.StatsCommand}: Show Stats of the machine the bot is hosted on
 
@@ -193,25 +193,25 @@ def bot_help(update, context):
 
 
 botcmds = [
-BotCommand(f'{BotCommands.HelpCommand}','Get Detailed Help'),
-BotCommand(f'{BotCommands.MirrorCommand}', 'Start Mirroring'),
-BotCommand(f'{BotCommands.TarMirrorCommand}','Start mirroring and upload as .tar'),
-BotCommand(f'{BotCommands.UnzipMirrorCommand}','Extract files'),
-BotCommand(f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
-BotCommand(f'{BotCommands.CountCommand}','Count file/folder of Drive link'),
-BotCommand(f'{BotCommands.DeleteCommand}','Delete file from Drive'),
-BotCommand(f'{BotCommands.WatchCommand}','Mirror Youtube-dl support link'),
-BotCommand(f'{BotCommands.TarWatchCommand}','Mirror Youtube playlist link as .tar'),
-BotCommand(f'{BotCommands.CancelMirror}','Cancel a task'),
-BotCommand(f'{BotCommands.CancelAllCommand}','Cancel all tasks'),
-BotCommand(f'{BotCommands.ListCommand}','Searches files in Drive'),
-BotCommand(f'{BotCommands.StatusCommand}','Get Mirror Status message'),
-BotCommand(f'{BotCommands.StatsCommand}','Bot Usage Stats'),
-BotCommand(f'{BotCommands.PingCommand}','Ping the Bot'),
-BotCommand(f'{BotCommands.RestartCommand}','Restart the bot [owner/sudo only]'),
-BotCommand(f'{BotCommands.LogCommand}','Get the Bot Log [owner/sudo only]'),
-BotCommand(f'{BotCommands.MediaInfoCommand}','Get detailed info about replied media'),
-BotCommand(f'{BotCommands.TsHelpCommand}','Get help for Torrent search module')]
+BotCommand(f'{BotCommands.HelpCommand}','Dapatkan Bantuan Mendetail'),
+BotCommand(f'{BotCommands.MirrorCommand}', 'Mulai Mencerminkan'),
+BotCommand(f'{BotCommands.TarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar'),
+BotCommand(f'{BotCommands.UnzipMirrorCommand}','Ekstrak file'),
+BotCommand(f'{BotCommands.CloneCommand}','Salin file/folder ke Drive'),
+BotCommand(f'{BotCommands.CountCommand}','Hitung file/folder tautan Drive'),
+BotCommand(f'{BotCommands.DeleteCommand}','Hapus file dari Drive'),
+BotCommand(f'{BotCommands.WatchCommand}','Tautan dukungan Mirror Youtube-dlp'),
+BotCommand(f'{BotCommands.TarWatchCommand}','Cerminkan tautan daftar putar Youtube sebagai .tar'),
+BotCommand(f'{BotCommands.CancelMirror}','Membatalkan tugas'),
+BotCommand(f'{BotCommands.CancelAllCommand}','Batalkan semua tugas'),
+BotCommand(f'{BotCommands.ListCommand}','Mencari file di Drive'),
+BotCommand(f'{BotCommands.StatusCommand}','Dapatkan pesan Status Cermin'),
+BotCommand(f'{BotCommands.StatsCommand}','Statistik Penggunaan Bot'),
+BotCommand(f'{BotCommands.PingCommand}','Ping Bot'),
+BotCommand(f'{BotCommands.RestartCommand}','Mulai ulang bot [owner/sudo only]'),
+BotCommand(f'{BotCommands.LogCommand}','Dapatkan Log Bot [owner/sudo only]'),
+BotCommand(f'{BotCommands.MediaInfoCommand}','Dapatkan info detail tentang media yang dibalas'),
+BotCommand(f'{BotCommands.TsHelpCommand}','Dapatkan bantuan untuk modul pencarian Torrent')]
 
 def main():
     fs_utils.start_cleanup()
