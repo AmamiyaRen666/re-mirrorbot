@@ -175,18 +175,18 @@ class MegaDownloadHelper:
                 gd = GoogleDriveHelper()
                 smsg, button = gd.drive_list(mname)
             if smsg:
-                msg1 = "File / folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:"
+                msg1 = "File/folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:"
                 sendMarkup(msg1, listener.bot, listener.update, button)
                 return
         if MEGA_LIMIT is not None or TAR_UNZIP_LIMIT is not None:
             limit = None
-            LOGGER.info(f'Memeriksa ukuran file / folder')
+            LOGGER.info(f'Memeriksa ukuran file/folder')
             if TAR_UNZIP_LIMIT is not None and (listener.isTar or listener.extract):
                 limit = TAR_UNZIP_LIMIT
-                msg3 = f'Gagal, batas tar / unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file / folder Anda {get_readable_file_size(api.getSize(node))}.'
+                msg3 = f'Gagal, batas tar/unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(api.getSize(node))}.'
             elif MEGA_LIMIT is not None and limit is None:
                 limit = MEGA_LIMIT
-                msg3 = f'Gagal, batas mega adalah {MEGA_LIMIT}.\nUkuran file / folder Anda {get_readable_file_size(api.getSize(node))}.'
+                msg3 = f'Gagal, batas mega adalah {MEGA_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(api.getSize(node))}.'
             if limit is not None:
                 limit = limit.split(' ', maxsplit=1)
                 limitint = int(limit[0])

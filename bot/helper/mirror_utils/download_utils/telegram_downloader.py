@@ -110,7 +110,7 @@ class TelegramDownloadHelper(DownloadHelper):
                         gd = GoogleDriveHelper()
                         smsg, button = gd.drive_list(name)
                     if smsg:
-                        sendMarkup("File / folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:", self.__listener.bot, self.__listener.update, button)
+                        sendMarkup("File/folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:", self.__listener.bot, self.__listener.update, button)
                         return
                 sendStatusMessage(self.__listener.update, self.__listener.bot)
                 self.__onDownloadStart(name, media.file_size, media.file_id)

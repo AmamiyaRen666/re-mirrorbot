@@ -33,7 +33,7 @@ class AriaDownloadHelper(DownloadHelper):
                     gdrive = GoogleDriveHelper(None)
                     smsg, button = gdrive.drive_list(sname)
                 if smsg:
-                    dl.getListener().onDownloadError(f'File / folder sudah tersedia di drive.\n\n')
+                    dl.getListener().onDownloadError(f'File/folder sudah tersedia di drive.\n\n')
                     aria2.remove([download])
                     sendMarkup("Berikut adalah hasil pencarian:", dl.getListener().bot, dl.getListener().update, button)
                     return
@@ -47,7 +47,7 @@ class AriaDownloadHelper(DownloadHelper):
                 elif TORRENT_DIRECT_LIMIT is not None and limit is None:
                     LOGGER.info(f"Checking File/Folder Size...")
                     limit = TORRENT_DIRECT_LIMIT
-                    mssg = f'Batas torrent / langsung adalah {TORRENT_DIRECT_LIMIT}'
+                    mssg = f'Batas torrent/langsung adalah {TORRENT_DIRECT_LIMIT}'
                 if limit is not None:
                     sleep(1.5)
                     size = aria2.get_download(gid).total_length
@@ -55,12 +55,12 @@ class AriaDownloadHelper(DownloadHelper):
                     limitint = int(limit[0])
                     if 'G' in limit[1] or 'g' in limit[1]:
                         if size > limitint * 1024**3:
-                            dl.getListener().onDownloadError(f'{mssg}.\nUkuran file / folder Anda {get_readable_file_size(size)}')
+                            dl.getListener().onDownloadError(f'{mssg}.\nUkuran file/folder Anda {get_readable_file_size(size)}')
                             aria2.remove([download])
                             return
                     elif 'T' in limit[1] or 't' in limit[1]:
                         if size > limitint * 1024**4:
-                            dl.getListener().onDownloadError(f'{mssg}.\nUkuran file / folder Anda {get_readable_file_size(size)}')
+                            dl.getListener().onDownloadError(f'{mssg}.\nUkuran file/folder Anda {get_readable_file_size(size)}')
                             aria2.remove([download])
                             return
         update_all_messages()
