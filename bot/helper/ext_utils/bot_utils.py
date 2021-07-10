@@ -120,7 +120,7 @@ def get_readable_message():
                 uname = f'@{download.message.from_user.username}'
             else:
                 uname = f'<a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'    
-            msg += f'\n<b>User:</b> {uname} (<code>{download.message.from_user.id}</code>)'
+            msg += f'\n<b>Pengguna:</b> {uname} (<code>{download.message.from_user.id}</code>)'
             if download.status() == MirrorStatus.STATUS_DOWNLOADING:
                 msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
             msg += "\n\n"
