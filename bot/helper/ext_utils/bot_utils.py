@@ -109,18 +109,14 @@ def get_readable_message():
                 else:
                     msg += f"\n<b>Diunggah:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 msg += f"\n<b>Kecepatan:</b> {download.speed()}" \
-                        f" | <b>Kapan:</b> {download.eta()} "
+                        f", <b>Kapan:</b> {download.eta()} "
                 # if hasattr(download, 'is_torrent'):
                 try:
                     msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
                         f" | <b>Peers:</b> {download.aria_download().connections}"
                 except:
                     pass
-                if download.message.from_user.username:
-                    uname = f'<a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.username}</a>'
-                else:
-                    uname = f'<a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'
-                msg += f'\n<b>Pengguna:</b> {uname}'
+                msg += f'\n<b>Pengguna:</b> <a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a> (<code>{download.message.from_user.id}</code>)'
             if download.status() == MirrorStatus.STATUS_DOWNLOADING:
                 msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
             msg += "\n\n"
