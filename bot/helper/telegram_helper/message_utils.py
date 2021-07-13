@@ -91,9 +91,9 @@ def update_all_messages():
         for chat_id in list(status_reply_dict.keys()):
             if status_reply_dict[chat_id] and msg != status_reply_dict[chat_id].text:
                 if len(msg) == 0:
-                    msg = "Starting DL"
+                    msg = "Memulai Download"
                 try:
-                    keyboard = [[InlineKeyboardButton("♻️ Stats", callback_data="stats_")]]
+                    keyboard = [[InlineKeyboardButton("♻️ Status", callback_data="stats_")]]
                     editMessage(msg, status_reply_dict[chat_id], reply_markup=InlineKeyboardMarkup(keyboard))
                 except Exception as e:
                     LOGGER.error(str(e))
@@ -131,7 +131,7 @@ def sendStatusMessage(msg, bot):
                 del status_reply_dict[msg.message.chat.id]
                 pass
         if len(progress) == 0:
-            progress = "Starting DL"
+            progress = "Memulai Downlaod"
         message = sendMessage(progress, bot, msg)
         status_reply_dict[msg.message.chat.id] = message
 
@@ -149,11 +149,11 @@ def bot_sys_stats():
     total, used, free = shutil.disk_usage('.')
     free = get_readable_file_size(free)
     stats = f"""
-Bot Uptime: {currentTime}
-Free Disk: {free}
+Waktu Aktif Bot: {currentTime}
+HDD tersisa: {free}
 CPU: {cpu}%
 RAM: {mem}%
-DISK: {disk}%
+HDD: {disk}%
 """
     return stats
 
