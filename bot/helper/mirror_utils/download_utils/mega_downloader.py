@@ -183,13 +183,8 @@ class MegaDownloadHelper:
             LOGGER.info(f'Memeriksa ukuran file/folder')
             if TAR_UNZIP_LIMIT is not None and (listener.isTar or listener.extract):
                 limit = TAR_UNZIP_LIMIT
-<<<<<<< HEAD
                 msg3 = f'Gagal, batas tar/unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(api.getSize(node))}.'
-            elif MEGA_LIMIT is not None and limit is None:
-=======
-                msg3 = f'Failed, Tar/Unzip limit is {TAR_UNZIP_LIMIT}.\nYour File/Folder size is {get_readable_file_size(api.getSize(node))}.'
             if MEGA_LIMIT is not None and limit is None:
->>>>>>> 6f8b39c... Optional Database and minor changes
                 limit = MEGA_LIMIT
                 msg3 = f'Gagal, batas mega adalah {MEGA_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(api.getSize(node))}.'
             if limit is not None:
