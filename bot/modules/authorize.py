@@ -177,7 +177,7 @@ def sendAuthChats(update, context):
     user = sudo = ''
     user += '\n'.join(str(id) for id in AUTHORIZED_CHATS)
     sudo += '\n'.join(str(id) for id in SUDO_USERS)
-    sendMessage(f'<b><u>Obrolan Resmi</u></b>\n{user}\n<b><u>Orang yang dikasih sudo</u></b>\n{sudo}', context.bot, update)
+    sendMessage(f'<b><u>Obrolan Yang diizinkan</u></b>\n<code>{user}</code>\n<b><u>Orang yang terdaftar sudo</u></b>\n<code>{sudo}</code>', context.bot, update)
 
 
 send_auth_handler = CommandHandler(command=BotCommands.AuthorizedUsersCommand, callback=sendAuthChats,
