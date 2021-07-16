@@ -9,7 +9,7 @@ from datetime import datetime
 import pytz
 import time
 
-from telegram import ParseMode, BotCommand
+from telegram import ParseMode
 from telegram.ext import CommandHandler
 from bot import bot, dispatcher, updater, botStartTime, IMAGE_URL, IGNORE_PENDING_REQUESTS
 from bot.helper.ext_utils import fs_utils
@@ -193,25 +193,26 @@ def bot_help(update, context):
 
 
 botcmds = [
-BotCommand(f'{BotCommands.HelpCommand}','Dapatkan Bantuan Mendetail'),
-BotCommand(f'{BotCommands.MirrorCommand}', 'Mulai Mencerminkan'),
-BotCommand(f'{BotCommands.TarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar'),
-BotCommand(f'{BotCommands.UnzipMirrorCommand}','Ekstrak file'),
-BotCommand(f'{BotCommands.CloneCommand}','Salin file/folder ke Drive'),
-BotCommand(f'{BotCommands.CountCommand}','Hitung file/folder tautan Drive'),
-BotCommand(f'{BotCommands.DeleteCommand}','Hapus file dari Drive'),
-BotCommand(f'{BotCommands.WatchCommand}','Tautan dukungan Mirror Youtube-dlp'),
-BotCommand(f'{BotCommands.TarWatchCommand}','Cerminkan tautan daftar putar Youtube sebagai .tar'),
-BotCommand(f'{BotCommands.CancelMirror}','Membatalkan tugas'),
-BotCommand(f'{BotCommands.CancelAllCommand}','Batalkan semua tugas'),
-BotCommand(f'{BotCommands.ListCommand}','Mencari file di Drive'),
-BotCommand(f'{BotCommands.StatusCommand}','Dapatkan pesan Status Cermin'),
-BotCommand(f'{BotCommands.StatsCommand}','Statistik Penggunaan Bot'),
-BotCommand(f'{BotCommands.PingCommand}','Ping Bot'),
-BotCommand(f'{BotCommands.RestartCommand}','Mulai ulang bot [owner/sudo only]'),
-BotCommand(f'{BotCommands.LogCommand}','Dapatkan Log Bot [owner/sudo only]'),
-BotCommand(f'{BotCommands.MediaInfoCommand}','Dapatkan info detail tentang media yang dibalas'),
-BotCommand(f'{BotCommands.TsHelpCommand}','Dapatkan bantuan untuk modul pencarian Torrent')]
+        (f'{BotCommands.HelpCommand}','Dapatkan Bantuan Mendetail'),
+        (f'{BotCommands.MirrorCommand}', 'Mulai Mencerminkan'),
+        (f'{BotCommands.TarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar'),
+        (f'{BotCommands.UnzipMirrorCommand}','Ekstrak file'),
+        (f'{BotCommands.CloneCommand}','Salin file/folder ke Drive'),
+        (f'{BotCommands.CountCommand}','Hitung file/folder tautan Drive'),
+        (f'{BotCommands.DeleteCommand}','Hapus file dari Drive'),
+        (f'{BotCommands.WatchCommand}','Tautan dukungan Mirror Youtube-dlp'),
+        (f'{BotCommands.TarWatchCommand}','Cerminkan tautan daftar putar Youtube sebagai .tar'),
+        (f'{BotCommands.CancelMirror}','Membatalkan tugas'),
+        (f'{BotCommands.CancelAllCommand}','Batalkan semua tugas'),
+        (f'{BotCommands.ListCommand}','Mencari file di Drive'),
+        (f'{BotCommands.StatusCommand}','Dapatkan pesan Status Cermin'),
+        (f'{BotCommands.StatsCommand}','Statistik Penggunaan Bot'),
+        (f'{BotCommands.PingCommand}','Ping Bot'),
+        (f'{BotCommands.RestartCommand}','Mulai ulang bot [owner/sudo only]'),
+        (f'{BotCommands.LogCommand}','Dapatkan Log Bot [owner/sudo only]'),
+        (f'{BotCommands.MediaInfoCommand}','Dapatkan info detail tentang media yang dibalas'),
+        (f'{BotCommands.TsHelpCommand}','Dapatkan bantuan untuk modul pencarian Torrent')]
+    ]
 
 def main():
     fs_utils.start_cleanup()
