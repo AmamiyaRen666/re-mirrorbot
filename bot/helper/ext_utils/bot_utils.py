@@ -36,6 +36,7 @@ SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
 class setInterval:
+
     def __init__(self, interval, action):
         self.interval = interval
         self.action = action
@@ -76,6 +77,7 @@ def getDownloadByGid(gid):
                     return dl
     return None
 
+
 def getAllDownload():
     with download_dict_lock:
         for dlDetails in list(download_dict.values()):
@@ -83,6 +85,7 @@ def getAllDownload():
                     or dlDetails.status() == MirrorStatus.STATUS_WAITING:
                 if dlDetails:
                     return dlDetails
+
 
 def get_progress_bar_string(status):
     completed = status.processed_bytes() / 8
@@ -110,7 +113,7 @@ def get_readable_message():
         if STATUS_LIMIT is not None:
             dick_no = len(download_dict)
             global pages
-            pages = math.ceil(dick_no/STATUS_LIMIT)
+            pages = math.ceil(dick_no / STATUS_LIMIT)
             if PAGE_NO > pages and pages != 0:
                 globals()['COUNT'] -= STATUS_LIMIT
                 globals()['PAGE_NO'] -= 1
@@ -119,7 +122,9 @@ def get_readable_message():
             if INDEX > COUNT:
                 msg += f"<b>Namafile:</b> <code>{download.name()}</code>"
                 msg += f"\n<b>Status:</b> <i>{download.status()}</i>"
-                if download.status() != MirrorStatus.STATUS_ARCHIVING and download.status() != MirrorStatus.STATUS_EXTRACTING:
+                if download.status(
+                ) != MirrorStatus.STATUS_ARCHIVING and download.status(
+                ) != MirrorStatus.STATUS_EXTRACTING:
                     msg += f"\n<code>{get_progress_bar_string(download)} {download.progress()}</code>"
                     if download.status() == MirrorStatus.STATUS_DOWNLOADING:
                         msg += f"\n<b>Diunduh:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
@@ -138,19 +143,20 @@ def get_readable_message():
                     msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if STATUS_LIMIT is not None:
-                    limit = COUNT + STATUS_LIMIT
-                    if INDEX >= limit:
+                    if INDEX >= COUNT + STATUS_LIMIT:
                         break
         if STATUS_LIMIT is not None:
-            if INDEX > limit:
+            if INDEX > COUNT + STATUS_LIMIT:
                 return None, None
-            msg += f"Halaman: {PAGE_NO}/{pages} | Tugas: {dick_no}\n"
-            buttons = button_build.ButtonMaker()
-            buttons.sbutton("Sebelumnya", "pre")
-            buttons.sbutton("Selanjutnya", "nex")
-            button = InlineKeyboardMarkup(buttons.build_menu(2))
-            return msg, button
+            if dick_no > STATUS_LIMIT:
+                msg += f"Halaman: {PAGE_NO}/{pages} | Tugas: {dick_no}\n"
+                buttons = button_build.ButtonMaker()
+                buttons.sbutton("Sebelumnya", "pre")
+                buttons.sbutton("Selanjutnya", "nex")
+                button = InlineKeyboardMarkup(buttons.build_menu(2))
+                return msg, button
         return msg, ""
+
 
 def flip(update, context):
     query = update.callback_query
@@ -171,6 +177,7 @@ def flip(update, context):
             COUNT -= STATUS_LIMIT
             PAGE_NO -= 1
     message_utils.update_all_messages()
+
 
 def get_readable_time(seconds: int) -> str:
     result = ''
@@ -197,11 +204,14 @@ def is_url(url: str):
         return True
     return False
 
+
 def is_gdrive_link(url: str):
     return "drive.google.com" in url
 
+
 def is_mega_link(url: str):
     return "mega.nz" in url or "mega.co.nz" in url
+
 
 def get_mega_link_type(url: str):
     if "folder" in url:
@@ -212,11 +222,13 @@ def get_mega_link_type(url: str):
         return "folder"
     return "file"
 
+
 def is_magnet(url: str):
     magnet = re.findall(MAGNET_REGEX, url)
     if magnet:
         return True
     return False
+
 
 def new_thread(fn):
     """To use as decorator to make a function call threaded.
@@ -229,6 +241,7 @@ def new_thread(fn):
         return thread
 
     return wrapper
+
 
 next_handler = CallbackQueryHandler(flip, pattern="nex", run_async=True)
 previous_handler = CallbackQueryHandler(flip, pattern="pre", run_async=True)
