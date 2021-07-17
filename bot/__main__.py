@@ -20,7 +20,7 @@ from .helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper import button_build
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, torrent_search, delete, speedtest, usage, mediainfo, count, config, updates
 
-now=datetime.now(pytz.timezone('Asia/Jakarta'))
+now = datetime.now(pytz.timezone('Asia/Jakarta'))
 
 
 def stats(update, context):
@@ -45,7 +45,9 @@ def stats(update, context):
             f'<b>CPU:</b> {cpuUsage}%\n' \
             f'<b>RAM:</b> {memory}%\n' \
             f'<b>HDD:</b> {disk}%'
-    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
+    update.effective_message.reply_photo(IMAGE_URL,
+                                         stats,
+                                         parse_mode=ParseMode.HTML)
 
 
 def start(update, context):
@@ -57,19 +59,27 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
     buttons.buildbutton("Repo", "https://github.com/breakdowns/slam-mirrorbot")
     buttons.buildbutton("Support Group", "https://t.me/SlamMirrorSupport")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
-    LOGGER.info('UID: {} - UN: {} - MSG: {}'.format(update.message.chat.id, update.message.chat.username, update.message.text))
+    LOGGER.info('UID: {} - UN: {} - MSG: {}'.format(
+        update.message.chat.id, update.message.chat.username,
+        update.message.text))
     uptime = get_readable_time((time.time() - botStartTime))
-    if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
-        if update.message.chat.type == "private" :
-            sendMessage(f"Hei aku hidup 🙂\nSejak: <code>{uptime}</code>", context.bot, update)
-        else :
-            update.effective_message.reply_photo(IMAGE_URL, start_string, parse_mode=ParseMode.MARKDOWN, reply_markup=reply_markup)
-    else :
+    if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(
+            update):
+        if update.message.chat.type == "private":
+            sendMessage(f"Hei aku hidup 🙂\nSejak: <code>{uptime}</code>",
+                        context.bot, update)
+        else:
+            update.effective_message.reply_photo(IMAGE_URL,
+                                                 start_string,
+                                                 parse_mode=ParseMode.MARKDOWN,
+                                                 reply_markup=reply_markup)
+    else:
         sendMessage(f"Ups! bukan pengguna Resmi.", context.bot, update)
 
 
 def restart(update, context):
-    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)
+    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot,
+                                  update)
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -193,26 +203,31 @@ def bot_help(update, context):
 
 
 botcmds = [
-        (f'{BotCommands.HelpCommand}','Dapatkan Bantuan Mendetail'),
-        (f'{BotCommands.MirrorCommand}', 'Mulai Mencerminkan'),
-        (f'{BotCommands.TarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar'),
-        (f'{BotCommands.UnzipMirrorCommand}','Ekstrak file'),
-        (f'{BotCommands.CloneCommand}','Salin file/folder ke Drive'),
-        (f'{BotCommands.CountCommand}','Hitung file/folder tautan Drive'),
-        (f'{BotCommands.DeleteCommand}','Hapus file dari Drive'),
-        (f'{BotCommands.WatchCommand}','Tautan dukungan Mirror Youtube-dlp'),
-        (f'{BotCommands.TarWatchCommand}','Cerminkan tautan daftar putar Youtube sebagai .tar'),
-        (f'{BotCommands.CancelMirror}','Membatalkan tugas'),
-        (f'{BotCommands.CancelAllCommand}','Batalkan semua tugas'),
-        (f'{BotCommands.ListCommand}','Mencari file di Drive'),
-        (f'{BotCommands.StatusCommand}','Dapatkan pesan Status Cermin'),
-        (f'{BotCommands.StatsCommand}','Statistik Penggunaan Bot'),
-        (f'{BotCommands.PingCommand}','Ping Bot'),
-        (f'{BotCommands.RestartCommand}','Mulai ulang bot [owner/sudo only]'),
-        (f'{BotCommands.LogCommand}','Dapatkan Log Bot [owner/sudo only]'),
-        (f'{BotCommands.MediaInfoCommand}','Dapatkan info detail tentang media yang dibalas'),
-        (f'{BotCommands.TsHelpCommand}','Dapatkan bantuan untuk modul pencarian Torrent')]
-    ]
+    (f'{BotCommands.HelpCommand}', 'Dapatkan Bantuan Mendetail'),
+    (f'{BotCommands.MirrorCommand}', 'Mulai Mencerminkan'),
+    (f'{BotCommands.TarMirrorCommand}',
+     'Mulai mirroring dan unggah sebagai .tar'),
+    (f'{BotCommands.UnzipMirrorCommand}', 'Ekstrak file'),
+    (f'{BotCommands.CloneCommand}', 'Salin file/folder ke Drive'),
+    (f'{BotCommands.CountCommand}', 'Hitung file/folder tautan Drive'),
+    (f'{BotCommands.DeleteCommand}', 'Hapus file dari Drive'),
+    (f'{BotCommands.WatchCommand}', 'Tautan dukungan Mirror Youtube-dlp'),
+    (f'{BotCommands.TarWatchCommand}',
+     'Cerminkan tautan daftar putar Youtube sebagai .tar'),
+    (f'{BotCommands.CancelMirror}', 'Membatalkan tugas'),
+    (f'{BotCommands.CancelAllCommand}', 'Batalkan semua tugas'),
+    (f'{BotCommands.ListCommand}', 'Mencari file di Drive'),
+    (f'{BotCommands.StatusCommand}', 'Dapatkan pesan Status Cermin'),
+    (f'{BotCommands.StatsCommand}', 'Statistik Penggunaan Bot'),
+    (f'{BotCommands.PingCommand}', 'Ping Bot'),
+    (f'{BotCommands.RestartCommand}', 'Mulai ulang bot [owner/sudo only]'),
+    (f'{BotCommands.LogCommand}', 'Dapatkan Log Bot [owner/sudo only]'),
+    (f'{BotCommands.MediaInfoCommand}',
+     'Dapatkan info detail tentang media yang dibalas'),
+    (f'{BotCommands.TsHelpCommand}',
+     'Dapatkan bantuan untuk modul pencarian Torrent')
+]
+
 
 def main():
     fs_utils.start_cleanup()
@@ -224,16 +239,34 @@ def main():
         os.remove(".restartmsg")
     bot.set_my_commands(botcmds)
 
-    start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
-    ping_handler = CommandHandler(BotCommands.PingCommand, ping,
-                                  filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-    restart_handler = CommandHandler(BotCommands.RestartCommand, restart,
-                                     filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
+    start_handler = CommandHandler(BotCommands.StartCommand,
+                                   start,
+                                   run_async=True)
+    ping_handler = CommandHandler(BotCommands.PingCommand,
+                                  ping,
+                                  filters=CustomFilters.authorized_chat |
+                                  CustomFilters.authorized_user,
+                                  run_async=True)
+    restart_handler = CommandHandler(BotCommands.RestartCommand,
+                                     restart,
+                                     filters=CustomFilters.owner_filter |
+                                     CustomFilters.sudo_user,
+                                     run_async=True)
     help_handler = CommandHandler(BotCommands.HelpCommand,
-                                  bot_help, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+                                  bot_help,
+                                  filters=CustomFilters.authorized_chat |
+                                  CustomFilters.authorized_user,
+                                  run_async=True)
     stats_handler = CommandHandler(BotCommands.StatsCommand,
-                                   stats, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-    log_handler = CommandHandler(BotCommands.LogCommand, log, filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
+                                   stats,
+                                   filters=CustomFilters.authorized_chat |
+                                   CustomFilters.authorized_user,
+                                   run_async=True)
+    log_handler = CommandHandler(BotCommands.LogCommand,
+                                 log,
+                                 filters=CustomFilters.owner_filter |
+                                 CustomFilters.sudo_user,
+                                 run_async=True)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(ping_handler)
     dispatcher.add_handler(restart_handler)
@@ -243,6 +276,7 @@ def main():
     updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS)
     LOGGER.info("Bot Started!")
     signal.signal(signal.SIGINT, fs_utils.exit_clean_up)
+
 
 app.start()
 main()
