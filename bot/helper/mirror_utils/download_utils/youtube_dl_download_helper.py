@@ -43,7 +43,8 @@ class YoutubeDLHelper(DownloadHelper):
         self.opts = {
             'progress_hooks': [self.__onDownloadProgress],
             'logger': MyLogger(self),
-            'usenetrc': True
+            'usenetrc': True,
+            'extractor-args': 'youtube:player_client=android',
         }
         self.__download_speed = 0
         self.download_speed_readable = ''
