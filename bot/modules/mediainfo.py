@@ -9,11 +9,14 @@ from bot import app
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper import post_to_telegraph, runcmd, safe_filename
 
+
 @app.on_message(filters.command(BotCommands.MediaInfoCommand))
 async def mediainfo(client, message):
     reply = message.reply_to_message
     if not reply:
-        await message.reply_text("Balas ke Media dulu (hanya file/media telegram) bukan website")
+        await message.reply_text(
+            "Balas ke Media dulu (hanya file/media telegram) bukan website"
+        )
         return
     process = await message.reply_text("`Memproses...`")
     x_media = None
@@ -33,14 +36,14 @@ async def mediainfo(client, message):
         if x_media is not None:
             break
     if x_media is None:
-       await process.edit_text("Membalas Format Media yang Valid")
-       return
+        await process.edit_text("Membalas Format Media yang Valid")
+        return
     media_type = str(type(x_media)).split("'")[1]
     file_path = safe_filename(await reply.download())
     output_ = await runcmd(f'mediainfo "{file_path}"')
     out = None
     if len(output_) != 0:
-         out = output_[0]
+        out = output_[0]
     body_text = f"""
 <h2>JSON</h2>
 <pre>{x_media}</pre>
@@ -51,5 +54,7 @@ async def mediainfo(client, message):
 """
     text_ = media_type.split(".")[-1].upper()
     link = post_to_telegraph(media_type, body_text)
-    markup = InlineKeyboardMarkup([[InlineKeyboardButton(text=text_, url=link)]])
+    markup = InlineKeyboardMarkup(
+        [[InlineKeyboardButton(text=text_, url=link)]]
+    )
     await process.edit_text("ℹ️ <b>INFO MEDIA</b>", reply_markup=markup)

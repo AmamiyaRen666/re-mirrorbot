@@ -10,11 +10,14 @@ def shell(update, context):
     message = update.effective_message
     cmd = message.text.split(' ', 1)
     if len(cmd) == 1:
-        message.reply_text('Tidak ada perintah untuk mengeksekusi yang diberikan.')
+        message.reply_text(
+            'Tidak ada perintah untuk mengeksekusi yang diberikan.'
+        )
         return
     cmd = cmd[1]
     process = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+    )
     stdout, stderr = process.communicate()
     reply = ''
     stderr = stderr.decode()
@@ -33,11 +36,16 @@ def shell(update, context):
                 document=doc,
                 filename=doc.name,
                 reply_to_message_id=message.message_id,
-                chat_id=message.chat_id)
+                chat_id=message.chat_id
+            )
     else:
         message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 
-SHELL_HANDLER = CommandHandler(BotCommands.ShellCommand, shell, 
-                                                  filters=CustomFilters.owner_filter, run_async=True)
+SHELL_HANDLER = CommandHandler(
+    BotCommands.ShellCommand,
+    shell,
+    filters=CustomFilters.owner_filter,
+    run_async=True
+)
 dispatcher.add_handler(SHELL_HANDLER)

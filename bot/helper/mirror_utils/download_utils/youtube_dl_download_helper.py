@@ -11,7 +11,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MyLogger:
-
     def __init__(self, obj):
         self.obj = obj
 
@@ -35,7 +34,6 @@ class MyLogger:
 
 
 class YoutubeDLHelper(DownloadHelper):
-
     def __init__(self, listener):
         super().__init__()
         self.name = ""
@@ -90,8 +88,9 @@ class YoutubeDLHelper(DownloadHelper):
                     self.last_downloaded = tbyte * progress
                     self.downloaded_bytes += chunk_size
                     try:
-                        self.progress = (self.downloaded_bytes /
-                                         self.size) * 100
+                        self.progress = (
+                            self.downloaded_bytes / self.size
+                        ) * 100
                     except ZeroDivisionError:
                         pass
                 else:
@@ -100,8 +99,8 @@ class YoutubeDLHelper(DownloadHelper):
 
     def __onDownloadStart(self):
         with download_dict_lock:
-            download_dict[self.__listener.uid] = YoutubeDLDownloadStatus(
-                self, self.__listener)
+            download_dict[self.__listener.uid
+                         ] = YoutubeDLDownloadStatus(self, self.__listener)
 
     def __onDownloadComplete(self):
         self.__listener.onDownloadComplete()
@@ -168,11 +167,13 @@ class YoutubeDLHelper(DownloadHelper):
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
             self.opts['format'] = 'bestaudio/best'
-            self.opts['postprocessors'] = [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }]
+            self.opts['postprocessors'] = [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }
+            ]
         else:
             self.opts['format'] = qual
         if not self.is_playlist:

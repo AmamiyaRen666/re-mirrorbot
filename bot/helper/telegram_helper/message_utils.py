@@ -11,38 +11,60 @@ from telegram.error import TimedOut, BadRequest
 
 def sendMessage(text: str, bot, update: Update):
     try:
-        return bot.send_message(update.message.chat_id,
-                            reply_to_message_id=update.message.message_id,
-                            text=text, allow_sending_without_reply=True,  parse_mode='HTMl')
+        return bot.send_message(
+            update.message.chat_id,
+            reply_to_message_id=update.message.message_id,
+            text=text,
+            allow_sending_without_reply=True,
+            parse_mode='HTMl'
+        )
     except Exception as e:
         LOGGER.error(str(e))
-def sendMarkup(text: str, bot, update: Update, reply_markup: InlineKeyboardMarkup):
-    return bot.send_message(update.message.chat_id,
-                            reply_to_message_id=update.message.message_id,
-                            text=text, reply_markup=reply_markup, allow_sending_without_reply=True, parse_mode='HTMl')
+
+
+def sendMarkup(
+    text: str, bot, update: Update, reply_markup: InlineKeyboardMarkup
+):
+    return bot.send_message(
+        update.message.chat_id,
+        reply_to_message_id=update.message.message_id,
+        text=text,
+        reply_markup=reply_markup,
+        allow_sending_without_reply=True,
+        parse_mode='HTMl'
+    )
+
 
 def editMessage(text: str, message: Message, reply_markup=None):
     try:
-        bot.edit_message_text(text=text, message_id=message.message_id,
-                              chat_id=message.chat.id,reply_markup=reply_markup,
-                              parse_mode='HTMl')
+        bot.edit_message_text(
+            text=text,
+            message_id=message.message_id,
+            chat_id=message.chat.id,
+            reply_markup=reply_markup,
+            parse_mode='HTMl'
+        )
     except Exception as e:
         LOGGER.error(str(e))
 
 
 def deleteMessage(bot, message: Message):
     try:
-        bot.delete_message(chat_id=message.chat.id,
-                           message_id=message.message_id)
+        bot.delete_message(
+            chat_id=message.chat.id, message_id=message.message_id
+        )
     except Exception as e:
         LOGGER.error(str(e))
 
 
 def sendLogFile(bot, update: Update):
     with open('log.txt', 'rb') as f:
-        bot.send_document(document=f, filename=f.name,
-                          reply_to_message_id=update.message.message_id,
-                          chat_id=update.message.chat_id)
+        bot.send_document(
+            document=f,
+            filename=f.name,
+            reply_to_message_id=update.message.message_id,
+            chat_id=update.message.chat_id
+        )
 
 
 def auto_delete_message(bot, cmd_message: Message, bot_message: Message):
@@ -85,10 +107,10 @@ def update_all_messages():
                 if 'K' in speedy:
                     dlspeed_bytes += float(speedy.split('K')[0]) * 1024
                 elif 'M' in speedy:
-                    dlspeed_bytes += float(speedy.split('M')[0]) * 1048576 
+                    dlspeed_bytes += float(speedy.split('M')[0]) * 1048576
             if download.status() == MirrorStatus.STATUS_UPLOADING:
                 if 'KB/s' in speedy:
-            	    uldl_bytes += float(speedy.split('K')[0]) * 1024
+                    uldl_bytes += float(speedy.split('K')[0]) * 1024
                 elif 'MB/s' in speedy:
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
@@ -96,7 +118,8 @@ def update_all_messages():
         msg += f"\n<b>Bebas:</b> {free} | <b>Berjalan:</b> {currentTime}\n<b>DL:</b> {dlspeed}ps 🔻 | <b>UL:</b> {ulspeed}ps 🔺\n"
     with status_reply_dict_lock:
         for chat_id in list(status_reply_dict.keys()):
-            if status_reply_dict[chat_id] and msg != status_reply_dict[chat_id].text:
+            if status_reply_dict[chat_id
+                                ] and msg != status_reply_dict[chat_id].text:
                 try:
                     if buttons == "":
                         editMessage(msg, status_reply_dict[chat_id])
@@ -126,10 +149,10 @@ def sendStatusMessage(msg, bot):
                 if 'K' in speedy:
                     dlspeed_bytes += float(speedy.split('K')[0]) * 1024
                 elif 'M' in speedy:
-                    dlspeed_bytes += float(speedy.split('M')[0]) * 1048576 
+                    dlspeed_bytes += float(speedy.split('M')[0]) * 1048576
             if download.status() == MirrorStatus.STATUS_UPLOADING:
                 if 'KB/s' in speedy:
-            	    uldl_bytes += float(speedy.split('K')[0]) * 1024
+                    uldl_bytes += float(speedy.split('K')[0]) * 1024
                 elif 'MB/s' in speedy:
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)

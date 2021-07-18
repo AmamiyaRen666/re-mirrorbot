@@ -32,4 +32,5 @@ class _BotCommands:
         self.ExecHelpCommand = 'tolongexec'
         self.TsHelpCommand = 'bantuants'
 
+
 BotCommands = _BotCommands()

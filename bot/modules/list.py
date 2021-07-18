@@ -9,7 +9,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 
 def list_drive(update, context):
     try:
-        search = update.message.text.split(' ',maxsplit=1)[1]
+        search = update.message.text.split(' ', maxsplit=1)[1]
         LOGGER.info(f"Mencari: {search}")
         reply = sendMessage('Mencari..... Mohon Menunggu!', context.bot, update)
         gdrive = GoogleDriveHelper(None)
@@ -18,11 +18,21 @@ def list_drive(update, context):
         if button:
             editMessage(msg, reply, button)
         else:
-            editMessage(f'Tidak ada hasil ditemukan untuk <b>{search}</b>', reply, button)
+            editMessage(
+                f'Tidak ada hasil ditemukan untuk <b>{search}</b>', reply,
+                button
+            )
 
     except IndexError:
-        sendMessage('Kirim kunci pencarian bersama dengan perintah', context.bot, update)
+        sendMessage(
+            'Kirim kunci pencarian bersama dengan perintah', context.bot, update
+        )
 
 
-list_handler = CommandHandler(BotCommands.ListCommand, list_drive, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+list_handler = CommandHandler(
+    BotCommands.ListCommand,
+    list_drive,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True
+)
 dispatcher.add_handler(list_handler)

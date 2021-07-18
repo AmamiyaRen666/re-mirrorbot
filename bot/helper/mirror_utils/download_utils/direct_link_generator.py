@@ -32,7 +32,9 @@ def direct_link_generator(link: str):
     if not link:
         raise DirectDownloadLinkException("No links found!")
     elif 'youtube.com' in link or 'youtu.be' in link:
-        raise DirectDownloadLinkException(f"Use /{BotCommands.WatchCommand} to mirror Youtube link\nUse /{BotCommands.TarWatchCommand} to make tar of Youtube playlist")
+        raise DirectDownloadLinkException(
+            f"Use /{BotCommands.WatchCommand} to mirror Youtube link\nUse /{BotCommands.TarWatchCommand} to make tar of Youtube playlist"
+        )
     elif 'zippyshare.com' in link:
         return zippy_share(link)
     elif 'yadi.sk' in link:
@@ -90,7 +92,9 @@ def direct_link_generator(link: str):
     elif 'racaty.net' in link:
         return racaty(link)
     else:
-        raise DirectDownloadLinkException(f'No Direct link function found for {link}')
+        raise DirectDownloadLinkException(
+            f'No Direct link function found for {link}'
+        )
 
 
 def zippy_share(url: str) -> str:
@@ -106,9 +110,13 @@ def zippy_share(url: str) -> str:
         response = requests.get(link).content
         pages = BeautifulSoup(response, "lxml")
         try:
-            js_script = pages.find("div", {"class": "center"}).find_all("script")[1]
+            js_script = pages.find("div", {
+                "class": "center"
+            }).find_all("script")[1]
         except IndexError:
-            js_script = pages.find("div", {"class": "right"}).find_all("script")[0]
+            js_script = pages.find("div", {
+                "class": "right"
+            }).find_all("script")[0]
         js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
         js_content = 'var x = "/' + js_content[0] + '"'
         evaljs = EvalJs()
@@ -133,7 +141,9 @@ def yandex_disk(url: str) -> str:
         dl_url = requests.get(api.format(link)).json()['href']
         return dl_url
     except KeyError:
-        raise DirectDownloadLinkException("Error: File not found/Download limit reached\n")
+        raise DirectDownloadLinkException(
+            "Error: File not found/Download limit reached\n"
+        )
 
 
 def cm_ru(url: str) -> str:
@@ -171,7 +181,9 @@ def uptobox(url: str) -> str:
             dl_url = link
         except:
             file_id = re.findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
-            file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (UPTOBOX_TOKEN, file_id)
+            file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (
+                UPTOBOX_TOKEN, file_id
+            )
             req = requests.get(file_link)
             result = req.json()
             dl_url = result['data']['dlLink']
@@ -198,7 +210,8 @@ def osdn(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("No OSDN links found\n")
     page = BeautifulSoup(
-        requests.get(link, allow_redirects=True).content, 'lxml')
+        requests.get(link, allow_redirects=True).content, 'lxml'
+    )
     info = page.find('a', {'class': 'mirror_link'})
     link = urllib.parse.unquote(osdn_link + info['href'])
     mirrors = page.find('form', {'id': 'mirror-select-form'}).findAll('tr')
@@ -227,7 +240,7 @@ def hxfile(url: str) -> str:
     """ Racaty direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_filesIm(url)
+    dl_url = bypasser.bypass_filesIm(url)
     return dl_url
 
 
@@ -235,7 +248,7 @@ def anonfiles(url: str) -> str:
     """ Anonfiles direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_anonfiles(url)
+    dl_url = bypasser.bypass_anonfiles(url)
     return dl_url
 
 
@@ -248,7 +261,7 @@ def letsupload(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("No Letsupload links found\n")
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_url(link)
+    dl_url = bypasser.bypass_url(link)
     return dl_url
 
 
@@ -256,31 +269,33 @@ def fembed(link: str) -> str:
     """ Fembed direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_fembed(link)
+    dl_url = bypasser.bypass_fembed(link)
     lst_link = []
     count = len(dl_url)
     for i in dl_url:
         lst_link.append(dl_url[i])
-    return lst_link[count-1]
+    return lst_link[count - 1]
 
 
 def sbembed(link: str) -> str:
     """ Sbembed direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_sbembed(link)
+    dl_url = bypasser.bypass_sbembed(link)
     lst_link = []
     count = len(dl_url)
     for i in dl_url:
         lst_link.append(dl_url[i])
-    return lst_link[count-1]
+    return lst_link[count - 1]
 
 
 def onedrive(link: str) -> str:
     """ Onedrive direct link generator
     Based on https://github.com/UsergeTeam/Userge """
     link_without_query = urlparse(link)._replace(query=None).geturl()
-    direct_link_encoded = str(standard_b64encode(bytes(link_without_query, "utf-8")), "utf-8")
+    direct_link_encoded = str(
+        standard_b64encode(bytes(link_without_query, "utf-8")), "utf-8"
+    )
     direct_link1 = f"https://api.onedrive.com/v1.0/shares/u!{direct_link_encoded}/root/content"
     resp = requests.head(direct_link1)
     if resp.status_code != 302:
@@ -301,14 +316,16 @@ def pixeldrain(url: str) -> str:
     if resp["success"]:
         return dl_link
     else:
-        raise DirectDownloadLinkException("ERROR: Cant't download due {}.".format(resp.text["value"]))
+        raise DirectDownloadLinkException(
+            "ERROR: Cant't download due {}.".format(resp.text["value"])
+        )
 
 
 def antfiles(url: str) -> str:
     """ Antfiles direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_antfiles(url)
+    dl_url = bypasser.bypass_antfiles(url)
     return dl_url
 
 
@@ -316,8 +333,9 @@ def streamtape(url: str) -> str:
     """ Streamtape direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
-    dl_url=bypasser.bypass_streamtape(url)
+    dl_url = bypasser.bypass_streamtape(url)
     return dl_url
+
 
 def racaty(url: str) -> str:
     """ Racaty direct links generator
@@ -332,10 +350,12 @@ def racaty(url: str) -> str:
     soup = BeautifulSoup(r.text, "lxml")
     op = soup.find("input", {"name": "op"})["value"]
     ids = soup.find("input", {"name": "id"})["value"]
-    rpost = scraper.post(url, data = {"op": op, "id": ids})
+    rpost = scraper.post(url, data={"op": op, "id": ids})
     rsoup = BeautifulSoup(rpost.text, "lxml")
-    dl_url = rsoup.find("a", {"id": "uniqueExpirylink"})["href"].replace(" ", "%20")
+    dl_url = rsoup.find("a",
+                        {"id": "uniqueExpirylink"})["href"].replace(" ", "%20")
     return dl_url
+
 
 def useragent():
     """
@@ -344,7 +364,8 @@ def useragent():
     useragents = BeautifulSoup(
         requests.get(
             'https://developers.whatismybrowser.com/'
-            'useragents/explore/operating_system_name/android/').content,
-        'lxml').findAll('td', {'class': 'useragent'})
+            'useragents/explore/operating_system_name/android/'
+        ).content, 'lxml'
+    ).findAll('td', {'class': 'useragent'})
     user_agent = choice(useragents)
     return user_agent.text

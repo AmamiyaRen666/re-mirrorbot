@@ -18,8 +18,7 @@ def dyno_usage(update, context):
     else:
         sendMessage(
             "Please insert your HEROKU_APP_NAME and HEROKU_API_KEY in Vars",
-            context.bot,
-            update
+            context.bot, update
         )
     useragent = (
         "Mozilla/5.0 (Linux; Android 10; SM-G975F) "
@@ -51,14 +50,14 @@ def dyno_usage(update, context):
         with ses.get(heroku_api + epath, headers=headers) as rp:
             resultan = rp.json()
             email = resultan["email"]
-
             """App Quota."""
             Apps = result["apps"]
             for apps in Apps:
                 if apps.get("app_uuid") == app.id:
                     AppQuotaUsed = apps.get("quota_used") / 60
                     AppPercent = math.floor(
-                        apps.get("quota_used") * 100 / quota)
+                        apps.get("quota_used") * 100 / quota
+                    )
                     break
             else:
                 AppQuotaUsed = 0
@@ -75,14 +74,16 @@ def dyno_usage(update, context):
                 "<b>Kapan Kartu mu mati:</b>\n"
                 f"• <code>{day}</code> <b>hari</b>\n\n"
                 "<b>Email kamu Sekarang:</b>\n"
-                f"• <code>{email}</code>",
-                context.bot,
-                update
+                f"• <code>{email}</code>", context.bot, update
             )
             return True
 
 
-dyno_usage_handler = CommandHandler(command=BotCommands.UsageCommand, callback=dyno_usage,
-                                    filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
+dyno_usage_handler = CommandHandler(
+    command=BotCommands.UsageCommand,
+    callback=dyno_usage,
+    filters=CustomFilters.owner_filter | CustomFilters.sudo_user,
+    run_async=True
+)
 
 dispatcher.add_handler(dyno_usage_handler)

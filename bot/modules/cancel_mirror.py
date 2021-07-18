@@ -16,7 +16,9 @@ def cancel_mirror(update, context):
         gid = args[1]
         dl = getDownloadByGid(gid)
         if not dl:
-            sendMessage(f"GID: <code>{gid}</code> Tidak ditemukan.", context.bot, update)
+            sendMessage(
+                f"GID: <code>{gid}</code> Tidak ditemukan.", context.bot, update
+            )
             return
         mirror_message = dl.message
     elif update.message.reply_to_message:
@@ -43,17 +45,28 @@ def cancel_mirror(update, context):
             sendMessage(msg, context.bot, update)
             return
     if dl.status() == "Uploading...📤":
-        sendMessage("Upload sedang berlangsung, Anda tidak dapat membatalkannya.", context.bot, update)
+        sendMessage(
+            "Upload sedang berlangsung, Anda tidak dapat membatalkannya.",
+            context.bot, update
+        )
         return
     elif dl.status() == "Archiving...🔐":
-        sendMessage("Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
+        sendMessage(
+            "Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
+            context.bot, update
+        )
         return
     elif dl.status() == "Extracting...📂":
-        sendMessage("Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
+        sendMessage(
+            "Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
+            context.bot, update
+        )
         return
     else:
         dl.download().cancel_download()
-    sleep(3)  # incase of any error with ondownloaderror listener, clean_download will delete the folder but the download will stuck in status msg.
+    sleep(
+        3
+    )  # incase of any error with ondownloaderror listener, clean_download will delete the folder but the download will stuck in status msg.
     clean_download(f'{DOWNLOAD_DIR}{mirror_message.message_id}/')
 
 
@@ -76,10 +89,18 @@ def cancel_all(update, context):
     sendMessage(f'{count} Unduhan telah Dibatalkan!', context.bot, update)
 
 
-
-cancel_mirror_handler = CommandHandler(BotCommands.CancelMirror, cancel_mirror,
-                                       filters=(CustomFilters.authorized_chat | CustomFilters.authorized_user) & CustomFilters.mirror_owner_filter | CustomFilters.sudo_user, run_async=True)
-cancel_all_handler = CommandHandler(BotCommands.CancelAllCommand, cancel_all,
-                                    filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
+cancel_mirror_handler = CommandHandler(
+    BotCommands.CancelMirror,
+    cancel_mirror,
+    filters=(CustomFilters.authorized_chat | CustomFilters.authorized_user) &
+    CustomFilters.mirror_owner_filter | CustomFilters.sudo_user,
+    run_async=True
+)
+cancel_all_handler = CommandHandler(
+    BotCommands.CancelAllCommand,
+    cancel_all,
+    filters=CustomFilters.owner_filter | CustomFilters.sudo_user,
+    run_async=True
+)
 dispatcher.add_handler(cancel_all_handler)
 dispatcher.add_handler(cancel_mirror_handler)

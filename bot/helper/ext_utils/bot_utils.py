@@ -36,7 +36,6 @@ SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
 class setInterval:
-
     def __init__(self, interval, action):
         self.interval = interval
         self.action = action
@@ -234,7 +233,6 @@ def new_thread(fn):
     """To use as decorator to make a function call threaded.
     Needs import
     from threading import Thread"""
-
     def wrapper(*args, **kwargs):
         thread = threading.Thread(target=fn, args=args, kwargs=kwargs)
         thread.start()

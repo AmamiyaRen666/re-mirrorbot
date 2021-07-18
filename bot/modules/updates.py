@@ -22,7 +22,10 @@ BRANCH_ = UPSTREAM_BRANCH
 
 # Update Command
 
-@app.on_message(filters.command(BotCommands.UpdateCommand) & filters.user(OWNER_ID))
+
+@app.on_message(
+    filters.command(BotCommands.UpdateCommand) & filters.user(OWNER_ID)
+)
 async def update_it(client, message):
     msg_ = await message.reply_text("`Memperbarui Harap Tunggu!`")
     try:
@@ -57,7 +60,9 @@ async def update_it(client, message):
         except GitCommandError:
             repo.git.reset("--hard", "FETCH_HEAD")
         await runcmd("pip3 install --no-cache-dir -r requirements.txt")
-        await msg_.edit("`Berhasil Diperbarui! Beri Saya Waktu Untuk Memulai Ulang!`")
+        await msg_.edit(
+            "`Berhasil Diperbarui! Beri Saya Waktu Untuk Memulai Ulang!`"
+        )
         with open("./aria.sh", 'rb') as file:
             script = file.read()
         subprocess.call("./aria.sh", shell=True)
@@ -79,4 +84,6 @@ async def update_it(client, message):
         except BaseException as error:
             await msg_.edit(f"**Perbarui gagal** \nTraceBack : `{error}`")
             return repo.__del__()
-        await msg_.edit(f"`Perbarui sukses! \n\nCek config kamu dengan mengetik` `/{BotCommands.ConfigMenuCommand}`")
+        await msg_.edit(
+            f"`Perbarui sukses! \n\nCek config kamu dengan mengetik` `/{BotCommands.ConfigMenuCommand}`"
+        )

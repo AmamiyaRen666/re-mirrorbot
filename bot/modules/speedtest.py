@@ -31,13 +31,18 @@ def speedtest(update, context):
 '''
     ed_msg.delete()
     try:
-        update.effective_message.reply_photo(path, string_speed, parse_mode=ParseMode.HTML)
+        update.effective_message.reply_photo(
+            path, string_speed, parse_mode=ParseMode.HTML
+        )
     except:
-        update.effective_message.reply_text(string_speed, parse_mode=ParseMode.HTML)
+        update.effective_message.reply_text(
+            string_speed, parse_mode=ParseMode.HTML
+        )
+
 
 def speed_convert(size):
     """Hi human, you can't read bytes?"""
-    power = 2 ** 10
+    power = 2**10
     zero = 0
     units = {0: "", 1: "Kb/s", 2: "MB/s", 3: "Gb/s", 4: "Tb/s"}
     while size > power:
@@ -46,7 +51,11 @@ def speed_convert(size):
     return f"{round(size, 2)} {units[zero]}"
 
 
-SPEED_HANDLER = CommandHandler(BotCommands.SpeedCommand, speedtest, 
-                                                  filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+SPEED_HANDLER = CommandHandler(
+    BotCommands.SpeedCommand,
+    speedtest,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True
+)
 
 dispatcher.add_handler(SPEED_HANDLER)

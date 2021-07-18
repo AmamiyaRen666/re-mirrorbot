@@ -31,7 +31,8 @@ def log_input(update):
     user = update.effective_user.id
     chat = update.effective_chat.id
     LOGGER.info(
-        f"IN: {update.effective_message.text} (user={user}, chat={chat})")
+        f"IN: {update.effective_message.text} (user={user}, chat={chat})"
+    )
 
 
 def send(msg, bot, update):
@@ -39,13 +40,15 @@ def send(msg, bot, update):
         with io.BytesIO(str.encode(msg)) as out_file:
             out_file.name = "output.txt"
             bot.send_document(
-                chat_id=update.effective_chat.id, document=out_file)
+                chat_id=update.effective_chat.id, document=out_file
+            )
     else:
         LOGGER.info(f"OUT: '{msg}'")
         bot.send_message(
             chat_id=update.effective_chat.id,
             text=f"`{msg}`",
-            parse_mode=ParseMode.MARKDOWN)
+            parse_mode=ParseMode.MARKDOWN
+        )
 
 
 def evaluate(update, context):
@@ -71,10 +74,7 @@ def do(func, bot, update):
     env = namespace_of(update.message.chat_id, update, bot)
 
     os.chdir(os.getcwd())
-    with open(
-            os.path.join(os.getcwd(),
-                         'bot/modules/temp.txt'),
-            'w') as temp:
+    with open(os.path.join(os.getcwd(), 'bot/modules/temp.txt'), 'w') as temp:
         temp.write(body)
 
     stdout = io.StringIO()
@@ -126,13 +126,26 @@ def exechelp(update, context):
 • <code>/exec</code> <i>Run Commands In Exec</i>
 • <code>/clearlocals</code> <i>Cleared locals</i>
 '''
-    update.effective_message.reply_photo(IMAGE_URL, help_string, parse_mode=ParseMode.HTML)
- 
+    update.effective_message.reply_photo(
+        IMAGE_URL, help_string, parse_mode=ParseMode.HTML
+    )
 
-EVAL_HANDLER = CommandHandler(('eval'), evaluate, filters=CustomFilters.owner_filter, run_async=True)
-EXEC_HANDLER = CommandHandler(('exec'), execute, filters=CustomFilters.owner_filter, run_async=True)
-CLEAR_HANDLER = CommandHandler('clearlocals', clear, filters=CustomFilters.owner_filter, run_async=True)
-EXECHELP_HANDLER = CommandHandler(BotCommands.ExecHelpCommand, exechelp, filters=CustomFilters.owner_filter, run_async=True)
+
+EVAL_HANDLER = CommandHandler(
+    ('eval'), evaluate, filters=CustomFilters.owner_filter, run_async=True
+)
+EXEC_HANDLER = CommandHandler(
+    ('exec'), execute, filters=CustomFilters.owner_filter, run_async=True
+)
+CLEAR_HANDLER = CommandHandler(
+    'clearlocals', clear, filters=CustomFilters.owner_filter, run_async=True
+)
+EXECHELP_HANDLER = CommandHandler(
+    BotCommands.ExecHelpCommand,
+    exechelp,
+    filters=CustomFilters.owner_filter,
+    run_async=True
+)
 
 dispatcher.add_handler(EVAL_HANDLER)
 dispatcher.add_handler(EXEC_HANDLER)

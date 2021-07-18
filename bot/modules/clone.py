@@ -15,8 +15,8 @@ def cloneNode(update, context):
         if CLONE_LIMIT is not None or STOP_DUPLICATE_CLONE:
             res, clonesize, name = gd.clonehelper(link)
             if res != "":
-               sendMessage(res, context.bot, update)
-               return
+                sendMessage(res, context.bot, update)
+                return
             if STOP_DUPLICATE_CLONE:
                 LOGGER.info(f"Memeriksa File/Folder jika sudah di Drive...")
                 smsg, button = gd.drive_list(name)
@@ -37,7 +37,7 @@ def cloneNode(update, context):
                 elif 'T' in limit[1] or 't' in limit[1]:
                     if clonesize > limitint * 1024**4:
                         sendMessage(msg2, context.bot, update)
-                        return              
+                        return
         msg = sendMessage(f"Kloning: <code>{link}</code>", context.bot, update)
         result, button = gd.clone(link)
         deleteMessage(context.bot, msg)
@@ -52,7 +52,15 @@ def cloneNode(update, context):
                 cc = f'\n\nDari: {uname}'
             sendMarkup(result + cc, context.bot, update, button)
     else:
-        sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
+        sendMessage(
+            'Provide G-Drive Shareable Link to Clone.', context.bot, update
+        )
 
-clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+
+clone_handler = CommandHandler(
+    BotCommands.CloneCommand,
+    cloneNode,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True
+)
 dispatcher.add_handler(clone_handler)
