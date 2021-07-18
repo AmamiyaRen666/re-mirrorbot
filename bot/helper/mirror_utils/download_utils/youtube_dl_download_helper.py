@@ -49,6 +49,7 @@ class YoutubeDLHelper(DownloadHelper):
             'extractor-args': 'youtube:player_client=android',
             'geo-bypass': True,
             'geo-bypass-country': 'ID',
+            'geo-bypass-ip-block': '10.100.0.0/14',
         }
         self.__download_speed = 0
         self.download_speed_readable = ''
