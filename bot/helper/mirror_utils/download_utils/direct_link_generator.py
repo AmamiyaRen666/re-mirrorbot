@@ -18,7 +18,7 @@ from random import choice
 from urllib.parse import urlparse
 
 import lk21
-import requests, cfscrape
+import requests, cloudscraper
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
@@ -237,7 +237,7 @@ def github(url: str) -> str:
 
 
 def hxfile(url: str) -> str:
-    """ Racaty direct link generator
+    """ Hxfile direct link generator
     Based on https://github.com/breakdowns/slam-mirrorbot """
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_filesIm(url)
@@ -345,7 +345,7 @@ def racaty(url: str) -> str:
         link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No Racaty links found`\n")
-    scraper = cfscrape.create_scraper()
+    scraper = cloudscraper.create_scraper()
     r = scraper.get(url)
     soup = BeautifulSoup(r.text, "lxml")
     op = soup.find("input", {"name": "op"})["value"]
