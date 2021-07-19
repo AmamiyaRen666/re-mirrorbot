@@ -3,9 +3,6 @@ FROM narima/megaria:latest
 WORKDIR /usr/src/app
 RUN chmod 777 /usr/src/app
 
-RUN pip uninstall yt-dlp -y \
-    && pip install --no-cache-dir youtube-dl \
-    
 COPY extract /usr/local/bin
 COPY pextract /usr/local/bin
 RUN chmod +x /usr/local/bin/extract && chmod +x /usr/local/bin/pextract
