@@ -877,8 +877,8 @@ class GoogleDriveHelper:
                 msg = "Berkas tidak ditemukan."
             else:
                 msg = f"Error.\n{err}"
-            return msg, "", ""
-        return "", clonesize, name
+            return msg, "", "", ""
+        return "", clonesize, name, files
 
     def download(self, link):
         file_id = self.getIdFromUrl(link)
