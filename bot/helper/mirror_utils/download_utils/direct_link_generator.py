@@ -360,34 +360,18 @@ def racaty(url: str) -> str:
 
 
 def fichier(link: str) -> str:
-  """ 1Fichier direct links generator
+    """ 1Fichier direct links generator
     Based on https://github.com/Maujar/updateref-16-7-21
              https://github.com/breakdowns/slam-mirrorbot """
-  regex = r'^([http:\/\/|https:\/\/]+)?.*1fichier\.com\/\?.+'
-  match = re.match(regex, link)
-  if not match:
-    raise DirectDownloadLinkException("ERROR: The link you entered is wrong!")
-  if "::" in link:
-    pswd = link.split("::")[-1]
-    url = link.split("::")[-2]
-  else:
-    pswd = None
-    url = link
-  try:
-    if pswd is None:
-      req = requests.post(url)
-    else:
-      pw = {"pass": pswd}
-      req = requests.post(url, data=pe)
-  except:
-    raise DirectDownloadLinkException("ERROR: Unable to reach 1fichier server!")
-  if req.status_code == 404:
-    raise DirectDownloadLinkException("ERROR: File not found / The link you entered is wrong!")
-  soup = BeautifulSoup(req.content, 'lxml')
-  if soup.find("a", {"class": "ok btn-general btn-orange"}) is not None:
-    dl_url = soup.find("a", {"class": "ok btn-general btn-orange"})["href"]
-    if dl_url is None:
-      raise DirectDownloadLinkException("ERROR: Unable to generate Direct Link 1fichier!")
+    regex = r"^([http:\/\/|https:\/\/]+)?.*1fichier\.com\/\?.+"
+    gan = re.match(regex, link)
+    if not gan:
+        raise DirectDownloadLinkException(
+            "ERROR: The link you entered is wrong!"
+        )
+    if "::" in link:
+        pswd = link.split("::")[-1]
+        url = link.split("::")[-2]
     else:
         pswd = None
         url = link
