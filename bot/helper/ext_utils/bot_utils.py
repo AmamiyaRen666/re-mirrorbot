@@ -23,6 +23,7 @@ PAGE_NO = 1
 class MirrorStatus:
     STATUS_UPLOADING = "Uploading...📤"
     STATUS_DOWNLOADING = "Downloading...📥"
+    STATUS_CLONING = "Cloning...♻️"
     STATUS_WAITING = "Queued...📝"
     STATUS_FAILED = "Failed 🚫. Cleaning Download..."
     STATUS_ARCHIVING = "Archiving...🔐"
@@ -127,6 +128,8 @@ def get_readable_message():
                     msg += f"\n<code>{get_progress_bar_string(download)} {download.progress()}</code>"
                     if download.status() == MirrorStatus.STATUS_DOWNLOADING:
                         msg += f"\n<b>Diunduh:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                    elif download.status() == MirrorStatus.STATUS_CLONING:
+                        msg += f"\n<b>Kloning:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                     else:
                         msg += f"\n<b>Diunggah:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                     msg += f"\n<b>Kecepatan:</b> {download.speed()}" \
@@ -138,7 +141,7 @@ def get_readable_message():
                     except:
                         pass
                     msg += f'\n<b>Pengguna:</b> <a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'
-                if download.status() == MirrorStatus.STATUS_DOWNLOADING:
+                if download.status() == MirrorStatus.STATUS_DOWNLOADING or download.status() == MirrorStatus.STATUS_CLONING:
                     msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if STATUS_LIMIT is not None:

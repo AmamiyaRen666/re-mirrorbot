@@ -85,7 +85,6 @@ def cancel_all(update, context):
                 count += 1
         else:
             break
-    delete_all_messages()
     sendMessage(f'{count} Unduhan telah Dibatalkan!', context.bot, update)
 
 
