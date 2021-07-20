@@ -340,7 +340,8 @@ def _mirror(bot, update, isTar=False, extract=False):
                 bot, update
             )
             return
-        res, size, name = gdriveTools.GoogleDriveHelper().clonehelper(link)
+        res, size, name, files = gdriveTools.GoogleDriveHelper(
+        ).clonehelper(link)
         if res != "":
             sendMessage(res, bot, update)
             return

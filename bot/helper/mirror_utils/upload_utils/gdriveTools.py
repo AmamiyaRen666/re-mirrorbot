@@ -22,7 +22,7 @@ from telegram import InlineKeyboardMarkup
 from bot.helper.telegram_helper import button_build
 from telegraph import Telegraph
 from bot import parent_id, DOWNLOAD_DIR, IS_TEAM_DRIVE, INDEX_URL, \
-    USE_SERVICE_ACCOUNTS, download_dict, telegraph_token, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL, SHORTENER, SHORTENER_API, IMAGE_URL, VIEW_LINK
+    USE_SERVICE_ACCOUNTS, telegraph_token, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL, SHORTENER, SHORTENER_API, IMAGE_URL, VIEW_LINK
 from bot.helper.ext_utils.bot_utils import *
 from bot.helper.ext_utils.fs_utils import get_mime_type, get_path_size
 
@@ -45,12 +45,10 @@ class GoogleDriveHelper:
         self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL = "https://drive.google.com/drive/folders/{}"
         self.__listener = listener
         self.__service = self.authorize()
-        self.__listener = listener
         self._file_uploaded_bytes = 0
         self._file_downloaded_bytes = 0
         self.uploaded_bytes = 0
         self.downloaded_bytes = 0
-        self.UPDATE_INTERVAL = 5
         self.start_time = 0
         self.total_time = 0
         self.dtotal_time = 0
@@ -68,11 +66,8 @@ class GoogleDriveHelper:
         self.total_bytes = 0
         self.total_files = 0
         self.total_folders = 0
+        self.transferred_size = 0
         self.sa_count = 0
-
-    def cancel(self):
-        self.is_cancelled = True
-        self.is_uploading = False
 
     def speed(self):
         """
@@ -87,6 +82,12 @@ class GoogleDriveHelper:
     def dspeed(self):
         try:
             return self.downloaded_bytes / self.dtotal_time
+        except ZeroDivisionError:
+            return 0
+
+    def cspeed(self):
+        try:
+            return self.transferred_size / int(time.time() - self.start_time)
         except ZeroDivisionError:
             return 0
 
@@ -282,7 +283,6 @@ class GoogleDriveHelper:
         file_path = f"{file_dir}/{file_name}"
         size = get_readable_file_size(get_path_size(file_path))
         LOGGER.info("Uploading File: " + file_path)
-        self.start_time = time.time()
         self.updater = setInterval(
             self.update_interval, self._on_upload_progress
         )
@@ -425,7 +425,8 @@ class GoogleDriveHelper:
         return files
 
     def clone(self, link):
-        self.transferred_size = 0
+        self.is_cloning = True
+        self.start_time = time.time()
         self.total_files = 0
         self.total_folders = 0
         if USE_SERVICE_ACCOUNTS:
@@ -449,12 +450,11 @@ class GoogleDriveHelper:
                     LOGGER.info("Deleting cloned data from drive...")
                     msg = self.deletefile(durl)
                     LOGGER.info(f"{msg}")
-                    return "your clone has been stopped and cloned data has been deleted!", "cancelled"
-                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Ukuran: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
+                    return "Kloning Anda telah dihentikan dan data kloning telah dihapus!", "dibatalkan"
+                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
                 msg += f'\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
                 msg += f'\n<b>File: </b><code>{self.total_files}</code>'
-                durl = self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dir_id)
                 buttons = button_build.ButtonMaker()
                 if SHORTENER is not None and SHORTENER_API is not None:
                     surl = requests.get(
@@ -892,6 +892,7 @@ class GoogleDriveHelper:
                 except TypeError:
                     pass
             clonesize = self.total_bytes
+            files = self.total_files
         except Exception as err:
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
@@ -903,10 +904,10 @@ class GoogleDriveHelper:
         return "", clonesize, name, files
 
     def download(self, link):
+        self.is_downloading = True
         file_id = self.getIdFromUrl(link)
         if USE_SERVICE_ACCOUNTS:
             self.service_account_count = len(os.listdir("accounts"))
-        self.start_time = time.time()
         self.updater = setInterval(
             self.update_interval, self._on_download_progress
         )

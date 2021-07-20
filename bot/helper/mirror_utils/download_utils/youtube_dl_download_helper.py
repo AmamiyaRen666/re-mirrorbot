@@ -1,6 +1,6 @@
 from .download_helper import DownloadHelper
 import time
-from yt_dlp import YoutubeDL, DownloadError
+from youtube_dl import YoutubeDL, DownloadError
 from bot import download_dict_lock, download_dict
 from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 import logging
@@ -43,11 +43,7 @@ class YoutubeDLHelper(DownloadHelper):
         self.opts = {
             'progress_hooks': [self.__onDownloadProgress],
             'logger': MyLogger(self),
-            'usenetrc': True,
-            'extractor-args': 'youtube:player_client=android',
-            'geo-bypass': True,
-            'geo-bypass-country': 'ID',
-            'geo-bypass-ip-block': '10.100.0.0/14',
+            'usenetrc': True
         }
         self.__download_speed = 0
         self.download_speed_readable = ''
@@ -163,7 +159,7 @@ class YoutubeDLHelper(DownloadHelper):
             self.opts['ignoreerrors'] = True
         self.__onDownloadStart()
         self.extractMetaData(link, qual, name)
-        LOGGER.info(f"Downloading with YT-DLP: {link}")
+        LOGGER.info(f"Downloading with YT-DL: {link}")
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
             self.opts['format'] = 'bestaudio/best'
