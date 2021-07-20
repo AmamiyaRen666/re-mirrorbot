@@ -91,6 +91,10 @@ def direct_link_generator(link: str):
         return anonfiles(link)
     elif 'racaty.net' in link:
         return racaty(link)
+    elif '1fichier.com' in link:
+        return fichier(link)
+    elif 'sourceforge.net' in link:
+        return sourceforge(link)
     else:
         raise DirectDownloadLinkException(
             f'No Direct link function found for {link}'
@@ -144,6 +148,29 @@ def yandex_disk(url: str) -> str:
         raise DirectDownloadLinkException(
             "Error: File not found/Download limit reached\n"
         )
+
+def sourceforge(url: str) -> str:
+    """ SourceForge direct links generator 
+    Based on https://github.com/REBEL75/REBELUSERBOT """
+    try:
+        link = re.findall(r"\bhttps?://.*sourceforge\.net\S+", url)[0]
+    except IndexError:
+        reply = "No SourceForge links found\n"
+        return reply
+    file_path = re.findall(r"files(.*)/download", link)[0]
+    project = re.findall(r"projects?/(.*?)/files", link)[0]
+    mirrors = (
+        f"https://sourceforge.net/settings/mirror_choices?"
+        f"projectname={project}&filename={file_path}"
+    )
+    page = BeautifulSoup(requests.get(mirrors).content, "html.parser")
+    info = page.find("ul", {"id": "mirrorList"}).findAll("li")
+    for mirror in info[1:]:
+        name = re.findall(r"\((.*)\)", mirror.text.strip())[0]
+        dl_url = (
+            f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
+        )
+    return dl_url
 
 
 def cm_ru(url: str) -> str:
