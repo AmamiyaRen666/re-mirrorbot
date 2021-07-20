@@ -44,30 +44,20 @@ def cancel_mirror(update, context):
         elif not mirror_message:
             sendMessage(msg, context.bot, update)
             return
-    if dl.status() == "Uploading...📤":
-        sendMessage(
-            "Upload sedang berlangsung, Anda tidak dapat membatalkannya.",
-            context.bot, update
-        )
-        return
-    elif dl.status() == "Archiving...🔐":
+    if dl.status() == "Archiving...🔐":
         sendMessage(
             "Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
             context.bot, update
         )
-        return
     elif dl.status() == "Extracting...📂":
         sendMessage(
             "Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
             context.bot, update
         )
-        return
     else:
         dl.download().cancel_download()
-    sleep(
-        3
-    )  # incase of any error with ondownloaderror listener, clean_download will delete the folder but the download will stuck in status msg.
-    clean_download(f'{DOWNLOAD_DIR}{mirror_message.message_id}/')
+        sleep(3)  # incase of any error with ondownloaderror listener
+        clean_download(f'{DOWNLOAD_DIR}{mirror_message.message_id}/')
 
 
 def cancel_all(update, context):
@@ -81,7 +71,6 @@ def cancel_all(update, context):
             else:
                 gid = dl.gid()
                 dl.download().cancel_download()
-                sleep(0.5)
                 count += 1
         else:
             break

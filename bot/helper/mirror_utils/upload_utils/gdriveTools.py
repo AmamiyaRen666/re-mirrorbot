@@ -54,8 +54,9 @@ class GoogleDriveHelper:
         self.start_time = 0
         self.total_time = 0
         self.dtotal_time = 0
-        self._should_update = True
-        self.is_uploading = True
+        self.is_uploading = False
+        self.is_downloading = False
+        self.is_cloning = False
         self.is_cancelled = False
         self.status = None
         self.dstatus = None
@@ -252,9 +253,12 @@ class GoogleDriveHelper:
                             )
                         else:
                             self.is_cancelled = True
+                            LOGGER.info(f"Got: {reason}")
                             raise err
                     else:
                         raise err
+        if self.is_cancelled:
+            return
         self._file_uploaded_bytes = 0
         # Insert new permissions
         if not IS_TEAM_DRIVE:
@@ -269,6 +273,8 @@ class GoogleDriveHelper:
         return download_url
 
     def upload(self, file_name: str):
+        self.is_downloading = False
+        self.is_uploading = True
         if USE_SERVICE_ACCOUNTS:
             self.service_account_count = len(os.listdir("accounts"))
         self.__listener.onUploadStarted()
@@ -286,6 +292,8 @@ class GoogleDriveHelper:
                 link = self.upload_file(
                     file_path, file_name, mime_type, parent_id
                 )
+                if self.is_cancelled:
+                    return
                 if link is None:
                     raise Exception('Unggah telah dibatalkan secara manual')
                 LOGGER.info("Uploaded To G-Drive: " + file_path)
@@ -302,6 +310,8 @@ class GoogleDriveHelper:
                 return
             finally:
                 self.updater.cancel()
+                if self.is_cancelled:
+                    return
         else:
             try:
                 dir_id = self.create_directory(
@@ -309,9 +319,14 @@ class GoogleDriveHelper:
                 )
                 result = self.upload_dir(file_path, dir_id)
                 if result is None:
-                    raise Exception('Unggah telah dibatalkan secara manual')
-                LOGGER.info("Uploaded To G-Drive: " + file_name)
+                    raise Exception('Unggah telah dibatalkan secara manual!')
                 link = f"https://drive.google.com/folderview?id={dir_id}"
+                if self.is_cancelled:
+                    LOGGER.info("Deleting uploaded data from drive...")
+                    msg = self.deletefile(link)
+                    LOGGER.info(f"{msg}")
+                    return
+                LOGGER.info("Uploaded To G-Drive: " + file_name)
             except Exception as e:
                 if isinstance(e, RetryError):
                     LOGGER.info(
@@ -325,12 +340,12 @@ class GoogleDriveHelper:
                 return
             finally:
                 self.updater.cancel()
-        LOGGER.info(download_dict)
+                if self.is_cancelled:
+                    return
         files = self.total_files
         folders = self.total_folders
         typ = self.typee
         self.__listener.onUploadComplete(link, size, files, folders, typ)
-        LOGGER.info("Deleting downloaded file/folder..")
         return link
 
     @retry(
@@ -362,6 +377,7 @@ class GoogleDriveHelper:
                             return self.copyFile(file_id, dest_id)
                     else:
                         self.is_cancelled = True
+                        LOGGER.info(f"Got: {reason}")
                         raise err
                 else:
                     raise err
@@ -428,6 +444,12 @@ class GoogleDriveHelper:
                 self.cloneFolder(
                     meta.get('name'), meta.get('name'), meta.get('id'), dir_id
                 )
+                durl = self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dir_id)
+                if self.is_cancelled:
+                    LOGGER.info("Deleting cloned data from drive...")
+                    msg = self.deletefile(durl)
+                    LOGGER.info(f"{msg}")
+                    return "your clone has been stopped and cloned data has been deleted!", "cancelled"
                 msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Ukuran: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
                 msg += f'\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
@@ -980,6 +1002,7 @@ class GoogleDriveHelper:
                                 )
                         else:
                             self.is_cancelled = True
+                            LOGGER.info(f"Got: {reason}")
                             raise err
                     else:
                         raise err
@@ -996,5 +1019,15 @@ class GoogleDriveHelper:
 
     def cancel_download(self):
         self.is_cancelled = True
-        LOGGER.info(f"Cancelling Download: {self.name}")
-        self.__listener.onDownloadError('Unduhan dihentikan oleh pengguna!')
+        if self.is_downloading:
+            LOGGER.info(f"Cancelling Download: {self.name}")
+            self.__listener.onDownloadError(
+                'Download Dibatalkan oleh pengguna!'
+            )
+        elif self.is_cloning:
+            LOGGER.info(f"Cancelling Clone: {self.name}")
+        elif self.is_uploading:
+            LOGGER.info(f"Cancelling upload: {self.name}")
+            self.__listener.onUploadError(
+                'unggahan Anda telah dihentikan dan data yang diunggah telah dihapus!'
+            )

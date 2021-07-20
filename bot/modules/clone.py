@@ -44,12 +44,45 @@ def cloneNode(update, context):
         if button == "":
             sendMessage(result, context.bot, update)
         else:
-            if update.message.from_user.username:
-                uname = f'@{update.message.from_user.username}'
-            else:
-                uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
-            if uname is not None:
-                cc = f'\n\nDari: {uname}'
+            drive = gdriveTools.GoogleDriveHelper(name)
+            gid = ''.join(
+                random.SystemRandom().choices(
+                    string.ascii_letters + string.digits, k=12
+                )
+            )
+            clone_status = CloneStatus(drive, clonesize, update, gid)
+            with download_dict_lock:
+                download_dict[update.message.message_id] = clone_status
+            if len(Interval) == 0:
+                Interval.append(
+                    setInterval(
+                        DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages
+                    )
+                )
+            sendStatusMessage(update, context.bot)
+            result, button = drive.clone(link)
+            with download_dict_lock:
+                del download_dict[update.message.message_id]
+                count = len(download_dict)
+            try:
+                if count == 0:
+                    Interval[0].cancel()
+                    del Interval[0]
+                    delete_all_messages()
+                else:
+                    update_all_messages()
+            except IndexError:
+                pass
+        if update.message.from_user.username:
+            uname = f'@{update.message.from_user.username}'
+        else:
+            uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
+        if uname is not None:
+            cc = f'\n\nDari: {uname}'
+            men = f'{uname} '
+        if button == "cancelled" or button == "":
+            sendMessage(men + result, context.bot, update)
+        else:
             sendMarkup(result + cc, context.bot, update, button)
     else:
         sendMessage(

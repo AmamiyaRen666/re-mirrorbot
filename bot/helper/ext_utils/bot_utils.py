@@ -70,8 +70,7 @@ def getDownloadByGid(gid):
     with download_dict_lock:
         for dl in download_dict.values():
             status = dl.status()
-            if status != MirrorStatus.STATUS_UPLOADING and status != MirrorStatus.STATUS_ARCHIVING \
-                    and status != MirrorStatus.STATUS_EXTRACTING:
+            if status != MirrorStatus.STATUS_ARCHIVING and status != MirrorStatus.STATUS_EXTRACTING:
                 if dl.gid() == gid:
                     return dl
     return None
@@ -80,10 +79,12 @@ def getDownloadByGid(gid):
 def getAllDownload():
     with download_dict_lock:
         for dlDetails in list(download_dict.values()):
-            if dlDetails.status() == MirrorStatus.STATUS_DOWNLOADING \
-                    or dlDetails.status() == MirrorStatus.STATUS_WAITING:
+            if dlDetails.status(
+            ) == MirrorStatus.STATUS_DOWNLOADING or dlDetails.status(
+            ) == MirrorStatus.STATUS_WAITING:
                 if dlDetails:
                     return dlDetails
+    return None
 
 
 def get_progress_bar_string(status):
@@ -138,8 +139,7 @@ def get_readable_message():
                     except:
                         pass
                     msg += f'\n<b>Pengguna:</b> <a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'
-                if download.status() == MirrorStatus.STATUS_DOWNLOADING:
-                    msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                    msg += f"\n<b>Untuk Berhenti</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if STATUS_LIMIT is not None:
                     if INDEX >= COUNT + STATUS_LIMIT:
