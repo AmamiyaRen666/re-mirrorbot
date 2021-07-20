@@ -156,7 +156,7 @@ def sourceforge(url: str) -> str:
     try:
         link = re.findall(r"\bhttps?://.*sourceforge\.net\S+", url)[0]
     except IndexError:
-        reply = "No SourceForge links found\n"
+        reply = "`No SourceForge links found`\n"
         return reply
     file_path = re.findall(r"files(.*)/download", link)[0]
     project = re.findall(r"projects?/(.*?)/files", link)[0]
