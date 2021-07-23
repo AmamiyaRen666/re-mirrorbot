@@ -16,16 +16,15 @@ class AriaDownloadHelper(DownloadHelper):
     @new_thread
     def __onDownloadStarted(self, api, gid):
         if STOP_DUPLICATE or TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None:
-            sleep(1)
+            sleep(2)
             dl = getDownloadByGid(gid)
             download = aria2.get_download(gid)
-            if STOP_DUPLICATE:
+            if STOP_DUPLICATE and dl is not None:
                 LOGGER.info(f"Checking File/Folder if already in Drive...")
-                sleep(1)
                 sname = aria2.get_download(gid).name
-                if self.listener.isTar:
+                if dl.getListener().isTar:
                     sname = sname + ".tar"
-                if self.listener.extract:
+                if dl.getListener().extract:
                     smsg = None
                 else:
                     gdrive = GoogleDriveHelper(None)
@@ -41,10 +40,12 @@ class AriaDownloadHelper(DownloadHelper):
                         dl.getListener().update, button
                     )
                     return
-            if TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None:
+            if (
+                TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None
+            ) and dl is not None:
                 limit = None
                 if TAR_UNZIP_LIMIT is not None and (
-                    self.listener.isTar or self.listener.extract
+                    dl.getListener().isTar or dl.getListener().extract
                 ):
                     LOGGER.info(f"Checking File/Folder Size...")
                     limit = TAR_UNZIP_LIMIT
@@ -54,7 +55,6 @@ class AriaDownloadHelper(DownloadHelper):
                     limit = TORRENT_DIRECT_LIMIT
                     mssg = f'Batas torrent/langsung adalah {TORRENT_DIRECT_LIMIT}'
                 if limit is not None:
-                    sleep(1.5)
                     size = aria2.get_download(gid).total_length
                     limit = limit.split(' ', maxsplit=1)
                     limitint = int(limit[0])
@@ -120,7 +120,8 @@ class AriaDownloadHelper(DownloadHelper):
             on_download_start=self.__onDownloadStarted,
             on_download_error=self.__onDownloadError,
             on_download_stop=self.__onDownloadStopped,
-            on_download_complete=self.__onDownloadComplete
+            on_download_complete=self.__onDownloadComplete,
+            timeout=1
         )
 
     def add_download(self, link: str, path, listener, filename):
@@ -135,4 +136,3 @@ class AriaDownloadHelper(DownloadHelper):
             download_dict[listener.uid
                          ] = AriaDownloadStatus(download.gid, listener)
             LOGGER.info(f"Started: {download.gid} DIR:{download.dir} ")
-        self.listener = listener
