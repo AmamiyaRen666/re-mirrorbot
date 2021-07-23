@@ -1,6 +1,4 @@
-FROM narima/megaria:latest
-WORKDIR /usr/src/app
-RUN chmod 777 /usr/src/app
+FROM narima/megaria:ubuntu
 
 COPY extract /usr/local/bin
 COPY pextract /usr/local/bin

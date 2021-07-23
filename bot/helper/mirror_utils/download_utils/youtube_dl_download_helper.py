@@ -43,7 +43,10 @@ class YoutubeDLHelper(DownloadHelper):
         self.opts = {
             'progress_hooks': [self.__onDownloadProgress],
             'logger': MyLogger(self),
-            'usenetrc': True
+            'usenetrc': True,
+            'geo-bypass': True,
+            'geo-bypass-country': 'ID',
+            'geo-bypass-ip-block': '10.100.0.0/14',
         }
         self.__download_speed = 0
         self.download_speed_readable = ''
