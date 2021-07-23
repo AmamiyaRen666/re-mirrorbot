@@ -142,7 +142,9 @@ def get_readable_message():
                     except:
                         pass
                     msg += f'\n<b>Pengguna:</b> <a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'
-                if download.status() == MirrorStatus.STATUS_DOWNLOADING or download.status() == MirrorStatus.STATUS_CLONING:
+                if download.status(
+                ) == MirrorStatus.STATUS_DOWNLOADING or download.status(
+                ) == MirrorStatus.STATUS_CLONING:
                     msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if STATUS_LIMIT is not None:
