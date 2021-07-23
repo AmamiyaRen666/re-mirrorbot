@@ -46,10 +46,11 @@ tgx, yts, eztv, torlock, rarbg
 ```
 - Direct links Supported:
 ```
-letsupload.io, hxfile.co, anonfiles.com, fembed.com, fembed.net, femax20.com,
-layarkacaxxi.icu, fcdn.stream, sbplay.org, naniplay.com, naniplay.nanime.in,
-naniplay.nanime.biz, sbembed.com, streamsb.net, feurl.com, pixeldrain.com,
-1drv.ms (Only works for file not folder or business account),
+letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
+fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream,
+sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com,
+streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
+1fichier.com, sourceforge, 1drv.ms (Only works for file not folder or business account),
 uptobox.com (Uptobox account must be premium)
 ```
 ## From Original Repos
@@ -172,8 +173,9 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - **HEROKU_API_KEY**: (Only if you deploying on Heroku) Your Heroku API key, get it from https://dashboard.heroku.com/account.
 - **HEROKU_APP_NAME**: (Only if you deploying on Heroku) Your Heroku app name.
 - **IGNORE_PENDING_REQUESTS**: If you want the bot to ignore pending requests after it restarts, set this to `True`.
-- **FINISHED_PROGRESS_STR**: Single character for finished progress. Example: "Uploading ●●●●○○○○ %50". This value sets: "●". You can Select any character from these listed sites: https://coolsymbol.com, https://changaco.oy.lc/unicode-progress-bars/, https://text-symbols.com/
-- **UNFINISHED_PROGRESS_STR**: Single character for finished progress. Example: "Uploading ●●●●○○○○ %50". This value sets: "○". You can Select any character from these listed sites: https://coolsymbol.com, https://changaco.oy.lc/unicode-progress-bars/, https://text-symbols.com/
+- **FINISHED_PROGRESS_STR**: Single character for finished progress. Example: ```Uploading ●●●●○○○○ %50```. This value sets: `●`. You can Select any character from these listed sites: https://coolsymbol.com, https://changaco.oy.lc/unicode-progress-bars/, https://text-symbols.com/
+- **UNFINISHED_PROGRESS_STR**: Single character for finished progress. Example: ```Uploading ●●●●○○○○ %50```. This value sets: `○`. You can Select any character from these listed sites: https://coolsymbol.com, https://changaco.oy.lc/unicode-progress-bars/, https://text-symbols.com/
+- **STATUS_LIMIT**: Status limit with buttons (**NOTE**: Recommend limit status to ```4``` tasks max).
 - **SHORTENER_API**: Fill your Shortener api key if you are using Shortener.
 - **SHORTENER**: if you want to use Shortener in Gdrive and index link, fill Shortener url here. Examples:
 ```
@@ -227,7 +229,7 @@ sudo docker run mirrorbot
 ## Deploying on Heroku
 
 - Give stars and Fork this repo then upload **token.pickle** to your forks, or you can upload your **token.pickle** to your Index and put your **token.pickle** link to **TOKEN_PICKLE_URL** (**NOTE**: If you didn't upload **token.pickle** uploading will not work). How to generate **token.pickle**? [Read here](https://github.com/breakdowns/slam-mirrorbot#getting-google-oauth-api-credential-file)
-- Hit the **DEPLOY TO HEROKU** button and follow the further instructions in the screen
+- Hit the **DEPLOY TO HEROKU** button and follow the further instructions in the screen (**NOTE**: If vars not coming, just change deploy link to your fork, Example: ```https://dasboard.heroku.com/new?template=https://github.com/yourgithubname/slam-mirrorbot```)
 - Recommended to use 1 App in 1 Heroku accounts
 
 <p><a href="https://heroku.com/deploy"> <img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="200""/></a></p>
@@ -320,6 +322,6 @@ Thanks to:
 - [magneto261290](https://github.com/magneto261290/) for some features
 - [SVR666](https://github.com/SVR666/) for some features & fixes
 - [anasty17](https://github.com/anasty17) for some features & help
-- [breakdowns](https://github.com/breakdowns) for slam-mirrorbot
+- [breakdowns](https://github.com/breakdowns) for slam-mirrorbot.
 
 And many more people who aren't mentioned here, but may be found in [Contributors](https://github.com/breakdowns/slam-mirrorbot/graphs/contributors).

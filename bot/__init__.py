@@ -159,6 +159,14 @@ telegraph.create_account(short_name=sname)
 telegraph_token = telegraph.get_access_token()
 
 try:
+    STATUS_LIMIT = getConfig('STATUS_LIMIT')
+    if len(STATUS_LIMIT) == 0:
+        raise KeyError
+    else:
+        STATUS_LIMIT = int(getConfig('STATUS_LIMIT'))
+except KeyError:
+    STATUS_LIMIT = None
+try:
     MEGA_API_KEY = getConfig('MEGA_API_KEY')
 except KeyError:
     logging.warning('MEGA API KEY not provided!')
@@ -242,21 +250,13 @@ except KeyError:
     BUTTON_SIX_NAME = None
     BUTTON_SIX_URL = None
 try:
-    STOP_DUPLICATE_MIRROR = getConfig('STOP_DUPLICATE_MIRROR')
-    if STOP_DUPLICATE_MIRROR.lower() == 'true':
-        STOP_DUPLICATE_MIRROR = True
+    STOP_DUPLICATE = getConfig('STOP_DUPLICATE')
+    if STOP_DUPLICATE.lower() == 'true':
+        STOP_DUPLICATE = True
     else:
-        STOP_DUPLICATE_MIRROR = False
+        STOP_DUPLICATE = False
 except KeyError:
-    STOP_DUPLICATE_MIRROR = False
-try:
-    STOP_DUPLICATE_MEGA = getConfig('STOP_DUPLICATE_MEGA')
-    if STOP_DUPLICATE_MEGA.lower() == 'true':
-        STOP_DUPLICATE_MEGA = True
-    else:
-        STOP_DUPLICATE_MEGA = False
-except KeyError:
-    STOP_DUPLICATE_MEGA = False
+    STOP_DUPLICATE = False
 try:
     VIEW_LINK = getConfig('VIEW_LINK')
     if VIEW_LINK.lower() == 'true':
@@ -265,14 +265,6 @@ try:
         VIEW_LINK = False
 except KeyError:
     VIEW_LINK = False
-try:
-    STOP_DUPLICATE_CLONE = getConfig('STOP_DUPLICATE_CLONE')
-    if STOP_DUPLICATE_CLONE.lower() == 'true':
-        STOP_DUPLICATE_CLONE = True
-    else:
-        STOP_DUPLICATE_CLONE = False
-except KeyError:
-    STOP_DUPLICATE_CLONE = False
 try:
     IS_TEAM_DRIVE = getConfig('IS_TEAM_DRIVE')
     if IS_TEAM_DRIVE.lower() == 'true':

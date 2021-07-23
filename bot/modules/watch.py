@@ -25,21 +25,21 @@ def _watch(bot: Bot, update, isTar=False):
         sendMessage(msg, bot, update)
         return
     try:
-      if "|" in mssg:
-        mssg = mssg.split("|")
-        qual = mssg[0].split(" ")[2]
-        if qual == "":
-          raise IndexError
-      else:
-        qual = message_args[2]
-      if qual != "audio":
-        qual = f'bestvideo[height<={qual}]+bestaudio/best[height<={qual}]'
+        if "|" in mssg:
+            mssg = mssg.split("|")
+            qual = mssg[0].split(" ")[2]
+            if qual == "":
+                raise IndexError
+        else:
+            qual = message_args[2]
+        if qual != "audio":
+            qual = f'bestvideo[height<={qual}]+bestaudio/best[height<={qual}]'
     except IndexError:
-      qual = "bestvideo+bestaudio/best"
+        qual = "bestvideo+bestaudio/best"
     try:
-      name = name_args[1]
+        name = name_args[1]
     except IndexError:
-      name = ""
+        name = ""
     reply_to = update.message.reply_to_message
     if reply_to is not None:
         tag = reply_to.from_user.username
@@ -48,10 +48,15 @@ def _watch(bot: Bot, update, isTar=False):
     pswd = ""
     listener = MirrorListener(bot, update, pswd, isTar, tag)
     ydl = YoutubeDLHelper(listener)
-    threading.Thread(target=ydl.add_download,args=(link, f'{DOWNLOAD_DIR}{listener.uid}', qual, name)).start()
+    threading.Thread(
+        target=ydl.add_download,
+        args=(link, f'{DOWNLOAD_DIR}{listener.uid}', qual, name)
+    ).start()
     sendStatusMessage(update, bot)
     if len(Interval) == 0:
-        Interval.append(setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages))
+        Interval.append(
+            setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages)
+        )
 
 
 def watchTar(update, context):
@@ -62,9 +67,17 @@ def watch(update, context):
     _watch(context.bot, update)
 
 
-mirror_handler = CommandHandler(BotCommands.WatchCommand, watch,
-                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-tar_mirror_handler = CommandHandler(BotCommands.TarWatchCommand, watchTar,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+mirror_handler = CommandHandler(
+    BotCommands.WatchCommand,
+    watch,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True
+)
+tar_mirror_handler = CommandHandler(
+    BotCommands.TarWatchCommand,
+    watchTar,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True
+)
 dispatcher.add_handler(mirror_handler)
 dispatcher.add_handler(tar_mirror_handler)

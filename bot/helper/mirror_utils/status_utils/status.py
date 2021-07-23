@@ -2,7 +2,6 @@
 
 
 class Status:
-
     def progress(self):
         """
         Calculates the progress of the mirror (upload or download)
