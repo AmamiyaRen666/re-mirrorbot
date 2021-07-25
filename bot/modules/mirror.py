@@ -281,7 +281,7 @@ def _mirror(bot, update, isTar=False, extract=False):
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
-    except BaseException:
+    except:
         ussr = ''
         pssw = ''
     if ussr != '' and pssw != '':

@@ -210,7 +210,7 @@ def uptobox(url: str) -> str:
         try:
             link = re.findall(r'\bhttp?://.*uptobox\.com/dl\S+', url)[0]
             dl_url = link
-        except BaseException:
+        except:
             file_id = re.findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
             file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (
                 UPTOBOX_TOKEN, file_id)

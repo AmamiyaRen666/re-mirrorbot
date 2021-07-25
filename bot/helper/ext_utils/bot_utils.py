@@ -139,7 +139,7 @@ def get_readable_message():
                     try:
                         msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
                             f" | <b>Peers:</b> {download.aria_download().connections}"
-                    except BaseException:
+                    except:
                         pass
                     msg += f'\n<b>Pengguna:</b> <a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'
                 if download.status(

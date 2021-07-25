@@ -199,7 +199,7 @@ class GoogleDriveHelper:
         }
         try:
             self.typee = file_metadata['mimeType']
-        except BaseException:
+        except:
             self.typee = 'File'
         if parent_id is not None:
             file_metadata['parents'] = [parent_id]
@@ -500,7 +500,7 @@ class GoogleDriveHelper:
                     buttons.buildbutton("☁️ Drive Link", durl)
                 try:
                     typeee = file.get('mimeType')
-                except BaseException:
+                except:
                     typeee = 'File'
                 try:
                     msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(int(meta.get("size")))}</code>'
@@ -829,7 +829,7 @@ class GoogleDriveHelper:
                 msg += f'<b>Nama file: </b><code>{name}</code>'
                 try:
                     typee = drive_file['mimeType']
-                except BaseException:
+                except:
                     typee = 'File'
                 try:
                     self.total_files += 1
@@ -852,7 +852,7 @@ class GoogleDriveHelper:
     def gDrive_file(self, **kwargs):
         try:
             size = int(kwargs['size'])
-        except BaseException:
+        except:
             size = 0
         self.total_bytes += size
 

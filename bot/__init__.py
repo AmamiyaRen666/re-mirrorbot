@@ -100,14 +100,14 @@ try:
     achats = achats.split(" ")
     for chats in achats:
         AUTHORIZED_CHATS.add(int(chats))
-except BaseException:
+except:
     pass
 try:
     schats = getConfig('SUDO_USERS')
     schats = schats.split(" ")
     for chats in schats:
         SUDO_USERS.add(int(chats))
-except BaseException:
+except:
     pass
 try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
