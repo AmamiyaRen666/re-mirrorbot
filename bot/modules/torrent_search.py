@@ -221,7 +221,7 @@ class TorrentSearch:
         return string.split('&tr', 1)[0]
 
     def get_formatted_string(self, values):
-        string = self.RESULT_STR.format(*values)
+        string = self.RESULT_STR.format(**values)
         extra = ""
         if "Files" in values:
             tmp_str = "➲[{Quality} - {Type} ({Size})]({Torrent}): `{magnet}`"
