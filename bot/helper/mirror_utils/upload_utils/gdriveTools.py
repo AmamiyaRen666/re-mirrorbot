@@ -36,7 +36,8 @@ TELEGRAPHLIMIT = 80
 class GoogleDriveHelper:
     def __init__(self, name=None, listener=None):
         self.__G_DRIVE_TOKEN_FILE = "token.pickle"
-        # Check https://developers.google.com/drive/scopes for all available scopes
+        # Check https://developers.google.com/drive/scopes for all available
+        # scopes
         self.__OAUTH_SCOPE = ['https://www.googleapis.com/auth/drive']
         # Redirect URI for installed apps, can be left as is
         self.__REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
@@ -112,8 +113,8 @@ class GoogleDriveHelper:
         if self.status is not None:
             chunk_size = self.status.total_size * self.status.progress(
             ) - self._file_uploaded_bytes
-            self._file_uploaded_bytes = self.status.total_size * self.status.progress(
-            )
+            self._file_uploaded_bytes = self.status.total_size * \
+                self.status.progress()
             LOGGER.debug(
                 f'Uploading {self.name}, chunk size: {get_readable_file_size(chunk_size)}'
             )
@@ -198,7 +199,7 @@ class GoogleDriveHelper:
         }
         try:
             self.typee = file_metadata['mimeType']
-        except:
+        except BaseException:
             self.typee = 'File'
         if parent_id is not None:
             file_metadata['parents'] = [parent_id]
@@ -499,7 +500,7 @@ class GoogleDriveHelper:
                     buttons.buildbutton("☁️ Drive Link", durl)
                 try:
                     typeee = file.get('mimeType')
-                except:
+                except BaseException:
                     typeee = 'File'
                 try:
                     msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(int(meta.get("size")))}</code>'
@@ -709,9 +710,9 @@ class GoogleDriveHelper:
         if response["files"]:
             msg += f'<img src="{IMAGE_URL}" /><h4>{len(response["files"])} Results: {fileName}</h4><br><br>'
             for file in response.get('files', []):
+                # Detect Whether Current Entity is a Folder or File.
                 if file.get(
-                    'mimeType'
-                ) == "application/vnd.google-apps.folder":  # Detect Whether Current Entity is a Folder or File.
+                        'mimeType') == "application/vnd.google-apps.folder":
                     furl = f"https://drive.google.com/drive/folders/{file.get('id')}"
                     msg += f"📁 <code>{file.get('name')}<br>(folder)</code><br>"
                     if SHORTENER is not None and SHORTENER_API is not None:
@@ -736,7 +737,8 @@ class GoogleDriveHelper:
                 ) == 'application/vnd.google-apps.shortcut':
                     msg += f"⁍<a href='https://drive.google.com/drive/folders/{file.get('id')}'>{file.get('name')}" \
                         f"</a> (shortcut)"
-                    # Excluded index link as indexes cant download or open these shortcuts
+                    # Excluded index link as indexes cant download or open
+                    # these shortcuts
                 else:
                     furl = f"https://drive.google.com/uc?id={file.get('id')}&export=download"
                     msg += f"📄 <code>{file.get('name')}<br>({get_readable_file_size(int(file.get('size')))})</code><br>"
@@ -780,14 +782,12 @@ class GoogleDriveHelper:
 
             for content in self.telegraph_content:
                 self.path.append(
-                    Telegraph(access_token=telegraph_token).create_page(
+                    Telegraph(
+                        access_token=telegraph_token).create_page(
                         title='Slam Mirror Bot Search',
                         author_name='Slam Mirror Bot',
-                        author_url=
-                        'https://github.com/breakdowns/slam-mirrorbot',
-                        html_content=content
-                    )['path']
-                )
+                        author_url='https://github.com/breakdowns/slam-mirrorbot',
+                        html_content=content)['path'])
 
             self.num_of_path = len(self.path)
             if self.num_of_path > 1:
@@ -829,7 +829,7 @@ class GoogleDriveHelper:
                 msg += f'<b>Nama file: </b><code>{name}</code>'
                 try:
                     typee = drive_file['mimeType']
-                except:
+                except BaseException:
                     typee = 'File'
                 try:
                     self.total_files += 1
@@ -852,7 +852,7 @@ class GoogleDriveHelper:
     def gDrive_file(self, **kwargs):
         try:
             size = int(kwargs['size'])
-        except:
+        except BaseException:
             size = 0
         self.total_bytes += size
 
@@ -945,11 +945,9 @@ class GoogleDriveHelper:
                 supportsTeamDrives=True,
                 includeTeamDriveItems=True,
                 q=f"'{folder_id}' in parents",
-                fields=
-                'nextPageToken, files(id, name, mimeType, size, shortcutDetails)',
+                fields='nextPageToken, files(id, name, mimeType, size, shortcutDetails)',
                 pageToken=page_token,
-                pageSize=1000
-            ).execute()
+                pageSize=1000).execute()
             result.extend(files['files'])
             page_token = files.get("nextPageToken")
             if not page_token:
@@ -961,7 +959,7 @@ class GoogleDriveHelper:
             filename = item['name']
             mime_type = item['mimeType']
             shortcut_details = item.get('shortcutDetails', None)
-            if shortcut_details != None:
+            if shortcut_details is not None:
                 file_id = shortcut_details['targetId']
                 mime_type = shortcut_details['targetMimeType']
             if mime_type == 'application/vnd.google-apps.folder':
@@ -1013,8 +1011,8 @@ class GoogleDriveHelper:
         if self.dstatus is not None:
             chunk_size = self.dstatus.total_size * self.dstatus.progress(
             ) - self._file_downloaded_bytes
-            self._file_downloaded_bytes = self.dstatus.total_size * self.dstatus.progress(
-            )
+            self._file_downloaded_bytes = self.dstatus.total_size * \
+                self.dstatus.progress()
             self.downloaded_bytes += chunk_size
             self.dtotal_time += self.update_interval
 

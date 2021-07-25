@@ -1,5 +1,6 @@
 # Implement By https://github.com/jusidama18
-# Based on this https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/heroku_helpers.py
+# Based on this
+# https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/heroku_helpers.py
 
 from pyrogram import filters, types, emoji
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -21,7 +22,7 @@ async def set_varr(client, message, app_):
             "`Here is Usage Syntax: /setvar KEY VALUE`", parse_mode="markdown"
         )
         return
-    if not " " in _var:
+    if " " not in _var:
         await msg_.edit("`Variable VALUE needed !`", parse_mode="markdown")
         return
     var_ = _var.split(" ", 1)
@@ -32,7 +33,7 @@ async def set_varr(client, message, app_):
         return
     _varname, _varvalue = var_
     await msg_.edit(
-        f"`Variable {_varname} Added With Value {_varvalue}!`" \
+        f"`Variable {_varname} Added With Value {_varvalue}!`"
         f"\nYour Heroku app will restart. Be patient."
     )
     heroku_var[_varname] = _varvalue
@@ -50,11 +51,11 @@ async def del_varr(client, message, app_):
     if not _var:
         await msg_.edit("`Give Var Name As Input!`", parse_mode="markdown")
         return
-    if not _var in heroku_var:
+    if _var not in heroku_var:
         await msg_.edit("`This Var Doesn't Exists!`", parse_mode="markdown")
         return
     await msg_.edit(
-        f"`Sucessfully Deleted {_var} Var!`" \
+        f"`Sucessfully Deleted {_var} Var!`"
         f"\nYour heroku app will restart. Be patient.",
         parse_mode="markdown")
     del heroku_var[_var]

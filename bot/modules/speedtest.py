@@ -34,7 +34,7 @@ def speedtest(update, context):
         update.effective_message.reply_photo(
             path, string_speed, parse_mode=ParseMode.HTML
         )
-    except:
+    except BaseException:
         update.effective_message.reply_text(
             string_speed, parse_mode=ParseMode.HTML
         )

@@ -35,7 +35,14 @@ ariaDlManager.start_listener()
 
 
 class MirrorListener(listeners.MirrorListeners):
-    def __init__(self, bot, update, pswd, isTar=False, tag=None, extract=False):
+    def __init__(
+            self,
+            bot,
+            update,
+            pswd,
+            isTar=False,
+            tag=None,
+            extract=False):
         super().__init__(bot, update)
         self.isTar = isTar
         self.tag = tag
@@ -60,7 +67,8 @@ class MirrorListener(listeners.MirrorListeners):
 
     def onDownloadComplete(self):
         with download_dict_lock:
-            LOGGER.info(f"Download completed: {download_dict[self.uid].name()}")
+            LOGGER.info(
+                f"Download completed: {download_dict[self.uid].name()}")
             download = download_dict[self.uid]
             name = download.name()
             gid = download.gid()
@@ -200,9 +208,13 @@ class MirrorListener(listeners.MirrorListeners):
                         if VIEW_LINK:
                             buttons.buildbutton("🌐 View Link", share_urls)
             if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
-                buttons.buildbutton(f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}")
+                buttons.buildbutton(
+                    f"{BUTTON_FOUR_NAME}",
+                    f"{BUTTON_FOUR_URL}")
             if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
-                buttons.buildbutton(f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}")
+                buttons.buildbutton(
+                    f"{BUTTON_FIVE_NAME}",
+                    f"{BUTTON_FIVE_URL}")
             if BUTTON_SIX_NAME is not None and BUTTON_SIX_URL is not None:
                 buttons.buildbutton(f"{BUTTON_SIX_NAME}", f"{BUTTON_SIX_URL}")
             if self.message.from_user.username:
@@ -269,7 +281,7 @@ def _mirror(bot, update, isTar=False, extract=False):
     try:
         ussr = urllib.parse.quote(mesg[1], safe='')
         pssw = urllib.parse.quote(mesg[2], safe='')
-    except:
+    except BaseException:
         ussr = ''
         pssw = ''
     if ussr != '' and pssw != '':
@@ -337,8 +349,8 @@ def _mirror(bot, update, isTar=False, extract=False):
         if not isTar and not extract:
             sendMessage(
                 f"Gunakan /{BotCommands.CloneCommand} Untuk mengkloning file/folder Google Drive\nGunakan /{BotCommands.TarMirrorCommand} Untuk membuat tar folder Google Drive\nGunakan /{BotCommands.UnzipMirrorCommand} Untuk mengekstrak file arsip Google Drive",
-                bot, update
-            )
+                bot,
+                update)
             return
         res, size, name, files = gdriveTools.GoogleDriveHelper(
         ).clonehelper(link)

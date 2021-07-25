@@ -103,7 +103,7 @@ def do(func, bot, update):
             else:
                 try:
                     result = f'{repr(eval(body, env))}'
-                except:
+                except BaseException:
                     pass
         else:
             result = f'{value}{func_return}'

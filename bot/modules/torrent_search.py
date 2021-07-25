@@ -114,7 +114,7 @@ async def init_search(client, message, query, sukebei):
             result, reply_markup=InlineKeyboardMarkup([buttons])
         )
         message_info[(reply.chat.id, reply.message_id)
-                    ] = message.from_user.id, ttl, query, 1, pages, sukebei
+                     ] = message.from_user.id, ttl, query, 1, pages, sukebei
 
 
 @app.on_callback_query(custom_filters.callback_data('nyaa_nop'))
@@ -125,7 +125,8 @@ async def nyaa_nop(client, callback_query):
 callback_lock = asyncio.Lock()
 
 
-@app.on_callback_query(custom_filters.callback_data(['nyaa_back', 'nyaa_next']))
+@app.on_callback_query(
+    custom_filters.callback_data(['nyaa_back', 'nyaa_next']))
 async def nyaa_callback(client, callback_query):
     message = callback_query.message
     message_identifier = (message.chat.id, message.message_id)
@@ -171,7 +172,7 @@ async def nyaa_callback(client, callback_query):
                 text, reply_markup=InlineKeyboardMarkup([buttons])
             )
         message_info[message_identifier
-                    ] = user_id, ttl, query, current_page, pages, sukebei
+                     ] = user_id, ttl, query, current_page, pages, sukebei
         if ttl_ended:
             ignore.add(message_identifier)
     await callback_query.answer()
@@ -292,7 +293,7 @@ class TorrentSearch:
                     self.response_range = range(
                         0, len(self.response), self.RESULT_LIMIT
                     )
-        except:
+        except BaseException:
             await self.message.edit("No Results Found.")
             return
         await self.update_message()

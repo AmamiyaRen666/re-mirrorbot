@@ -84,7 +84,7 @@ class AriaDownloadHelper(DownloadHelper):
                 dl = getDownloadByGid(new_gid)
             with download_dict_lock:
                 download_dict[dl.uid()
-                             ] = AriaDownloadStatus(new_gid, dl.getListener())
+                              ] = AriaDownloadStatus(new_gid, dl.getListener())
                 if new_download.is_torrent:
                     download_dict[dl.uid()].is_torrent = True
             update_all_messages()
@@ -92,7 +92,7 @@ class AriaDownloadHelper(DownloadHelper):
         else:
             if dl:
                 threading.Thread(target=dl.getListener().onDownloadComplete
-                                ).start()
+                                 ).start()
 
     @new_thread
     def __onDownloadStopped(self, api, gid):
@@ -104,9 +104,9 @@ class AriaDownloadHelper(DownloadHelper):
     @new_thread
     def __onDownloadError(self, api, gid):
         LOGGER.info(f"onDownloadError: {gid}")
-        sleep(
-            0.5
-        )  # sleep for split second to ensure proper dl gid update from onDownloadComplete
+        # sleep for split second to ensure proper dl gid update from
+        # onDownloadComplete
+        sleep(0.5)
         dl = getDownloadByGid(gid)
         download = aria2.get_download(gid)
         error = download.error_message
@@ -134,5 +134,5 @@ class AriaDownloadHelper(DownloadHelper):
             return
         with download_dict_lock:
             download_dict[listener.uid
-                         ] = AriaDownloadStatus(download.gid, listener)
+                          ] = AriaDownloadStatus(download.gid, listener)
             LOGGER.info(f"Started: {download.gid} DIR:{download.dir} ")

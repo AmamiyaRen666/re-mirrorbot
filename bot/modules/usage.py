@@ -74,8 +74,7 @@ def dyno_usage(update, context):
                 "<b>Kapan Kartu mu mati:</b>\n"
                 f"• <code>{day}</code> <b>hari</b>\n\n"
                 "<b>Email kamu Sekarang:</b>\n"
-                f"• <code>{email}</code>", context.bot, update
-            )
+                f"• <code>{email}</code>", context.bot, update)
             return True
 
 

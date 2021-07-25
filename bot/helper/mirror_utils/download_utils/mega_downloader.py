@@ -114,7 +114,8 @@ class MegaAppListener(MegaListener):
 
         if state == 1 or state == 4:
             # Sometimes MEGA (offical client) can't stream a node either and raises a temp failed error.
-            # Don't break the transfer queue if transfer's in queued (1) or retrying (4) state [causes seg fault]
+            # Don't break the transfer queue if transfer's in queued (1) or
+            # retrying (4) state [causes seg fault]
             return
 
         self.error = errStr
@@ -216,7 +217,7 @@ class MegaDownloadHelper:
                         return
         with download_dict_lock:
             download_dict[listener.uid
-                         ] = MegaDownloadStatus(mega_listener, listener)
+                          ] = MegaDownloadStatus(mega_listener, listener)
         os.makedirs(path)
         gid = ''.join(
             random.SystemRandom().choices(

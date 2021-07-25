@@ -1,5 +1,6 @@
 # Implement By https://github.com/jusidama18
-# Based on this https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/updater.py
+# Based on this
+# https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/updater.py
 
 import sys
 import subprocess

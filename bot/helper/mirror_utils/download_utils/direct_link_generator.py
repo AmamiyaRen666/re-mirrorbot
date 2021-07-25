@@ -18,7 +18,8 @@ from random import choice
 from urllib.parse import urlparse
 
 import lk21
-import requests, cloudscraper
+import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
@@ -151,7 +152,7 @@ def yandex_disk(url: str) -> str:
 
 
 def sourceforge(url: str) -> str:
-    """ SourceForge direct links generator 
+    """ SourceForge direct links generator
     Based on https://github.com/REBEL75/REBELUSERBOT """
     try:
         link = re.findall(r"\bhttps?://.*sourceforge\.net\S+", url)[0]
@@ -209,11 +210,10 @@ def uptobox(url: str) -> str:
         try:
             link = re.findall(r'\bhttp?://.*uptobox\.com/dl\S+', url)[0]
             dl_url = link
-        except:
+        except BaseException:
             file_id = re.findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
             file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (
-                UPTOBOX_TOKEN, file_id
-            )
+                UPTOBOX_TOKEN, file_id)
             req = requests.get(file_link)
             result = req.json()
             dl_url = result['data']['dlLink']
@@ -409,7 +409,7 @@ def fichier(link: str) -> str:
         else:
             pw = {"pass": pswd}
             req = requests.post(url, data=pe)
-    except:
+    except BaseException:
         raise DirectDownloadLinkException(
             "ERROR: Unable to reach 1fichier server!"
         )

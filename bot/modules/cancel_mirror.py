@@ -17,8 +17,9 @@ def cancel_mirror(update, context):
         dl = getDownloadByGid(gid)
         if not dl:
             sendMessage(
-                f"GID: <code>{gid}</code> Tidak ditemukan.", context.bot, update
-            )
+                f"GID: <code>{gid}</code> Tidak ditemukan.",
+                context.bot,
+                update)
             return
         mirror_message = dl.message
     elif update.message.reply_to_message:
@@ -27,7 +28,7 @@ def cancel_mirror(update, context):
             keys = list(download_dict.keys())
             try:
                 dl = download_dict[mirror_message.message_id]
-            except:
+            except BaseException:
                 pass
     if len(args) == 1:
         msg = f"Tolong balas ke <code>/{BotCommands.MirrorCommand}</code> pesan yang digunakan untuk memulai pengunduhan atau pengiriman <code>/{BotCommands.CancelMirror} GID</code> untuk membatalkannya!"

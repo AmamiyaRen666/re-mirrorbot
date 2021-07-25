@@ -36,7 +36,7 @@ class TelegramDownloadHelper(DownloadHelper):
     def __onDownloadStart(self, name, size, file_id):
         with download_dict_lock:
             download_dict[self.__listener.uid
-                         ] = TelegramDownloadStatus(self, self.__listener)
+                          ] = TelegramDownloadStatus(self, self.__listener)
         with global_lock:
             GLOBAL_GID.add(file_id)
         with self.__resource_lock:
@@ -92,7 +92,8 @@ class TelegramDownloadHelper(DownloadHelper):
                 break
         if media is not None:
             with global_lock:
-                # For avoiding locking the thread lock for long time unnecessarily
+                # For avoiding locking the thread lock for long time
+                # unnecessarily
                 download = media.file_id not in GLOBAL_GID
             if filename == "":
                 name = media.file_name
@@ -113,8 +114,9 @@ class TelegramDownloadHelper(DownloadHelper):
                     if smsg:
                         sendMarkup(
                             "File/folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:",
-                            self.__listener.bot, self.__listener.update, button
-                        )
+                            self.__listener.bot,
+                            self.__listener.update,
+                            button)
                         return
                 sendStatusMessage(self.__listener.update, self.__listener.bot)
                 self.__onDownloadStart(name, media.file_size, media.file_id)
@@ -126,7 +128,8 @@ class TelegramDownloadHelper(DownloadHelper):
             else:
                 self.__onDownloadError('File sudah diunduh!')
         else:
-            self.__onDownloadError('Tidak ada dokumen dalam pesan yang dijawab')
+            self.__onDownloadError(
+                'Tidak ada dokumen dalam pesan yang dijawab')
 
     def cancel_download(self):
         LOGGER.info(f'Cancelling download on user request: {self.gid}')
