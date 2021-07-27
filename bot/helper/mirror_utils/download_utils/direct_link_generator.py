@@ -96,6 +96,8 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return fichier(link)
     elif 'sourceforge.net' in link:
         return sourceforge(link)
+    elif 'solidfiles.com' in link:
+        return solidfiles(link)
     else:
         raise DirectDownloadLinkException(
             f'No Direct link function found for {link}'
@@ -454,6 +456,17 @@ def fichier(link: str) -> str:  # sourcery no-metrics
         raise DirectDownloadLinkException(
             "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
         )
+
+def solidfiles(url: str) -> str:
+    """ Solidfiles direct links generator
+    Based on https://github.com/Xonshiz/SolidFiles-Downloader
+    By https://github.com/Jusidama18 """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36'
+    }
+    pageSource = requests.get(url, headers = headers).text
+    mainOptions = str(re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
+    return json.loads(mainOptions)["downloadUrl"]
 
 
 def useragent():
