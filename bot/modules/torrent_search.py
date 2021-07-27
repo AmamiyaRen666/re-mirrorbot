@@ -27,7 +27,7 @@ search_lock = asyncio.Lock()
 search_info = {False: dict(), True: dict()}
 
 
-async def return_search(query, page=1, sukebei=False):
+async def return_search(query, page=1, sukebei=False):  # sourcery no-metrics
     page -= 1
     query = query.lower().strip()
     used_search_info = search_info[sukebei]
@@ -79,7 +79,7 @@ async def return_search(query, page=1, sukebei=False):
             return '', len(results), ttl
 
 
-message_info = dict()
+message_info = {}
 ignore = set()
 
 
@@ -399,11 +399,10 @@ torrents_dict = {
         }
 }
 
-torrent_handlers = []
-for command, value in torrents_dict.items():
-    torrent_handlers.append(
-        TorrentSearch(command, value['source'], value['result_str'])
-    )
+torrent_handlers = [
+    TorrentSearch(command, value['source'], value['result_str'])
+    for command, value in torrents_dict.items()
+]
 
 
 def searchhelp(update, context):
