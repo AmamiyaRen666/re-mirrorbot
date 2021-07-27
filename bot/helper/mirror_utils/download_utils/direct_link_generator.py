@@ -31,10 +31,10 @@ from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 def direct_link_generator(link: str):  # sourcery no-metrics
     """ direct links generator """
     if not link:
-        raise DirectDownloadLinkException("No links found!")
+        raise DirectDownloadLinkException("Tidak ditemukan tautan!")
     elif 'youtube.com' in link or 'youtu.be' in link:
         raise DirectDownloadLinkException(
-            f"Use /{BotCommands.WatchCommand} to mirror Youtube link\nUse /{BotCommands.TarWatchCommand} to make tar of Youtube playlist"
+            f"Gunakan /{BotCommands.WatchCommand} untuk mencerminkan tautan YouTube\nGunakan /{BotCommands.TarWatchCommand} Untuk membuat tar daftar putar YouTube"
         )
     elif 'zippyshare.com' in link:
         return zippy_share(link)
@@ -130,7 +130,7 @@ def zippy_share(url: str) -> str:
         js_content = getattr(evaljs, "x")
         return base_url + js_content
     except IndexError:
-        raise DirectDownloadLinkException("Can't find download button")
+        raise DirectDownloadLinkException("ERROR: Tidak dapat menemukan tombol Unduh")
 
 
 def yandex_disk(url: str) -> str:
@@ -144,10 +144,7 @@ def yandex_disk(url: str) -> str:
     try:
         return requests.get(api.format(link)).json()['href']
     except KeyError:
-        raise DirectDownloadLinkException(
-            "Error: File not found/Download limit reached\n"
-        )
-
+        raise DirectDownloadLinkException("ERROR: File not found/Download limit reached\n")
 
 def sourceforge(url: str) -> str:
     """ SourceForge direct links generator
@@ -173,23 +170,21 @@ def sourceforge(url: str) -> str:
         dl_url = (f"{dl_url1}" + "?viasf=1")
     return dl_url
 
-
 def cm_ru(url: str) -> str:
-    """ cloud.mail.ru direct links generator
-    Using https://github.com/JrMasterModelBuilder/cmrudl.py """
-    reply = ''
+    """cloud.mail.ru direct links generator
+    Using https://github.com/JrMasterModelBuilder/cmrudl.py"""
     try:
         link = re.findall(r'\bhttps?://.*cloud\.mail\.ru\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No cloud.mail.ru links found\n")
-    command = f'vendor/cmrudl.py/cmrudl -s {link}'
+        raise DirectDownloadLinkException('No cloud.mail.ru links found\n')
+    command = f'vendor/cmrudl/cmrudl -s {link}'
     result = popen(command).read()
     result = result.splitlines()[-1]
     try:
         data = json.loads(result)
     except json.decoder.JSONDecodeError:
-        raise DirectDownloadLinkException("Error: Can't extract the link\n")
-    return data['download']
+        raise DirectDownloadLinkException("Error: Tidak dapat mengekstrak tautan\n")
+    return data["download"]
 
 
 def uptobox(url: str) -> str:
@@ -198,9 +193,9 @@ def uptobox(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*uptobox\.com\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No Uptobox links found\n")
+        raise DirectDownloadLinkException("Tidak ditemukan tautan uptobox\n")
     if UPTOBOX_TOKEN is None:
-        LOGGER.error('UPTOBOX_TOKEN not provided!')
+        LOGGER.error('UPTOBOX_TOKEN tidak tersedia!')
         dl_url = link
     else:
         try:
@@ -221,7 +216,7 @@ def mediafire(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*mediafire\.com\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No MediaFire links found\n")
+        raise DirectDownloadLinkException("Tidak ditemukan tautan mediafire\n")
     page = BeautifulSoup(requests.get(link).content, 'lxml')
     info = page.find('a', {'aria-label': 'Download file'})
     return info.get('href')
@@ -233,7 +228,7 @@ def osdn(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*osdn\.net\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No OSDN links found\n")
+        raise DirectDownloadLinkException("Tidak ditemukan tautan OSDN\n")
     page = BeautifulSoup(
         requests.get(link, allow_redirects=True).content, 'lxml'
     )
@@ -252,36 +247,36 @@ def github(url: str) -> str:
     try:
         re.findall(r'\bhttps?://.*github\.com.*releases\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No GitHub Releases links found\n")
+        raise DirectDownloadLinkException("Tidak ada tautan rilis github yang ditemukan\n")
     download = requests.get(url, stream=True, allow_redirects=False)
     try:
         return download.headers["location"]
     except KeyError:
-        raise DirectDownloadLinkException("Error: Can't extract the link\n")
+        raise DirectDownloadLinkException("ERROR: Tidak dapat mengekstrak tautan\n")
 
 
 def hxfile(url: str) -> str:
     """ Hxfile direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_filesIm(url)
 
 
 def anonfiles(url: str) -> str:
     """ Anonfiles direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_anonfiles(url)
 
 
 def letsupload(url: str) -> str:
     """ Letsupload direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     dl_url = ''
     try:
         link = re.findall(r'\bhttps?://.*letsupload\.io\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("No Letsupload links found\n")
+        raise DirectDownloadLinkException("Tidak ada tautan letsupload yang ditemukan\n")
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_url(link)
     return dl_url
@@ -289,7 +284,7 @@ def letsupload(url: str) -> str:
 
 def fembed(link: str) -> str:
     """ Fembed direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_fembed(link)
     count = len(dl_url)
@@ -299,7 +294,7 @@ def fembed(link: str) -> str:
 
 def sbembed(link: str) -> str:
     """ Sbembed direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_sbembed(link)
     count = len(dl_url)
@@ -317,7 +312,7 @@ def onedrive(link: str) -> str:
     direct_link1 = f"https://api.onedrive.com/v1.0/shares/u!{direct_link_encoded}/root/content"
     resp = requests.head(direct_link1)
     if resp.status_code != 302:
-        return "Error: Unauthorized link, the link may be private"
+        return "ERROR: Tautan tidak sah, tautannya mungkin pribadi"
     dl_link = resp.next.url
     file_name = dl_link.rsplit("/", 1)[1]
     resp2 = requests.head(dl_link)
@@ -335,32 +330,32 @@ def pixeldrain(url: str) -> str:
         return dl_link
     else:
         raise DirectDownloadLinkException(
-            "ERROR: Cant't download due {}.".format(resp.text["value"])
+            "ERROR: Tidak dapat mengunduh karena {}.".format(resp.text["value"])
         )
 
 
 def antfiles(url: str) -> str:
     """ Antfiles direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_antfiles(url)
 
 
 def streamtape(url: str) -> str:
     """ Streamtape direct link generator
-    Based on https://github.com/breakdowns/slam-mirrorbot """
+    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_streamtape(url)
 
 
 def racaty(url: str) -> str:
     """ Racaty direct links generator
-    based on https://github.com/breakdowns/slam-mirrorbot """
+    based on https://github.com/breakdowns/slam-aria-mirror-bot """
     dl_url = ''
     try:
         link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("`No Racaty links found`\n")
+        raise DirectDownloadLinkException("Tidak ada tautan racaty yang ditemukan\n")
     scraper = cloudscraper.create_scraper()
     r = scraper.get(url)
     soup = BeautifulSoup(r.text, "lxml")
@@ -376,12 +371,12 @@ def racaty(url: str) -> str:
 def fichier(link: str) -> str:  # sourcery no-metrics
     """ 1Fichier direct links generator
     Based on https://github.com/Maujar/updateref-16-7-21
-             https://github.com/breakdowns/slam-mirrorbot """
+             https://github.com/breakdowns/slam-aria-mirror-bot """
     regex = r"^([http:\/\/|https:\/\/]+)?.*1fichier\.com\/\?.+"
     gan = re.match(regex, link)
     if not gan:
         raise DirectDownloadLinkException(
-            "ERROR: The link you entered is wrong!"
+            "ERROR: Tautan yang Anda masukkan salah!"
         )
     if "::" in link:
         pswd = link.split("::")[-1]
@@ -397,18 +392,16 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             req = requests.post(url, data=pe)
     except BaseException:
         raise DirectDownloadLinkException(
-            "ERROR: Unable to reach 1fichier server!"
+            "ERROR: Tidak dapat mencapai server 1fichier!"
         )
     if req.status_code == 404:
-        raise DirectDownloadLinkException(
-            "ERROR: File not found / The link you entered is wrong!"
-        )
+      raise DirectDownloadLinkException("ERROR: File tidak ditemukan/tautan yang Anda masukkan salah!")
     soup = BeautifulSoup(req.content, 'lxml')
     if soup.find("a", {"class": "ok btn-general btn-orange"}) is not None:
         dl_url = soup.find("a", {"class": "ok btn-general btn-orange"})["href"]
         if dl_url is None:
             raise DirectDownloadLinkException(
-                "ERROR: Unable to generate Direct Link 1fichier!"
+                "ERROR: Tidak dapat menghasilkan tautan langsung 1fichier!"
             )
         else:
             return dl_url
@@ -420,19 +413,19 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             ]
             if not numbers:
                 raise DirectDownloadLinkException(
-                    "ERROR: 1fichier is on a limit. Please wait a few minutes/hour."
+                    "ERROR: 1Fichier berada pada batas.Harap tunggu beberapa menit/jam."
                 )
             else:
                 raise DirectDownloadLinkException(
-                    f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute."
+                    f"ERROR: 1fichier berada pada batas. Tunggu sebentar {numbers[0]} menit."
                 )
         elif "protect access" in str(str_2).lower():
             raise DirectDownloadLinkException(
-                "ERROR: This link requires a password!\n\n<b>This link requires a password!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b>\n<code>/mirror https://1fichier.com/?smmtd8twfpm66awbqz04::love you</code>\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!"
+                "ERROR: Tautan ini memerlukan kata sandi!\n\n<b>Tautan ini memerlukan kata sandi!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b>\n<code>/mirror https://1fichier.com/?smmtd8twfpm66awbqz04::love you</code>\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!"
             )
         else:
             raise DirectDownloadLinkException(
-                "ERROR: Error trying to generate Direct Link from 1fichier!"
+                "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
             )
     elif len(soup.find_all("div", {"class": "ct_warn"})) == 3:
         str_1 = soup.find_all("div", {"class": "ct_warn"})[-2]
@@ -443,23 +436,23 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             ]
             if not numbers:
                 raise DirectDownloadLinkException(
-                    "ERROR: 1fichier is on a limit. Please wait a few minutes/hour."
+                    "ERROR: 1Fichier berada pada batas. Harap tunggu beberapa menit / jam."
                 )
             else:
                 raise DirectDownloadLinkException(
-                    f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute."
+                    f"ERROR: 1fichier berada pada batas. Tunggu sebentar {numbers[0]} menit."
                 )
         elif "bad password" in str(str_3).lower():
             raise DirectDownloadLinkException(
-                "ERROR: The password you entered is wrong!"
+                "ERROR: Kata sandi yang Anda masukkan salah!"
             )
         else:
             raise DirectDownloadLinkException(
-                "ERROR: Error trying to generate Direct Link from 1fichier!"
+                "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
             )
     else:
         raise DirectDownloadLinkException(
-            "ERROR: Error trying to generate Direct Link from 1fichier!"
+            "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
         )
 
 
