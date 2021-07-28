@@ -140,10 +140,10 @@ def mxplayer(url: str) -> str:
     """ Mxplayer direct links generator 
     Based On https://github.com/Manssizz/CendrawasihLeech """
     try:
-        text_url = re.findall(r'\bhttps?://.*mxplayer\.in\S+', url)[0]
+        link = re.findall(r'\bhttps?://.*mxplayer\.in\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`Tidak ditemukan tautan MXPlayer`\n")
-    page = BeautifulSoup(requests.get(text_url).content, 'lxml')
+    page = BeautifulSoup(requests.get(link).content, 'lxml')
     info = page.find('a', {'aria-label': 'Download file'})
     return info.get('href')
 
