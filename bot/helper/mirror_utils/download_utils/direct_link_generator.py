@@ -96,6 +96,8 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return fichier(link)
     elif 'sourceforge.net' in link:
         return sourceforge(link)
+    elif 'mxplayer.in' in link:
+        return mxplayer(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
     else:
@@ -134,6 +136,16 @@ def zippy_share(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("ERROR: Tidak dapat menemukan tombol Unduh")
 
+def mxplayer(url: str) -> str:
+    """ Mxplayer direct links generator 
+    Based On https://github.com/Manssizz/CendrawasihLeech """
+    try:
+        text_url = re.findall(r'\bhttps?://.*mxplayer\.in\S+', url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`Tidak ditemukan tautan MXPlayer`\n")
+    page = BeautifulSoup(requests.get(text_url).content, 'lxml')
+    info = page.find('a', {'aria-label': 'Download file'})
+    return info.get('href')
 
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
@@ -452,10 +464,6 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             raise DirectDownloadLinkException(
                 "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
             )
-    else:
-        raise DirectDownloadLinkException(
-            "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
-        )
 
 def solidfiles(url: str) -> str:
     """ Solidfiles direct links generator
