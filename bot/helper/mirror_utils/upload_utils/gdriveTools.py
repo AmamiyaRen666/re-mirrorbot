@@ -36,7 +36,8 @@ TELEGRAPHLIMIT = 80
 class GoogleDriveHelper:
     def __init__(self, name=None, listener=None):
         self.__G_DRIVE_TOKEN_FILE = "token.pickle"
-        # Check https://developers.google.com/drive/scopes for all available scopes
+        # Check https://developers.google.com/drive/scopes for all available
+        # scopes
         self.__OAUTH_SCOPE = ['https://www.googleapis.com/auth/drive']
         # Redirect URI for installed apps, can be left as is
         self.__REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
@@ -112,8 +113,8 @@ class GoogleDriveHelper:
         if self.status is not None:
             chunk_size = self.status.total_size * self.status.progress(
             ) - self._file_uploaded_bytes
-            self._file_uploaded_bytes = self.status.total_size * self.status.progress(
-            )
+            self._file_uploaded_bytes = self.status.total_size * \
+                self.status.progress()
             LOGGER.debug(
                 f'Uploading {self.name}, chunk size: {get_readable_file_size(chunk_size)}'
             )
@@ -245,18 +246,20 @@ class GoogleDriveHelper:
                     reason = json.loads(
                         err.content
                     ).get('error').get('errors')[0].get('reason')
-                    if reason == 'userRateLimitExceeded' or reason == 'dailyLimitExceeded':
-                        if USE_SERVICE_ACCOUNTS:
-                            self.switchServiceAccount()
-                            LOGGER.info(f"Got: {reason}, Trying Again.")
-                            return self.upload_file(
-                                file_path, file_name, mime_type, parent_id
-                            )
-                        else:
-                            self.is_cancelled = True
-                            LOGGER.info(f"Got: {reason}")
-                            raise err
+                    if reason not in [
+                        'userRateLimitExceeded',
+                        'dailyLimitExceeded',
+                    ]:
+                        raise err
+                    if USE_SERVICE_ACCOUNTS:
+                        self.switchServiceAccount()
+                        LOGGER.info(f"Got: {reason}, Trying Again.")
+                        return self.upload_file(
+                            file_path, file_name, mime_type, parent_id
+                        )
                     else:
+                        self.is_cancelled = True
+                        LOGGER.info(f"Got: {reason}")
                         raise err
         if self.is_cancelled:
             return
@@ -358,16 +361,13 @@ class GoogleDriveHelper:
         body = {'parents': [dest_id]}
 
         try:
-            res = self.__service.files().copy(
+            return self.__service.files().copy(
                 supportsAllDrives=True, fileId=file_id, body=body
             ).execute()
-            return res
         except HttpError as err:
             if err.resp.get('content-type', '').startswith('application/json'):
-                reason = json.loads(
-                    err.content
-                ).get('error').get('errors')[0].get('reason')
-                if reason == 'userRateLimitExceeded' or reason == 'dailyLimitExceeded':
+                reason = json.loads(err.content).get('error').get('errors')[0].get('reason')
+                if reason in ['userRateLimitExceeded', 'dailyLimitExceeded']:
                     if USE_SERVICE_ACCOUNTS:
                         if self.sa_count == self.service_account_count:
                             self.is_cancelled = True
@@ -377,7 +377,7 @@ class GoogleDriveHelper:
                             return self.copyFile(file_id, dest_id)
                     else:
                         self.is_cancelled = True
-                        LOGGER.info(f"Got: {reason}")
+                        LOGGER.info(f'Got: {reason}')
                         raise err
                 else:
                     raise err
@@ -473,18 +473,6 @@ class GoogleDriveHelper:
                         buttons.buildbutton("⚡ Index Link", siurl)
                     else:
                         buttons.buildbutton("⚡ Index Link", url)
-                if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
-                    buttons.buildbutton(
-                        f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}"
-                    )
-                if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
-                    buttons.buildbutton(
-                        f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}"
-                    )
-                if BUTTON_SIX_NAME is not None and BUTTON_SIX_URL is not None:
-                    buttons.buildbutton(
-                        f"{BUTTON_SIX_NAME}", f"{BUTTON_SIX_URL}"
-                    )
             else:
                 file = self.copyFile(meta.get('id'), parent_id)
                 msg += f'<b>Filename: </b><code>{file.get("name")}</code>'
@@ -524,33 +512,31 @@ class GoogleDriveHelper:
                         buttons.buildbutton("⚡ Index Link", url)
                         if VIEW_LINK:
                             buttons.buildbutton("🌐 View Link", urls)
-                if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
-                    buttons.buildbutton(
-                        f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}"
-                    )
-                if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
-                    buttons.buildbutton(
-                        f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}"
-                    )
-                if BUTTON_SIX_NAME is not None and BUTTON_SIX_URL is not None:
-                    buttons.buildbutton(
-                        f"{BUTTON_SIX_NAME}", f"{BUTTON_SIX_URL}"
-                    )
+            if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
+                buttons.buildbutton(
+                    f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}"
+                )
+            if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
+                buttons.buildbutton(
+                    f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}"
+                )
+            if BUTTON_SIX_NAME is not None and BUTTON_SIX_URL is not None:
+                buttons.buildbutton(
+                    f"{BUTTON_SIX_NAME}", f"{BUTTON_SIX_URL}"
+                )
         except Exception as err:
             if isinstance(err, RetryError):
-                LOGGER.info(
-                    f"Total Attempts: {err.last_attempt.attempt_number}"
-                )
+                LOGGER.info(f'Total Attempts: {err.last_attempt.attempt_number}')
                 err = err.last_attempt.exception()
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
-            if "User rate limit exceeded" in str(err):
-                msg = "User rate limit exceeded."
-            elif "File not found" in str(err):
-                msg = "Berkas tidak ditemukan."
+            if 'User rate limit exceeded' in str(err):
+                msg = 'User rate limit exceeded.'
+            elif 'File not found' in str(err):
+                msg = 'Berkas tidak ditemukan.'
             else:
-                msg = f"Error.\n{err}"
-            return msg, ""
+                msg = f'Error.\n{err}'
+            return msg, ''
         return msg, InlineKeyboardMarkup(buttons.build_menu(2))
 
     def cloneFolder(self, name, local_path, folder_id, parent_id):
@@ -691,7 +677,7 @@ class GoogleDriveHelper:
             str = str.replace(char, '\\' + char)
         return str
 
-    def drive_list(self, fileName):
+    def drive_list(self, fileName):  # sourcery no-metrics
         msg = ""
         fileName = self.escapes(str(fileName))
         # Create Search Query for API request.
@@ -706,101 +692,99 @@ class GoogleDriveHelper:
             orderBy='name asc'
         ).execute()
         content_count = 0
-        if response["files"]:
-            msg += f'<img src="{IMAGE_URL}" /><h4>{len(response["files"])} Results: {fileName}</h4><br><br>'
-            for file in response.get('files', []):
-                if file.get(
-                    'mimeType'
-                ) == "application/vnd.google-apps.folder":  # Detect Whether Current Entity is a Folder or File.
-                    furl = f"https://drive.google.com/drive/folders/{file.get('id')}"
-                    msg += f"📁 <code>{file.get('name')}<br>(folder)</code><br>"
-                    if SHORTENER is not None and SHORTENER_API is not None:
-                        sfurl = requests.get(
-                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={furl}&format=text'
-                        ).text
-                        msg += f"<b><a href={sfurl}>Drive Link</a></b>"
-                    else:
-                        msg += f"<b><a href={furl}>Drive Link</a></b>"
-                    if INDEX_URL is not None:
-                        url_path = requests.utils.quote(f'{file.get("name")}')
-                        url = f'{INDEX_URL}/{url_path}/'
-                        if SHORTENER is not None and SHORTENER_API is not None:
-                            siurl = requests.get(
-                                f'https://{SHORTENER}/api?api={SHORTENER_API}&url={url}&format=text'
-                            ).text
-                            msg += f' <b>| <a href="{siurl}">Index Link</a></b>'
-                        else:
-                            msg += f' <b>| <a href="{url}">Index Link</a></b>'
-                elif file.get(
-                    'mimeType'
-                ) == 'application/vnd.google-apps.shortcut':
-                    msg += f"⁍<a href='https://drive.google.com/drive/folders/{file.get('id')}'>{file.get('name')}" \
-                        f"</a> (shortcut)"
-                    # Excluded index link as indexes cant download or open these shortcuts
-                else:
-                    furl = f"https://drive.google.com/uc?id={file.get('id')}&export=download"
-                    msg += f"📄 <code>{file.get('name')}<br>({get_readable_file_size(int(file.get('size')))})</code><br>"
-                    if SHORTENER is not None and SHORTENER_API is not None:
-                        sfurl = requests.get(
-                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={furl}&format=text'
-                        ).text
-                        msg += f"<b><a href={sfurl}>Drive Link</a></b>"
-                    else:
-                        msg += f"<b><a href={furl}>Drive Link</a></b>"
-                    if INDEX_URL is not None:
-                        url_path = requests.utils.quote(f'{file.get("name")}')
-                        url = f'{INDEX_URL}/{url_path}'
-                        urls = f'{INDEX_URL}/{url_path}?a=view'
-                        if SHORTENER is not None and SHORTENER_API is not None:
-                            siurl = requests.get(
-                                f'https://{SHORTENER}/api?api={SHORTENER_API}&url={url}&format=text'
-                            ).text
-                            siurls = requests.get(
-                                f'https://{SHORTENER}/api?api={SHORTENER_API}&url={urls}&format=text'
-                            ).text
-                            msg += f' <b>| <a href="{siurl}">Index Link</a></b>'
-                            if VIEW_LINK:
-                                msg += f' <b>| <a href="{siurls}">View Link</a></b>'
-                        else:
-                            msg += f' <b>| <a href="{url}">Index Link</a></b>'
-                            if VIEW_LINK:
-                                msg += f' <b>| <a href="{urls}">View Link</a></b>'
-                msg += '<br><br>'
-                content_count += 1
-                if content_count == TELEGRAPHLIMIT:
-                    self.telegraph_content.append(msg)
-                    msg = ""
-                    content_count = 0
-
-            if msg != '':
-                self.telegraph_content.append(msg)
-
-            if len(self.telegraph_content) == 0:
-                return "No Result Found ❌", None
-
-            for content in self.telegraph_content:
-                self.path.append(
-                    Telegraph(access_token=telegraph_token).create_page(
-                        title='Slam Mirror Bot Search',
-                        author_name='Slam Mirror Bot',
-                        author_url=
-                        'https://github.com/breakdowns/slam-mirrorbot',
-                        html_content=content
-                    )['path']
-                )
-
-            self.num_of_path = len(self.path)
-            if self.num_of_path > 1:
-                self.edit_telegraph()
-
-            msg = f"<b>Found {len(response['files'])} results for <i>{fileName}</i></b>"
-            buttons = button_build.ButtonMaker()
-            buttons.buildbutton("🔎 VIEW", f"https://telegra.ph/{self.path[0]}")
-
-            return msg, InlineKeyboardMarkup(buttons.build_menu(1))
-
-        else:
+        if not response["files"]:
             return '', ''
+
+        msg += f'<img src="{IMAGE_URL}" /><h4>{len(response["files"])} Results: {fileName}</h4><br><br>'
+        for file in response.get('files', []):
+            # Detect Whether Current Entity is a Folder or File.
+            if file.get(
+                    'mimeType') == "application/vnd.google-apps.folder":
+                furl = f"https://drive.google.com/drive/folders/{file.get('id')}"
+                msg += f"📁 <code>{file.get('name')}<br>(folder)</code><br>"
+                if SHORTENER is not None and SHORTENER_API is not None:
+                    sfurl = requests.get(
+                        f'https://{SHORTENER}/api?api={SHORTENER_API}&url={furl}&format=text'
+                    ).text
+                    msg += f"<b><a href={sfurl}>Drive Link</a></b>"
+                else:
+                    msg += f"<b><a href={furl}>Drive Link</a></b>"
+                if INDEX_URL is not None:
+                    url_path = requests.utils.quote(f'{file.get("name")}')
+                    url = f'{INDEX_URL}/{url_path}/'
+                    if SHORTENER is not None and SHORTENER_API is not None:
+                        siurl = requests.get(
+                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={url}&format=text'
+                        ).text
+                        msg += f' <b>| <a href="{siurl}">Index Link</a></b>'
+                    else:
+                        msg += f' <b>| <a href="{url}">Index Link</a></b>'
+            elif file.get(
+                'mimeType'
+            ) == 'application/vnd.google-apps.shortcut':
+                msg += f"⁍<a href='https://drive.google.com/drive/folders/{file.get('id')}'>{file.get('name')}" \
+                    f"</a> (shortcut)"
+                # Excluded index link as indexes cant download or open
+                # these shortcuts
+            else:
+                furl = f"https://drive.google.com/uc?id={file.get('id')}&export=download"
+                msg += f"📄 <code>{file.get('name')}<br>({get_readable_file_size(int(file.get('size')))})</code><br>"
+                if SHORTENER is not None and SHORTENER_API is not None:
+                    sfurl = requests.get(
+                        f'https://{SHORTENER}/api?api={SHORTENER_API}&url={furl}&format=text'
+                    ).text
+                    msg += f"<b><a href={sfurl}>Drive Link</a></b>"
+                else:
+                    msg += f"<b><a href={furl}>Drive Link</a></b>"
+                if INDEX_URL is not None:
+                    url_path = requests.utils.quote(f'{file.get("name")}')
+                    url = f'{INDEX_URL}/{url_path}'
+                    urls = f'{INDEX_URL}/{url_path}?a=view'
+                    if SHORTENER is not None and SHORTENER_API is not None:
+                        siurl = requests.get(
+                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={url}&format=text'
+                        ).text
+                        siurls = requests.get(
+                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={urls}&format=text'
+                        ).text
+                        msg += f' <b>| <a href="{siurl}">Index Link</a></b>'
+                        if VIEW_LINK:
+                            msg += f' <b>| <a href="{siurls}">View Link</a></b>'
+                    else:
+                        msg += f' <b>| <a href="{url}">Index Link</a></b>'
+                        if VIEW_LINK:
+                            msg += f' <b>| <a href="{urls}">View Link</a></b>'
+            msg += '<br><br>'
+            content_count += 1
+            if content_count == TELEGRAPHLIMIT:
+                self.telegraph_content.append(msg)
+                msg = ""
+                content_count = 0
+
+        if msg != '':
+            self.telegraph_content.append(msg)
+
+        if len(self.telegraph_content) == 0:
+            return "No Result Found ❌", None
+
+        for content in self.telegraph_content:
+            self.path.append(
+                Telegraph(
+                    access_token=telegraph_token).create_page(
+                    title='Slam Mirror Bot Search',
+                    author_name='Slam Mirror Bot',
+                    author_url='https://github.com/breakdowns/slam-mirrorbot',
+                    html_content=content)['path'])
+
+        self.num_of_path = len(self.path)
+        if self.num_of_path > 1:
+            self.edit_telegraph()
+
+        msg = f"<b>Found {len(response['files'])} results for <i>{fileName}</i></b>"
+        buttons = button_build.ButtonMaker()
+        buttons.buildbutton("🔎 VIEW", f"https://telegra.ph/{self.path[0]}")
+
+        return msg, InlineKeyboardMarkup(buttons.build_menu(1))
 
     def count(self, link):
         try:
@@ -945,11 +929,9 @@ class GoogleDriveHelper:
                 supportsTeamDrives=True,
                 includeTeamDriveItems=True,
                 q=f"'{folder_id}' in parents",
-                fields=
-                'nextPageToken, files(id, name, mimeType, size, shortcutDetails)',
+                fields='nextPageToken, files(id, name, mimeType, size, shortcutDetails)',
                 pageToken=page_token,
-                pageSize=1000
-            ).execute()
+                pageSize=1000).execute()
             result.extend(files['files'])
             page_token = files.get("nextPageToken")
             if not page_token:
@@ -961,7 +943,7 @@ class GoogleDriveHelper:
             filename = item['name']
             mime_type = item['mimeType']
             shortcut_details = item.get('shortcutDetails', None)
-            if shortcut_details != None:
+            if shortcut_details is not None:
                 file_id = shortcut_details['targetId']
                 mime_type = shortcut_details['targetMimeType']
             if mime_type == 'application/vnd.google-apps.folder':
@@ -1013,8 +995,8 @@ class GoogleDriveHelper:
         if self.dstatus is not None:
             chunk_size = self.dstatus.total_size * self.dstatus.progress(
             ) - self._file_downloaded_bytes
-            self._file_downloaded_bytes = self.dstatus.total_size * self.dstatus.progress(
-            )
+            self._file_downloaded_bytes = self.dstatus.total_size * \
+                self.dstatus.progress()
             self.downloaded_bytes += chunk_size
             self.dtotal_time += self.update_interval
 

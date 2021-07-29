@@ -27,7 +27,7 @@ search_lock = asyncio.Lock()
 search_info = {False: dict(), True: dict()}
 
 
-async def return_search(query, page=1, sukebei=False):
+async def return_search(query, page=1, sukebei=False):  # sourcery no-metrics
     page -= 1
     query = query.lower().strip()
     used_search_info = search_info[sukebei]
@@ -79,7 +79,7 @@ async def return_search(query, page=1, sukebei=False):
             return '', len(results), ttl
 
 
-message_info = dict()
+message_info = {}
 ignore = set()
 
 
@@ -114,7 +114,7 @@ async def init_search(client, message, query, sukebei):
             result, reply_markup=InlineKeyboardMarkup([buttons])
         )
         message_info[(reply.chat.id, reply.message_id)
-                    ] = message.from_user.id, ttl, query, 1, pages, sukebei
+                     ] = message.from_user.id, ttl, query, 1, pages, sukebei
 
 
 @app.on_callback_query(custom_filters.callback_data('nyaa_nop'))
@@ -125,7 +125,8 @@ async def nyaa_nop(client, callback_query):
 callback_lock = asyncio.Lock()
 
 
-@app.on_callback_query(custom_filters.callback_data(['nyaa_back', 'nyaa_next']))
+@app.on_callback_query(
+    custom_filters.callback_data(['nyaa_back', 'nyaa_next']))
 async def nyaa_callback(client, callback_query):
     message = callback_query.message
     message_identifier = (message.chat.id, message.message_id)
@@ -171,7 +172,7 @@ async def nyaa_callback(client, callback_query):
                 text, reply_markup=InlineKeyboardMarkup([buttons])
             )
         message_info[message_identifier
-                    ] = user_id, ttl, query, current_page, pages, sukebei
+                     ] = user_id, ttl, query, current_page, pages, sukebei
         if ttl_ended:
             ignore.add(message_identifier)
     await callback_query.answer()
@@ -292,7 +293,7 @@ class TorrentSearch:
                     self.response_range = range(
                         0, len(self.response), self.RESULT_LIMIT
                     )
-        except:
+        except BaseException:
             await self.message.edit("No Results Found.")
             return
         await self.update_message()
@@ -398,25 +399,25 @@ torrents_dict = {
         }
 }
 
-torrent_handlers = []
-for command, value in torrents_dict.items():
-    torrent_handlers.append(
-        TorrentSearch(command, value['source'], value['result_str'])
-    )
+torrent_handlers = [
+    TorrentSearch(command, value['source'], value['result_str'])
+    for command, value in torrents_dict.items()
+]
 
 
 def searchhelp(update, context):
     help_string = '''
-• <code>/nyaasi</code> <i>[search query]</i>
-• <code>/sukebei</code> <i>[search query]</i>
-• <code>/1337x</code> <i>[search query]</i>
-• <code>/piratebay</code> <i>[search query]</i>
-• <code>/tgx</code> <i>[search query]</i>
-• <code>/yts</code> <i>[search query]</i>
-• <code>/eztv</code> <i>[search query]</i>
-• <code>/torlock</code> <i>[search query]</i>
-• <code>/rarbg</code> <i>[search query]</i>
-• <code>/ts</code> <i>[search query]</i>
+<b>Torrent Search</b>
+• /nyaasi <i>[search query]</i>
+• /sukebei <i>[search query]</i>
+• /1337x <i>[search query]</i>
+• /piratebay <i>[search query]</i>
+• /tgx <i>[search query]</i>
+• /yts <i>[search query]</i>
+• /eztv <i>[search query]</i>
+• /torlock <i>[search query]</i>
+• /rarbg <i>[search query]</i>
+• /ts <i>[search query]</i>
 '''
     update.effective_message.reply_photo(
         IMAGE_URL, help_string, parse_mode=ParseMode.HTML

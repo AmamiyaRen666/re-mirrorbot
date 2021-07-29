@@ -99,7 +99,7 @@ class YoutubeDLHelper(DownloadHelper):
     def __onDownloadStart(self):
         with download_dict_lock:
             download_dict[self.__listener.uid
-                         ] = YoutubeDLDownloadStatus(self, self.__listener)
+                          ] = YoutubeDLDownloadStatus(self, self.__listener)
 
     def __onDownloadComplete(self):
         self.__listener.onDownloadComplete()
@@ -114,13 +114,12 @@ class YoutubeDLHelper(DownloadHelper):
         with YoutubeDL(self.opts) as ydl:
             try:
                 result = ydl.extract_info(link, download=False)
-                if name == "":
-                    name = ydl.prepare_filename(result)
-                else:
-                    name = name
+                name = ydl.prepare_filename(result) if name == "" else name
                 # noobway hack for changing extension after converting to mp3
                 if qual == "audio":
-                    name = name.replace(".mp4", ".mp3").replace(".webm", ".mp3")
+                    name = name.replace(
+                        ".mp4", ".mp3").replace(
+                        ".webm", ".mp3")
             except DownloadError as e:
                 self.onDownloadError(str(e))
                 return
@@ -131,7 +130,8 @@ class YoutubeDLHelper(DownloadHelper):
             for v in result['entries']:
                 if v and v.get('filesize'):
                     self.size += float(v['filesize'])
-            # For playlists, ydl.prepare-filename returns the following format: <Playlist Name>-<Id of playlist>.NA
+            # For playlists, ydl.prepare-filename returns the following format:
+            # <Playlist Name>-<Id of playlist>.NA
             self.name = name.split(f"-{result['id']}")[0]
             self.vid_id = video.get('id')
             self.is_playlist = True
@@ -157,7 +157,7 @@ class YoutubeDLHelper(DownloadHelper):
             self.onDownloadError("Download Cancelled by User!")
 
     def add_download(self, link, path, qual, name):
-        pattern = '^.*(youtu\.be\/|youtube.com\/)(playlist?)'
+        pattern = '^.*(youtu\\.be\\/|youtube.com\\/)(playlist?)'
         if re.match(pattern, link):
             self.opts['ignoreerrors'] = True
         self.__onDownloadStart()

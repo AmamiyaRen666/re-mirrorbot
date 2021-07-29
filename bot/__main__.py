@@ -1,4 +1,5 @@
-import shutil, psutil
+import shutil
+import psutil
 import signal
 import os
 
@@ -56,7 +57,7 @@ Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
 Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 '''
     buttons = button_build.ButtonMaker()
-    buttons.buildbutton("Repo", "https://github.com/breakdowns/slam-mirrorbot")
+    buttons.buildbutton("Repo", "https://github.com/breakdowns/slam-aria-mirror-bot")
     buttons.buildbutton("Support Group", "https://t.me/SlamMirrorSupport")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     LOGGER.info('UID: {} - UN: {} - MSG: {}'.format(

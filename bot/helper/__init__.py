@@ -28,7 +28,8 @@ def get_text(message: Message) -> [None, str]:
 
 
 # Preparing For Setting Config
-# Implement by https://github.com/jusidama18 and Based on this https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/heroku_helpers.py
+# Implement by https://github.com/jusidama18 and Based on this
+# https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/heroku_helpers.py
 
 heroku_client = None
 if HEROKU_API_KEY:
@@ -52,7 +53,7 @@ def check_heroku(func):
         if HEROKU_APP_NAME and heroku_client:
             try:
                 heroku_app = heroku_client.app(HEROKU_APP_NAME)
-            except:
+            except BaseException:
                 await message.reply_text(
                     message,
                     "`Heroku Api Key And App Name Doesn't Match!`",
@@ -65,7 +66,8 @@ def check_heroku(func):
 
 
 # Preparing For Update Bot
-# Implement by https://github.com/jusidama18 and Based on this https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/updater.py
+# Implement by https://github.com/jusidama18 and Based on this
+# https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/updater.py
 
 
 def fetch_heroku_git_url(api_key, app_name):
@@ -76,7 +78,7 @@ def fetch_heroku_git_url(api_key, app_name):
     heroku = heroku3.from_key(api_key)
     try:
         heroku_applications = heroku.apps()
-    except:
+    except BaseException:
         return None
     heroku_app = None
     for app in heroku_applications:

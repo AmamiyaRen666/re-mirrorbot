@@ -14,7 +14,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/cloud-platform',
+SCOPES = ['https://www.googleapis.com/auth/drive',
+          'https://www.googleapis.com/auth/cloud-platform',
           'https://www.googleapis.com/auth/iam']
 project_create_ops = []
 current_key_dump = []
@@ -26,9 +27,13 @@ def _create_accounts(service, project, count):
     batch = service.new_batch_http_request(callback=_def_batch_resp)
     for i in range(count):
         aid = _generate_id('mfc-')
-        batch.add(service.projects().serviceAccounts().create(name='projects/' + project, body={'accountId': aid,
-                                                                                                'serviceAccount': {
-                                                                                                    'displayName': aid}}))
+        batch.add(
+            service.projects().serviceAccounts().create(
+                name='projects/' + project,
+                body={
+                    'accountId': aid,
+                    'serviceAccount': {
+                        'displayName': aid}}))
     batch.execute()
 
 
@@ -44,12 +49,14 @@ def _create_remaining_accounts(iam, project):
 # Generate a random id
 def _generate_id(prefix='saf-'):
     chars = '-abcdefghijklmnopqrstuvwxyz1234567890'
-    return prefix + ''.join(choice(chars) for _ in range(25)) + choice(chars[1:])
+    return prefix + ''.join(choice(chars)
+                            for _ in range(25)) + choice(chars[1:])
 
 
 # List projects using service
 def _get_projects(service):
-    return [i['projectId'] for i in service.projects().list().execute()['projects']]
+    return [i['projectId']
+            for i in service.projects().list().execute()['projects']]
 
 
 # Default batch callback handler
@@ -96,13 +103,17 @@ def _enable_services(service, projects, ste):
     batch = service.new_batch_http_request(callback=_def_batch_resp)
     for i in projects:
         for j in ste:
-            batch.add(service.services().enable(name='projects/%s/services/%s' % (i, j)))
+            batch.add(
+                service.services().enable(
+                    name='projects/%s/services/%s' %
+                    (i, j)))
     batch.execute()
 
 
 # List SAs in project
 def _list_sas(iam, project):
-    resp = iam.projects().serviceAccounts().list(name='projects/' + project, pageSize=100).execute()
+    resp = iam.projects().serviceAccounts().list(
+        name='projects/' + project, pageSize=100).execute()
     if 'accounts' in resp:
         return resp['accounts']
     return []
@@ -185,7 +196,8 @@ def serviceaccountfactory(
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                credentials, SCOPES)
 
             # creds = flow.run_local_server(port=0)
             creds = flow.run_console()
@@ -198,14 +210,16 @@ def serviceaccountfactory(
     serviceusage = build('serviceusage', 'v1', credentials=creds)
 
     projs = None
-    while projs == None:
+    while projs is None:
         try:
             projs = _get_projects(cloud)
         except HttpError as e:
-            if loads(e.content.decode('utf-8'))['error']['status'] == 'PERMISSION_DENIED':
+            if loads(e.content.decode('utf-8')
+                     )['error']['status'] == 'PERMISSION_DENIED':
                 try:
                     serviceusage.services().enable(
-                        name='projects/%s/services/cloudresourcemanager.googleapis.com' % proj_id).execute()
+                        name='projects/%s/services/cloudresourcemanager.googleapis.com' %
+                        proj_id).execute()
                 except HttpError as e:
                     print(e._get_reason())
                     input('Press Enter to retry.')
@@ -222,11 +236,12 @@ def serviceaccountfactory(
                 nprjs = _create_projects(cloud, create_projects)
                 selected_projects = nprjs
             else:
-                sys.exit('No, you cannot create %d new project (s).\n'
-                         'Please reduce value of --quick-setup.\n'
-                         'Remember that you can totally create %d projects (%d already).\n'
-                         'Please do not delete existing projects unless you know what you are doing' % (
-                             create_projects, max_projects, current_count))
+                sys.exit(
+                    'No, you cannot create %d new project (s).\n'
+                    'Please reduce value of --quick-setup.\n'
+                    'Remember that you can totally create %d projects (%d already).\n'
+                    'Please do not delete existing projects unless you know what you are doing' %
+                    (create_projects, max_projects, current_count))
         else:
             print('Will overwrite all service accounts in existing projects.\n'
                   'So make sure you have some projects already.')
@@ -279,26 +294,68 @@ def serviceaccountfactory(
 
 
 if __name__ == '__main__':
-    parse = ArgumentParser(description='A tool to create Google service accounts.')
-    parse.add_argument('--path', '-p', default='accounts',
-                       help='Specify an alternate directory to output the credential files.')
-    parse.add_argument('--token', default='token_sa.pickle', help='Specify the pickle token file path.')
-    parse.add_argument('--credentials', default='credentials.json', help='Specify the credentials file path.')
+    parse = ArgumentParser(
+        description='A tool to create Google service accounts.')
+    parse.add_argument(
+        '--path',
+        '-p',
+        default='accounts',
+        help='Specify an alternate directory to output the credential files.')
+    parse.add_argument('--token', default='token_sa.pickle',
+                       help='Specify the pickle token file path.')
+    parse.add_argument(
+        '--credentials',
+        default='credentials.json',
+        help='Specify the credentials file path.')
     parse.add_argument('--list-projects', default=False, action='store_true',
                        help='List projects viewable by the user.')
-    parse.add_argument('--list-sas', default=False, help='List service accounts in a project.')
-    parse.add_argument('--create-projects', type=int, default=None, help='Creates up to N projects.')
-    parse.add_argument('--max-projects', type=int, default=12, help='Max amount of project allowed. Default: 12')
-    parse.add_argument('--enable-services', default=None,
-                       help='Enables services on the project. Default: IAM and Drive')
-    parse.add_argument('--services', nargs='+', default=['iam', 'drive'],
-                       help='Specify a different set of services to enable. Overrides the default.')
-    parse.add_argument('--create-sas', default=None, help='Create service accounts in a project.')
-    parse.add_argument('--delete-sas', default=None, help='Delete service accounts in a project.')
-    parse.add_argument('--download-keys', default=None, help='Download keys for all the service accounts in a project.')
-    parse.add_argument('--quick-setup', default=None, type=int,
-                       help='Create projects, enable services, create service accounts and download keys. ')
-    parse.add_argument('--new-only', default=False, action='store_true', help='Do not use exisiting projects.')
+    parse.add_argument(
+        '--list-sas',
+        default=False,
+        help='List service accounts in a project.')
+    parse.add_argument(
+        '--create-projects',
+        type=int,
+        default=None,
+        help='Creates up to N projects.')
+    parse.add_argument(
+        '--max-projects',
+        type=int,
+        default=12,
+        help='Max amount of project allowed. Default: 12')
+    parse.add_argument(
+        '--enable-services',
+        default=None,
+        help='Enables services on the project. Default: IAM and Drive')
+    parse.add_argument(
+        '--services',
+        nargs='+',
+        default=[
+            'iam',
+            'drive'],
+        help='Specify a different set of services to enable. Overrides the default.')
+    parse.add_argument(
+        '--create-sas',
+        default=None,
+        help='Create service accounts in a project.')
+    parse.add_argument(
+        '--delete-sas',
+        default=None,
+        help='Delete service accounts in a project.')
+    parse.add_argument(
+        '--download-keys',
+        default=None,
+        help='Download keys for all the service accounts in a project.')
+    parse.add_argument(
+        '--quick-setup',
+        default=None,
+        type=int,
+        help='Create projects, enable services, create service accounts and download keys. ')
+    parse.add_argument(
+        '--new-only',
+        default=False,
+        action='store_true',
+        help='Do not use exisiting projects.')
     args = parse.parse_args()
     # If credentials file is invalid, search for one.
     if not os.path.exists(args.credentials):
@@ -311,7 +368,10 @@ if __name__ == '__main__':
         else:
             i = 0
             print('Select a credentials file below.')
-            inp_options = [str(i) for i in list(range(1, len(options) + 1))] + options
+            inp_options = [
+                str(i) for i in list(
+                    range(
+                        1, len(options) + 1))] + options
             while i < len(options):
                 print('  %d) %s' % (i + 1, options[i]))
                 i += 1
@@ -324,7 +384,9 @@ if __name__ == '__main__':
                 args.credentials = inp
             else:
                 args.credentials = options[int(inp) - 1]
-            print('Use --credentials %s next time to use this credentials file.' % args.credentials)
+            print(
+                'Use --credentials %s next time to use this credentials file.' %
+                args.credentials)
     if args.quick_setup:
         opt = '*'
         if args.new_only:
@@ -358,7 +420,9 @@ if __name__ == '__main__':
                 print('No projects.')
         elif args.list_sas:
             if resp:
-                print('Service accounts in %s (%d):' % (args.list_sas, len(resp)))
+                print(
+                    'Service accounts in %s (%d):' %
+                    (args.list_sas, len(resp)))
                 for i in resp:
                     print('  %s (%s)' % (i['email'], i['uniqueId']))
             else:

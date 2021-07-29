@@ -54,7 +54,7 @@ class YoutubeDLDownloadStatus(Status):
             seconds = (self.size_raw() -
                        self.processed_bytes()) / self.speed_raw()
             return f'{get_readable_time(seconds)}'
-        except:
+        except BaseException:
             return '-'
 
     def download(self):

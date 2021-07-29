@@ -1,4 +1,5 @@
-# An abstract class which will be inherited by the tool specific classes like aria2_helper or mega_download_helper
+# An abstract class which will be inherited by the tool specific classes
+# like aria2_helper or mega_download_helper
 import threading
 
 

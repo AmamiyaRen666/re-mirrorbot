@@ -1,4 +1,4 @@
-FROM narima/megaria:ubuntu
+FROM narima/megaria:latest
 
 COPY extract /usr/local/bin
 COPY pextract /usr/local/bin

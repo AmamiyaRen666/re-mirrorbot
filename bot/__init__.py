@@ -25,9 +25,12 @@ if os.path.exists('log.txt'):
     with open('log.txt', 'r+') as f:
         f.truncate(0)
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
-                    level=logging.INFO)
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('log.txt'),
+        logging.StreamHandler()],
+    level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,6 +41,7 @@ Interval = []
 
 def getConfig(name: str):
     return os.environ[name]
+
 
 def mktable():
     try:
@@ -50,6 +54,7 @@ def mktable():
     except Error as e:
         LOGGER.error(e)
         exit(1)
+
 
 try:
     if bool(getConfig('_____REMOVE_THIS_LINE_____')):
@@ -110,9 +115,11 @@ try:
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     if not DOWNLOAD_DIR.endswith("/"):
         DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
-    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
+    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(
+        getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
     OWNER_ID = int(getConfig('OWNER_ID'))
-    AUTO_DELETE_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_MESSAGE_DURATION'))
+    AUTO_DELETE_MESSAGE_DURATION = int(
+        getConfig('AUTO_DELETE_MESSAGE_DURATION'))
     TELEGRAM_API = getConfig('TELEGRAM_API')
     TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
     UPSTREAM_REPO = getConfig('UPSTREAM_REPO')
@@ -133,7 +140,7 @@ if DB_URI is not None:
         cur = conn.cursor()
         sql = "SELECT * from users;"
         cur.execute(sql)
-        rows = cur.fetchall()  #returns a list ==> (uid, sudo)
+        rows = cur.fetchall()  # returns a list ==> (uid, sudo)
         for row in rows:
             AUTHORIZED_CHATS.add(row[0])
             if row[1]:
@@ -149,9 +156,13 @@ if DB_URI is not None:
         conn.close()
 
 LOGGER.info("Generating USER_SESSION_STRING")
-app = Client(':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN)
+app = Client(
+    ':memory:',
+    api_id=int(TELEGRAM_API),
+    api_hash=TELEGRAM_HASH,
+    bot_token=BOT_TOKEN)
 
-#Generate Telegraph Token
+# Generate Telegraph Token
 sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
 LOGGER.info("Generating TELEGRAPH_TOKEN using '" + sname + "' name")
 telegraph = Telegraph()

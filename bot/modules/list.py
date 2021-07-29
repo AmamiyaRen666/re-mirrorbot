@@ -11,7 +11,10 @@ def list_drive(update, context):
     try:
         search = update.message.text.split(' ', maxsplit=1)[1]
         LOGGER.info(f"Mencari: {search}")
-        reply = sendMessage('Mencari..... Mohon Menunggu!', context.bot, update)
+        reply = sendMessage(
+            'Mencari..... Mohon Menunggu!',
+            context.bot,
+            update)
         gdrive = GoogleDriveHelper(None)
         msg, button = gdrive.drive_list(search)
 
@@ -25,8 +28,9 @@ def list_drive(update, context):
 
     except IndexError:
         sendMessage(
-            'Kirim kunci pencarian bersama dengan perintah', context.bot, update
-        )
+            'Kirim kunci pencarian bersama dengan perintah',
+            context.bot,
+            update)
 
 
 list_handler = CommandHandler(
