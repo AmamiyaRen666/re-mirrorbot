@@ -1,29 +1,36 @@
-[![Slam](https://telegra.ph/file/db03910496f06094f1f7a.jpg)](https://youtu.be/Pk_TthHfLeE)
+[![lofi](https://images.unsplash.com/photo-1608875004752-2fdb6a39ba4c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80)](https://www.youtube.com/watch?v=AzV77KFsLn4)
 
-# Slam Aria Mirror Bot
-![GitHub Repo stars](https://img.shields.io/github/stars/breakdowns/slam-aria-mirror-bot?color=blue&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/breakdowns/slam-aria-mirror-bot?color=green&style=flat)
-![GitHub issues](https://img.shields.io/github/issues/breakdowns/slam-aria-mirror-bot)
+Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
+
+# re-mirrorbot
+![GitHub forks](https://img.shields.io/github/forks/Ncode2014/re-mirrorbot?color=green&style=flat)
+![GitHub issues](https://img.shields.io/github/issues/Ncode2014/re-mirrorbot)
 ![GitHub closed issues](https://img.shields.io/github/issues-closed/breakdowns/slam-aria-mirror-bot)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/breakdowns/slam-aria-mirror-bot)
-![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/breakdowns/slam-aria-mirror-bot)
-![GitHub watchers](https://img.shields.io/github/watchers/breakdowns/slam-aria-mirror-bot)
-![GitHub contributors](https://img.shields.io/github/contributors/breakdowns/slam-aria-mirror-bot?style=flat)
-![GitHub repo size](https://img.shields.io/github/repo-size/breakdowns/slam-aria-mirror-bot?color=red)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/breakdowns/slam-aria-mirror-bot)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Ncode2014/re-mirrorbot)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Ncode2014/re-mirrorbot)
+![GitHub watchers](https://img.shields.io/github/watchers/Ncode2014/re-mirrorbot)
+![GitHub repo size](https://img.shields.io/github/repo-size/Ncode2014/re-mirrorbot?color=red)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Ncode2014/re-mirrorbot)
 ![GitHub](https://img.shields.io/github/license/breakdowns/slam-aria-mirror-bot)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
-![Docker Pulls](https://img.shields.io/docker/pulls/breakdowns/mega-sdk-python?label=Docker%20Pull)
-[![Channel](https://img.shields.io/badge/Join%20Channel-!-red)](https://t.me/SlamMirrorUpdates)
+![Docker Pulls](https://img.shields.io/docker/pulls/narima/megaria?label=Docker%20Pull)
 
-**Slam Aria Mirror Bot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive.
+**re-mirrorbot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive Forked from [slam-aria-mirrobot](https://github.com/breakdowns/slam-aria-mirror-bot)
 
 # Features supported:
 <details>
     <summary><b>Click Here For More Details</b></summary>
 
-## Additional Features
-- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-aria-mirror-bot/tree/master#setting-up-config-file))
+## what different this repo rather original slam
+- adding more direct link generator
+- still using some old stuff like image url on speedtest,index link and etc
+- Aria and ffmpeg custom to maximize your bot to be efficient and powerfull
+- you can change yt-dlp or ytdl because the docker has been included to dependencies
+- still support and keep using latest updated slam-aria-mirrobot
+- refactored some code to make some good perfomance
+
+## Additional Features (original slam)
+- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/Ncode2014/re-mirrorbot))
 - Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
@@ -52,7 +59,7 @@ fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream,
 sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com,
 streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
 1fichier.com, 1drv.ms (Only works for file not folder or business account),
-uptobox.com (Uptobox account must be premium), solidfiles.com
+uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 ```
 ## From Original Repos
 - Mirroring direct download links, Torrent, and Telegram files to Google Drive
@@ -86,7 +93,7 @@ Deploying is pretty much straight forward and is divided into several steps as f
 
 - Clone this repo:
 ```
-git clone https://github.com/breakdowns/slam-aria-mirror-bot mirrorbot/
+git clone https://github.com/Ncode2014/re-mirrorbot mirrorbot/
 cd mirrorbot
 ```
 
@@ -95,16 +102,24 @@ For Debian based distros
 ```
 sudo apt install python3
 ```
-Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/)
+
+Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/) or using [snap tutorial](https://snapcraft.io/install/docker/ubuntu) for easier way
 
 - For Arch and it's derivatives:
 ```
 sudo pacman -S docker python
 ```
+
+- For easy way using snap: 
+```
+sudo snap install docker
+```
+
 - Install dependencies for running setup scripts:
 ```
 pip3 install -r requirements-cli.txt
 ```
+
 ## Generate Database
 <details>
     <summary><b>Click Here For More Details</b></summary>
@@ -145,12 +160,12 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - **DOWNLOAD_DIR**: The path to the local folder where the downloads should be downloaded to
 - **DOWNLOAD_STATUS_UPDATE_INTERVAL**: A short interval of time in seconds after which the Mirror progress message is updated. (I recommend to keep it `5` seconds at least)  
 - **AUTO_DELETE_MESSAGE_DURATION**: Interval of time (in seconds), after which the bot deletes it's message (and command message) which is expected to be viewed instantly. (**Note**: Set to `-1` to never automatically delete messages)
-- **UPSTREAM_REPO**: Link for Bot Upstream Repo, if you want default update, fill `https://github.com/breakdowns/slam-aria-mirror-bot`.
+- **UPSTREAM_REPO**: Link for Bot Upstream Repo, if you want default update, fill `https://github.com/Ncode2014/re-mirrorbot`.
 - **UPSTREAM_BRANCH**: Branch name for Bot Upstream Repo, fill `master`.
 ### Optional Field
 - **ACCOUNTS_ZIP_URL**: Only if you want to load your Service Account externally from an Index Link. Archive your Service Account json files to a zip file directly (don't archive the accounts folder. Select all the jsons inside and zip them only instead. Name the zip file with whatever you want, it doesn't matter). Fill this with the direct link of that file.
 - **TOKEN_PICKLE_URL**: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
-- **DATABASE_URL**: Your Database URL. See [Generate Database](https://github.com/breakdowns/slam-aria-mirror-bot/tree/master#generate-database) to generate database (**NOTE**: If you use database you can save your sudo id permanent using `/addsudo` command).
+- **DATABASE_URL**: Your Database URL. See [Generate Database](https://github.com/Ncode2014/re-mirrorbot#generate-database) to generate database (**NOTE**: If you use database you can save your sudo id permanent using `/addsudo` command).
 - **AUTHORIZED_CHATS**: Fill user_id and chat_id (not username) of you want to authorize, Seprate them with space, Examples: `-0123456789 -1122334455 6915401739`.
 - **SUDO_USERS**: Fill user_id (not username) of you want to sudoers, Seprate them with space, Examples: `0123456789 1122334455 6915401739` (**NOTE**: If you want save sudo id permanent without database, you must fill your sudo id there).
 - **IS_TEAM_DRIVE**: Set to `True` if `GDRIVE_FOLDER_ID` is from a Team Drive else `False` or Leave it empty.
@@ -215,7 +230,7 @@ sudo dockerd
 ```
 - Build Docker image:
 ```
-docker build . --rm --force-rm --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
+docker build . --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
 ```
 - Run the image:
 ```
@@ -286,6 +301,7 @@ cd -
 Then add emails from emails.txt to Google Group, after that add Google Group to your Shared Drive and promote it to manager.
 
 **NOTE**: If you have created SAs in past from this script, you can also just re download the keys by running:
+
 ```
 python3 gen_sa_accounts.py --download-keys project_id
 ```
@@ -310,7 +326,6 @@ machine example.workers.dev password index_password
 Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
 # Credits
-
 Thanks to:
 - [out386](https://github.com/out386) heavily inspired from Telegram Bot which is written in JS
 - [Izzy12](https://github.com/lzzy12) for original repo
@@ -319,5 +334,6 @@ Thanks to:
 - [SVR666](https://github.com/SVR666) for some features & fixes
 - [anasty17](https://github.com/anasty17) for some features & help
 - [breakdowns](https://github.com/breakdowns) for slam-aria-mirror-bot
+- [Marek Oron](https://unsplash.com/@marekokon) for banner image repo
 
 And many more people who aren't mentioned here, but may be found in [Contributors](https://github.com/breakdowns/slam-aria-mirror-bot/graphs/contributors).

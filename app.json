@@ -1,15 +1,15 @@
 {
-    "name": "slam-aria-mirror-bot",
+    "name": "re-mirrorbot",
     "description": "A Telegram bot for all your mirror needs",
-    "logo": "https://telegra.ph/file/6507910fd06d18dfaba82.jpg",
+    "logo": "https://i.pinimg.com/originals/20/e3/33/20e333c9aa4b82bfc9c67c58a321bde7.jpg",
     "keywords": [
       "bot",
       "telegram",
       "python"
     ],
-    "repository": "https://github.com/breakdowns/slam-aria-mirror-bot",
-    "website": "https://github.com/breakdowns/slam-aria-mirror-bot",
-    "success_url": "https://t.me/SlamMirrorSupport",
+    "repository": "https://github.com/Ncode2014/re-mirrorbot",
+    "website": "https://github.com/Ncode2014/re-mirrorbot",
+    "success_url": "https://t.me/rumahmirorr",
     "stack": "container",
     "env": {
       "ENV": {
@@ -80,7 +80,7 @@
       },
       "UPSTREAM_REPO": {
         "description": "Link for Bot Upstream Repo, If you want default update, Fill https://github.com/breakdowns/slam-aria-mirror-bot.",
-        "value": "https://github.com/breakdowns/slam-aria-mirror-bot",
+        "value": "https://github.com/Ncode2014/re-mirrorbot",
         "required": true
       },
       "UPSTREAM_BRANCH": {
