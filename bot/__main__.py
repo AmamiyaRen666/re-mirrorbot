@@ -63,7 +63,7 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
     LOGGER.info('UID: {} - UN: {} - MSG: {}'.format(
         update.message.chat.id, update.message.chat.username,
         update.message.text))
-    uptime = get_readable_time((time.time() - botStartTime))
+    uptime = get_readable_time(time.time() - botStartTime)
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(
             update):
         if update.message.chat.type == "private":

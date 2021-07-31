@@ -10,7 +10,7 @@ import random
 import string
 
 
-def cloneNode(update, context):
+def cloneNode(update, context):  # sourcery no-metrics
     args = update.message.text.split(" ", maxsplit=1)
     if len(args) > 1:
         link = args[1]
@@ -71,9 +71,7 @@ def cloneNode(update, context):
         if uname is not None:
             cc = f'\n\nDari: {uname}'
             men = f'{uname} '
-        if button == "cancelled":
-            sendMessage(men + result, context.bot, update)
-        elif button == "":
+        if button in ["cancelled", ""]:
             sendMessage(men + result, context.bot, update)
         else:
             drive = gdriveTools.GoogleDriveHelper(name)
@@ -112,7 +110,7 @@ def cloneNode(update, context):
         if uname is not None:
             cc = f'\n\nDari: {uname}'
             men = f'{uname} '
-        if button == "cancelled" or button == "":
+        if button in ["cancelled", ""]:
             sendMessage(men + result, context.bot, update)
         else:
             sendMarkup(result + cc, context.bot, update, button)

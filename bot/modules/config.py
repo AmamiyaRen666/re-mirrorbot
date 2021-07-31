@@ -95,7 +95,7 @@ async def config_menu(_, message):
 
 
 @app.on_callback_query(filters.regex('^docs_') & filters.user(OWNER_ID))
-async def config_button(_, query):
+async def config_button(_, query):  # sourcery no-metrics
     data = query.data.split('_')[1]
     if data == '1':
         return await query.message.edit(

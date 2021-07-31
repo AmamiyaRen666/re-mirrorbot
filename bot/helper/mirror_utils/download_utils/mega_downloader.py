@@ -149,7 +149,7 @@ class MegaDownloadHelper:
 
     @staticmethod
     @new_thread
-    def add_download(mega_link: str, path: str, listener):
+    def add_download(mega_link: str, path: str, listener):  # sourcery no-metrics
         if MEGA_API_KEY is None:
             raise MegaDownloaderException(
                 'Mega API KEY not provided! Cannot mirror Mega links'

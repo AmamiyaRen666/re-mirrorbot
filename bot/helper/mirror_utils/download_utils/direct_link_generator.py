@@ -217,7 +217,7 @@ def uptobox(url: str) -> str:
             dl_url = link
         except:
             file_id = re.findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
-            file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (
+            file_link = 'https://uptobox.com/api/link?token={}&file_code={}'.format(
                 UPTOBOX_TOKEN, file_id)
             req = requests.get(file_link)
             result = req.json()

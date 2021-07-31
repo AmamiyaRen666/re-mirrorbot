@@ -114,7 +114,7 @@ def get_progress_bar_string(status):
     return p_str
 
 
-def get_readable_message():
+def get_readable_message():  # sourcery no-metrics
     with download_dict_lock:
         msg = ""
         INDEX = 0

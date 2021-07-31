@@ -23,7 +23,7 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 
 ## what different this repo rather original slam
 - adding more direct link generator
-- still using some old stuff like image url on speedtest,index link and etc
+- still using some old stuff like image url on speedtest,index link, mediainfo,usage and etc
 - Aria and ffmpeg custom to maximize your bot to be efficient and powerfull
 - you can change yt-dlp or ytdl because the docker has been included to dependencies
 - still support and keep using latest updated slam-aria-mirrobot
