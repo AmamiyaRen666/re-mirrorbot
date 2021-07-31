@@ -326,7 +326,7 @@ class GoogleDriveHelper:
                     raise Exception('Unggah telah dibatalkan secara manual!')
                 link = f"https://drive.google.com/folderview?id={dir_id}"
                 if self.is_cancelled:
-                    LOGGER.info("Deleting uploaded data from drive...")
+                    LOGGER.info("Deleting uploaded data from Drive...")
                     msg = self.deletefile(link)
                     LOGGER.info(f"{msg}")
                     return
@@ -448,7 +448,7 @@ class GoogleDriveHelper:
                 )
                 durl = self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL.format(dir_id)
                 if self.is_cancelled:
-                    LOGGER.info("Deleting cloned data from drive...")
+                    LOGGER.info("Deleting cloned data from Drive...")
                     msg = self.deletefile(durl)
                     LOGGER.info(f"{msg}")
                     return "Kloning Anda telah dihentikan dan data kloning telah dihapus!", "dibatalkan"
