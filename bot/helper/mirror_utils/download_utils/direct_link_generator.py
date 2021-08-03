@@ -165,11 +165,9 @@ def sourceforge(url: str) -> str:
     info = page.find("ul", {"id": "mirrorList"}).findAll("li")
     for mirror in info[1:]:
         name = re.findall(r"\((.*)\)", mirror.text.strip())[0]
-        dl_url1 = (
+        dl_url = (
             f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
         )
-    else:
-        dl_url = (f"{dl_url1}" + "?viasf=1")
     return dl_url
 
 def uptobox(url: str) -> str:
@@ -456,8 +454,8 @@ def solidfiles(url: str) -> str:
     return json.loads(mainOptions)["downloadUrl"]
 
 def mastersource(url: str) -> str:
-    url2 = f"{url}" + "?viasf=1"
-    return url2
+    """ Sourceforge Master.dl bypass """
+    return f"{url}" + "?viasf=1"
 
 def useragent():
     """
