@@ -8,24 +8,25 @@ from https://github.com/AvinashReddy3108/PaperplaneExtended . I hereby take no c
 than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtended/commits/master/userbot/modules/direct_links.py
 for original authorship. """
 
-from bot import LOGGER, UPTOBOX_TOKEN
 import json
 import math
 import re
 import urllib.parse
+from base64 import standard_b64encode
 from os import popen
 from random import choice
 from urllib.parse import urlparse
 
+import cloudscraper
 import lk21
 import requests
-import cloudscraper
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
-from base64 import standard_b64encode
-from bot.helper.telegram_helper.bot_commands import BotCommands
+
+from bot import LOGGER, UPTOBOX_TOKEN
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
+from bot.helper.telegram_helper.bot_commands import BotCommands
 
 
 def direct_link_generator(link: str):  # sourcery no-metrics
@@ -40,8 +41,6 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return zippy_share(link)
     elif 'yadi.sk' in link:
         return yandex_disk(link)
-    elif 'cloud.mail.ru' in link:
-        return cm_ru(link)
     elif 'mediafire.com' in link:
         return mediafire(link)
     elif 'uptobox.com' in link:
@@ -94,10 +93,10 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return racaty(link)
     elif '1fichier.com' in link:
         return fichier(link)
-    elif 'sourceforge.net' in link:
+    elif 'https://sourceforge.net' in link:
         return sourceforge(link)
-    elif 'mxplayer.in' in link:
-        return mxplayer(link)
+    elif 'https://master.dl.sourceforge.net' in link:
+        return mastersource(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
     else:
@@ -136,17 +135,6 @@ def zippy_share(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("ERROR: Tidak dapat menemukan tombol Unduh")
 
-def mxplayer(url: str) -> str:
-    """ Mxplayer direct links generator 
-    Based On https://github.com/Manssizz/CendrawasihLeech """
-    try:
-        link = re.findall(r'\bhttps?://.*mxplayer\.in\S+', url)[0]
-    except IndexError:
-        raise DirectDownloadLinkException("`Tidak ditemukan tautan MXPlayer`\n")
-    page = BeautifulSoup(requests.get(link).content, 'lxml')
-    info = page.find('a', {'aria-label': 'Download file'})
-    return info.get('href')
-
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
     Based on https://github.com/wldhx/yadisk-direct """
@@ -164,7 +152,7 @@ def sourceforge(url: str) -> str:
     """ SourceForge direct links generator
     Based on https://github.com/REBEL75/REBELUSERBOT """
     try:
-        link = re.findall(r"\bhttps?://.*sourceforge\.net\S+", url)[0]
+        link = re.findall(r"\bhttps?://sourceforge\.net\S+", url)[0]
     except IndexError:
         return "`No SourceForge links found`\n"
     file_path = re.findall(r"files(.*)/download", link)[0]
@@ -183,23 +171,6 @@ def sourceforge(url: str) -> str:
     else:
         dl_url = (f"{dl_url1}" + "?viasf=1")
     return dl_url
-
-def cm_ru(url: str) -> str:
-    """cloud.mail.ru direct links generator
-    Using https://github.com/JrMasterModelBuilder/cmrudl.py"""
-    try:
-        link = re.findall(r'\bhttps?://.*cloud\.mail\.ru\S+', url)[0]
-    except IndexError:
-        raise DirectDownloadLinkException('No cloud.mail.ru links found\n')
-    command = f'vendor/cmrudl/cmrudl -s {link}'
-    result = popen(command).read()
-    result = result.splitlines()[-1]
-    try:
-        data = json.loads(result)
-    except json.decoder.JSONDecodeError:
-        raise DirectDownloadLinkException("Error: Tidak dapat mengekstrak tautan\n")
-    return data["download"]
-
 
 def uptobox(url: str) -> str:
     """ Uptobox direct links generator
@@ -484,6 +455,9 @@ def solidfiles(url: str) -> str:
     mainOptions = str(re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
     return json.loads(mainOptions)["downloadUrl"]
 
+def mastersource(url: str) -> str:
+    url2 = f"{url}" + "?viasf=1"
+    return url2
 
 def useragent():
     """
