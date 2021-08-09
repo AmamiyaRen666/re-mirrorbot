@@ -6,6 +6,7 @@ import random
 import string
 
 import aria2p
+import qbittorrentapi as qba
 import telegram.ext as tg
 from dotenv import load_dotenv
 from pyrogram import Client
@@ -16,25 +17,25 @@ from psycopg2 import Error
 
 import socket
 import faulthandler
+
 faulthandler.enable()
 
 socket.setdefaulttimeout(600)
 
 botStartTime = time.time()
-if os.path.exists('log.txt'):
-    with open('log.txt', 'r+') as f:
+if os.path.exists("log.txt"):
+    with open("log.txt", "r+") as f:
         f.truncate(0)
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('log.txt'),
-        logging.StreamHandler()],
-    level=logging.INFO)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler("log.txt"), logging.StreamHandler()],
+    level=logging.INFO,
+)
 
 LOGGER = logging.getLogger(__name__)
 
-load_dotenv('config.env')
+load_dotenv("config.env")
 
 Interval = []
 
@@ -57,8 +58,8 @@ def mktable():
 
 
 try:
-    if bool(getConfig('_____REMOVE_THIS_LINE_____')):
-        logging.error('The README.md file there to be read! Exiting now!')
+    if bool(getConfig("_____REMOVE_THIS_LINE_____")):
+        logging.error("The README.md file there to be read! Exiting now!")
         exit()
 except KeyError:
     pass
@@ -70,6 +71,28 @@ aria2 = aria2p.API(
         secret="",
     )
 )
+
+
+def get_client() -> qba.TorrentsAPIMixIn:
+    qb_client = qba.Client(
+        host="localhost", port=8090, username="admin", password="adminadmin"
+    )
+    try:
+        qb_client.auth_log_in()
+        qb_client.application.set_preferences(
+            {
+                "disk_cache": 64,
+                "incomplete_files_ext": True,
+                "max_connec": 3000,
+                "max_connec_per_torrent": 300,
+                "async_io_thread": 32,
+            }
+        )
+        return qb_client
+    except qba.LoginFailed as e:
+        LOGGER.error(str(e))
+        return None
+
 
 DOWNLOAD_DIR = None
 BOT_TOKEN = None
@@ -110,20 +133,18 @@ try:
 except:
     pass
 try:
-    BOT_TOKEN = getConfig('BOT_TOKEN')
-    parent_id = getConfig('GDRIVE_FOLDER_ID')
-    DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
+    BOT_TOKEN = getConfig("BOT_TOKEN")
+    parent_id = getConfig("GDRIVE_FOLDER_ID")
+    DOWNLOAD_DIR = getConfig("DOWNLOAD_DIR")
     if not DOWNLOAD_DIR.endswith("/"):
-        DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
-    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(
-        getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
-    OWNER_ID = int(getConfig('OWNER_ID'))
-    AUTO_DELETE_MESSAGE_DURATION = int(
-        getConfig('AUTO_DELETE_MESSAGE_DURATION'))
-    TELEGRAM_API = getConfig('TELEGRAM_API')
-    TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
-    UPSTREAM_REPO = getConfig('UPSTREAM_REPO')
-    UPSTREAM_BRANCH = getConfig('UPSTREAM_BRANCH')
+        DOWNLOAD_DIR = DOWNLOAD_DIR + "/"
+    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig("DOWNLOAD_STATUS_UPDATE_INTERVAL"))
+    OWNER_ID = int(getConfig("OWNER_ID"))
+    AUTO_DELETE_MESSAGE_DURATION = int(getConfig("AUTO_DELETE_MESSAGE_DURATION"))
+    TELEGRAM_API = getConfig("TELEGRAM_API")
+    TELEGRAM_HASH = getConfig("TELEGRAM_HASH")
+    UPSTREAM_REPO = getConfig("UPSTREAM_REPO")
+    UPSTREAM_BRANCH = getConfig("UPSTREAM_BRANCH")
 except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
     exit(1)
@@ -155,12 +176,11 @@ if DB_URI is not None:
         cur.close()
         conn.close()
 
+
 LOGGER.info("Generating USER_SESSION_STRING")
 app = Client(
-    ':memory:',
-    api_id=int(TELEGRAM_API),
-    api_hash=TELEGRAM_HASH,
-    bot_token=BOT_TOKEN)
+    ':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN
+)
 
 # Generate Telegraph Token
 sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
@@ -326,6 +346,29 @@ try:
         UNFINISHED_PROGRESS_STR = '○'
 except KeyError:
     UNFINISHED_PROGRESS_STR = '○'
+
+try:
+    BASE_URL = getConfig('BASE_URL_OF_BOT')
+    if len(BASE_URL) == 0:
+        BASE_URL = None
+except KeyError:
+    logging.warning('BASE_URL_OF_BOT not provided!')
+    BASE_URL = None
+
+try:
+    IS_VPS = getConfig('IS_VPS')
+    IS_VPS = IS_VPS.lower() == 'true'
+except KeyError:
+    IS_VPS = False
+
+try:
+    SERVER_PORT = getConfig('SERVER_PORT')
+    if len(SERVER_PORT) == 0:
+        SERVER_PORT = None
+except KeyError:
+    logging.warning('SERVER_PORT not provided!')
+    SERVER_PORT = None
+
 updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot
 dispatcher = updater.dispatcher

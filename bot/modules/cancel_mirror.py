@@ -44,16 +44,10 @@ def cancel_mirror(update, context):
         elif not mirror_message:
             sendMessage(msg, context.bot, update)
             return
-    if dl.status() == "Archiving...🔐":
-        sendMessage(
-            "Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
-            context.bot, update
-        )
-    elif dl.status() == "Extracting...📂":
-        sendMessage(
-            "Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
-            context.bot, update
-        )
+    if dl.status() == MirrorStatus.STATUS_ARCHIVING:
+        sendMessage("Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
+    elif dl.status() == MirrorStatus.STATUS_EXTRACTING:
+        sendMessage("Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
     else:
         dl.download().cancel_download()
         sleep(3)  # incase of any error with ondownloaderror listener
@@ -62,11 +56,16 @@ def cancel_mirror(update, context):
 
 def cancel_all(update, context):
     count = 0
-    gid = 1
+    gid = 0
     while True:
         dl = getAllDownload()
         if not dl:
             break
+        if dl.gid() != gid:
+            gid = dl.gid()
+            dl.download().cancel_download()
+            count += 1
+            sleep(0.3)
         if dl.gid() == gid:
             continue
         gid = dl.gid()

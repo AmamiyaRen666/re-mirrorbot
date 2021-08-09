@@ -2,20 +2,18 @@
 # Based on this
 # https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/updater.py
 
-import sys
 import subprocess
-import heroku3
-
+import sys
 from datetime import datetime
 from os import environ, execle, path, remove
 
+import heroku3
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
-
 from pyrogram import filters
 
-from bot import app, OWNER_ID, UPSTREAM_REPO, UPSTREAM_BRANCH
-from bot.helper import get_text, HEROKU_URL
+from bot import OWNER_ID, UPSTREAM_BRANCH, UPSTREAM_REPO, app
+from bot.helper import HEROKU_URL, get_text
 from bot.helper.telegram_helper.bot_commands import BotCommands
 
 REPO_ = UPSTREAM_REPO
@@ -60,9 +58,8 @@ async def update_it(client, message):
             ups_rem.pull(UPSTREAM_BRANCH)
         except GitCommandError:
             repo.git.reset("--hard", "FETCH_HEAD")
-        await msg_.edit(
-            "`Berhasil Diperbarui! Beri Saya Waktu Untuk Memulai Ulang!`"
-        )
+        subprocess.run(["pip3",  "install", "--no-cache-dir", "-r",  "requirements.txt"])
+        await msg_.edit("`Berhasil Diperbarui! Beri Saya Waktu Untuk Memulai Ulang!`")
         with open("./aria.sh", 'rb') as file:
             script = file.read()
         subprocess.call("./aria.sh", shell=True)

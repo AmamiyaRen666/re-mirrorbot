@@ -1,14 +1,14 @@
 {
-    "name": "re-mirrorbot",
-    "description": "A Telegram bot for all your mirror needs",
+    "name": "re-cerminbot",
+    "description": "A Telegram bot for all your cermin needs",
     "logo": "https://i.pinimg.com/originals/20/e3/33/20e333c9aa4b82bfc9c67c58a321bde7.jpg",
     "keywords": [
       "bot",
       "telegram",
       "python"
     ],
-    "repository": "https://github.com/Ncode2014/re-mirrorbot",
-    "website": "https://github.com/Ncode2014/re-mirrorbot",
+    "repository": "https://github.com/Ncode2014/re-cerminbot",
+    "website": "https://github.com/Ncode2014/re-cerminbot",
     "success_url": "https://t.me/rumahmirorr",
     "stack": "container",
     "env": {
@@ -198,7 +198,20 @@
       },
       "STATUS_LIMIT": {
         "description": "Status limit with buttons, Recommend limit status to 4 tasks max.",
-        "value": "",
+        "required": false
+      },
+      "IS_VPS": {
+        "description": "Only for VPS, fill False.",
+        "value": "False",
+        "required": false
+      },
+      "SERVER_PORT": {
+        "description": "Only for VPS, no need to fill it.",
+        "required": false
+      },
+      "BASE_URL_OF_BOT": {
+        "description": "Heroku App name web url, Examples: https://yourappname.herokuapp.com",
+        "value": "False",
         "required": false
       }
     },
@@ -208,7 +221,7 @@
       }
     ],
     "formation": {
-            "worker": {
+            "web": {
                 "quantity": 1,
                 "size": "free"
             }
