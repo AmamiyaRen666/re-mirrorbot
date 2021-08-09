@@ -294,8 +294,23 @@ async def config_button(_, query):  # sourcery no-metrics
                             f"{emoji.CROSS_MARK}", callback_data='docs_end'
                         ),
                         types.InlineKeyboardButton(
-                            f"{emoji.RIGHT_ARROW}", callback_data='docs_1'
+                            f"{emoji.RIGHT_ARROW}", callback_data='docs_11'
                         )
+                    ]
+                ]
+            )
+        )
+    elif data == '11':
+        return await query.message.edit(
+            __header__.format(data)
+            + f"**[ Updater Config ]**\n\n**UPSTREAM_REPO:** `{UPSTREAM_REPO}`\n\n**UPSTREAM_BRANCH:** `{UPSTREAM_BRANCH}`",
+            + f"**[ qBittorrent Config ]**\n\n**IS_VPS:** `{IS_VPS}`\n\n**SERVER_PORT:** `{SERVER_PORT}`\n\n**BASE_URL:** `{BASE_URL}`\n\n**[ Updater Config ]**\n\n**UPSTREAM_REPO:** `{UPSTREAM_REPO}`\n\n**UPSTREAM_BRANCH:** `{UPSTREAM_BRANCH}`",
+            reply_markup=types.InlineKeyboardMarkup(
+                [
+                    [
+                        types.InlineKeyboardButton(f"{emoji.LEFT_ARROW}", callback_data='docs_10'),
+                        types.InlineKeyboardButton(f"{emoji.CROSS_MARK}", callback_data='docs_end'),
+                        types.InlineKeyboardButton(f"{emoji.RIGHT_ARROW}", callback_data='docs_1')
                     ]
                 ]
             )
