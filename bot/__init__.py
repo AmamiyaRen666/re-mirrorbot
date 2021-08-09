@@ -83,9 +83,26 @@ def get_client() -> qba.TorrentsAPIMixIn:
             {
                 "disk_cache": 64,
                 "incomplete_files_ext": True,
-                "max_connec": 3000,
-                "max_connec_per_torrent": 300,
+                "max_connec": 10000,
+                "max_connec_per_torrent": 1000,
                 "async_io_threads": 32,
+                "preallocate_all": True,
+                "upnp": True,
+                "dl_limit": -1,
+                "up_limit": -1,
+                "dht": True,
+                "pex": True,
+                "lsd": True,
+                "encryption": 0,
+                "queueing_enabled": True,
+                "max_active_downloads": 10,
+                "max_active_torrents": 20,
+                "dont_count_slow_torrents": True,
+                "bittorrent_protocol": 0,
+                "recheck_completed_torrents": True,
+                "enable_multi_connections_from_same_ip": True,
+                "slow_torrent_dl_rate_threshold": 100,
+                "slow_torrent_inactive_timer": 600,
             }
         )
         return qb_client
@@ -138,9 +155,11 @@ try:
     DOWNLOAD_DIR = getConfig("DOWNLOAD_DIR")
     if not DOWNLOAD_DIR.endswith("/"):
         DOWNLOAD_DIR = DOWNLOAD_DIR + "/"
-    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig("DOWNLOAD_STATUS_UPDATE_INTERVAL"))
+    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(
+        getConfig("DOWNLOAD_STATUS_UPDATE_INTERVAL"))
     OWNER_ID = int(getConfig("OWNER_ID"))
-    AUTO_DELETE_MESSAGE_DURATION = int(getConfig("AUTO_DELETE_MESSAGE_DURATION"))
+    AUTO_DELETE_MESSAGE_DURATION = int(
+        getConfig("AUTO_DELETE_MESSAGE_DURATION"))
     TELEGRAM_API = getConfig("TELEGRAM_API")
     TELEGRAM_HASH = getConfig("TELEGRAM_HASH")
     UPSTREAM_REPO = getConfig("UPSTREAM_REPO")
