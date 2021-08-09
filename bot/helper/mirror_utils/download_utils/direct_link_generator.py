@@ -483,9 +483,7 @@ def dropbox1(url: str) -> str:
 
 def dropbox2(url: str) -> str:
     """ Dropbox Downloader Folder """
-    if "dl.dropboxusercontent.com" in url or "?dl=0" in url:
-        url3 = url.replace("?dl=0", "?dl=1")
-    return f"{url3}"
+    return url.replace("?dl=0", "?dl=1")
 
 
 def useragent():
