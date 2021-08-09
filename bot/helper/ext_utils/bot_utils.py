@@ -154,8 +154,8 @@ def get_readable_message():  # sourcery no-metrics
                         pass
                     
                     try:
-                        msg += f"\n<b>Seeders:</b> {download.torrent_info().num_seeds}" \
-                            f" | <b>Leechers:</b> {download.torrent_info().num_leechs}"
+                        msg += f"\n<b>Seeders:</b> <code>{download.torrent_info().num_seeds}</code>" \
+                            f" | <b>Leechers:</b> <code>{download.torrent_info().num_leechs}</code>"
                     except:
                         pass
                     msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
@@ -166,7 +166,7 @@ def get_readable_message():  # sourcery no-metrics
             if INDEX > COUNT + STATUS_LIMIT:
                 return None, None
             if dick_no > STATUS_LIMIT:
-                msg += f"Halaman: {PAGE_NO}/{pages} | Tugas: {dick_no}\n"
+                msg += f"Halaman: <code>{PAGE_NO}/{pages}</code> | <code>Tugas: {dick_no}</code>\n"
                 buttons = button_build.ButtonMaker()
                 buttons.sbutton("Sebelumnya", "pre")
                 buttons.sbutton("Selanjutnya", "nex")

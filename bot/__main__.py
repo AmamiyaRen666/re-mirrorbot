@@ -42,18 +42,15 @@ def stats(update, context):
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage("/").percent
-    stats = (
-        f"<b>Waktu Aktif Bot:</b> {currentTime}\n"
-        f"<b>Waktu mulai:</b> {current}\n"
-        f"<b>Total Ruang Disk:</b> {total}\n"
-        f"<b>Digunakan:</b> {used}  "
-        f"<b>Bebas:</b> {free}\n\n"
-        f"📊Penggunaan Data📊\n<b>Upload:</b> {sent}\n"
-        f"<b>Download:</b> {recv}\n\n"
-        f"<b>CPU:</b> {cpuUsage}%\n"
-        f"<b>RAM:</b> {memory}%\n"
-        f"<b>HDD:</b> {disk}%"
-    )
+    stats = f'<b>Bot berjalan:</b> <code>{currentTime}</code>\n' \
+            f'<b>Ruang Disk Total:</b> <code>{total}</code>\n' \
+            f'<b>Digunakan:</b> <code>{used}</code>  ' \
+            f'<b>Bebas:</b> <code>{free}</code>\n\n' \
+            f'<b>Diunggah:</b> <code>{sent}</code>\n' \
+            f'<b>Mengunduh:</b> <code>{recv}</code>\n\n' \
+            f'<b>CPU:</b> <code>{cpuUsage}%</code> ' \
+            f'<b>RAM:</b> <code>{memory}%</code> ' \
+            f'<b>DISK:</b> <code>{disk}%</code>'
     update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
 
 

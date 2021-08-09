@@ -37,6 +37,7 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - Stop duplicate cloning Google Drive & mirroring Mega support
 - Tar/Unzip Google Drive link support
 - Speedtest with picture results
+- Select files before downloading
 - Sudo with Database support
 - Check Heroku dynos stats
 - Extracting **tar.xz** support
@@ -61,6 +62,7 @@ streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
 1fichier.com, 1drv.ms (Only works for file not folder or business account),
 uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 ```
+
 ## From Original Repos
 - Mirroring direct download links, Torrent, and Telegram files to Google Drive
 - Mirroring Mega.nz links to Google Drive (If your Mega account not premium, it will limit 5GB/6 hours)
@@ -187,9 +189,9 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - **HEROKU_APP_NAME**: (Only if you deploying on Heroku) Your Heroku app name.
 - **IGNORE_PENDING_REQUESTS**: If you want the bot to ignore pending requests after it restarts, set this to `True`.
 - **STATUS_LIMIT**: Status limit with buttons (**NOTE**: Recommend limit status to `4` tasks max).
-- **IS_VPS**: Set it to `True` if you use VPS.
-- **SERVER_PORT**: For VPS
-- **BASE_URL_OF_BOT**: Your app URL Examples: `https://yourappname.herokuapp.com`
+- **IS_VPS**: (Only for VPS) Set it to `True` if you use VPS
+- **SERVER_PORT**: (Only for VPS) Your VPS port
+- **BASE_URL_OF_BOT**: (Required for Heroku) Valid BASE URL of where the bot is deploy. Ip/domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: No slash at the end)
 - **SHORTENER_API**: Fill your Shortener api key if you are using Shortener.
 - **SHORTENER**: if you want to use Shortener in Gdrive and index link, fill Shortener url here. Examples:
 ```
