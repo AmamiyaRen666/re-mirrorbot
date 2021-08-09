@@ -30,7 +30,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 
 
 def direct_link_generator(link: str):  # sourcery no-metrics
-    """ direct links generator """
+    """direct links generator"""
     if not link:
         raise DirectDownloadLinkException("Tidak ditemukan tautan!")
     elif 'youtube.com' in link or 'youtu.be' in link:
@@ -99,10 +99,11 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return mastersource(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
+    elif "dropbox.com" in link:
+        return dropbox(link)
     else:
         raise DirectDownloadLinkException(
-            f'No Direct link function found for {link}'
-        )
+            f"No Direct link function found for {link}")
 
 
 def zippy_share(url: str) -> str:
@@ -133,7 +134,9 @@ def zippy_share(url: str) -> str:
         js_content = getattr(evaljs, "x")
         return base_url + js_content
     except IndexError:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat menemukan tombol Unduh")
+        raise DirectDownloadLinkException(
+            "ERROR: Tidak dapat menemukan tombol Unduh")
+
 
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
@@ -146,7 +149,9 @@ def yandex_disk(url: str) -> str:
     try:
         return requests.get(api.format(link)).json()['href']
     except KeyError:
-        raise DirectDownloadLinkException("ERROR: File not found/Download limit reached\n")
+        raise DirectDownloadLinkException(
+            "ERROR: File not found/Download limit reached\n")
+
 
 def sourceforge(url: str) -> str:
     """ SourceForge direct links generator
@@ -169,6 +174,7 @@ def sourceforge(url: str) -> str:
             f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
         )
     return dl_url
+
 
 def uptobox(url: str) -> str:
     """ Uptobox direct links generator
@@ -230,12 +236,14 @@ def github(url: str) -> str:
     try:
         re.findall(r'\bhttps?://.*github\.com.*releases\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("Tidak ada tautan rilis github yang ditemukan\n")
+        raise DirectDownloadLinkException(
+            "Tidak ada tautan rilis github yang ditemukan\n")
     download = requests.get(url, stream=True, allow_redirects=False)
     try:
         return download.headers["location"]
     except KeyError:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengekstrak tautan\n")
+        raise DirectDownloadLinkException(
+            "ERROR: Tidak dapat mengekstrak tautan\n")
 
 
 def hxfile(url: str) -> str:
@@ -262,7 +270,8 @@ def letsupload(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*letsupload\.io\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("Tidak ada tautan letsupload yang ditemukan\n")
+        raise DirectDownloadLinkException(
+            "Tidak ada tautan letsupload yang ditemukan\n")
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_url(link)
     return dl_url
@@ -318,7 +327,8 @@ def pixeldrain(url: str) -> str:
         return dl_link
     else:
         raise DirectDownloadLinkException(
-            "ERROR: Tidak dapat mengunduh karena {}.".format(resp.text["value"])
+            "ERROR: Tidak dapat mengunduh karena {}.".format(
+                resp.text["value"])
         )
 
 
@@ -345,7 +355,8 @@ def racaty(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("Tidak ada tautan racaty yang ditemukan\n")
+        raise DirectDownloadLinkException(
+            "Tidak ada tautan racaty yang ditemukan\n")
     scraper = cloudscraper.create_scraper()
     r = scraper.get(url)
     soup = BeautifulSoup(r.text, "lxml")
@@ -385,7 +396,8 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             "ERROR: Tidak dapat mencapai server 1fichier!"
         )
     if req.status_code == 404:
-      raise DirectDownloadLinkException("ERROR: File tidak ditemukan/tautan yang Anda masukkan salah!")
+        raise DirectDownloadLinkException(
+            "ERROR: File tidak ditemukan/tautan yang Anda masukkan salah!")
     soup = BeautifulSoup(req.content, 'lxml')
     if soup.find("a", {"class": "ok btn-general btn-orange"}) is not None:
         dl_url = soup.find("a", {"class": "ok btn-general btn-orange"})["href"]
@@ -449,13 +461,28 @@ def solidfiles(url: str) -> str:
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36'
     }
-    pageSource = requests.get(url, headers = headers).text
-    mainOptions = str(re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
+    pageSource = requests.get(url, headers=headers).text
+    mainOptions = str(
+        re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
     return json.loads(mainOptions)["downloadUrl"]
+
 
 def mastersource(url: str) -> str:
     """ Sourceforge Master.dl bypass """
     return f"{url}" + "?viasf=1"
+
+
+def dropbox(url: str) -> str:
+    """Dropbox Downloader
+    Based On https://github.com/thomas-xin/Miza-Player
+    And https://github.com/Jusidama18"""
+    if "dropbox.com" in url:
+        url1 = url.replace("dropbox.com", "dl.dropboxusercontent.com")
+        url2 = url1.replace("?dl=0", "?dl=1")
+    elif "dl.dropboxusercontent.com" in url:
+        url3 = url.replace("?dl=0", "?dl=1")
+    return f"{url2}" or f"{url3}"
+
 
 def useragent():
     """
@@ -463,9 +490,10 @@ def useragent():
     """
     useragents = BeautifulSoup(
         requests.get(
-            'https://developers.whatismybrowser.com/'
-            'useragents/explore/operating_system_name/android/'
-        ).content, 'lxml'
-    ).findAll('td', {'class': 'useragent'})
+            "https://developers.whatismybrowser.com/"
+            "useragents/explore/operating_system_name/android/"
+        ).content,
+        "lxml",
+    ).findAll("td", {"class": "useragent"})
     user_agent = choice(useragents)
     return user_agent.text
