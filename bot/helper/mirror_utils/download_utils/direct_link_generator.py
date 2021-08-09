@@ -99,8 +99,10 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return mastersource(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
+    elif "dropbox.com/s/" in link:
+        return dropbox1(link)
     elif "dropbox.com" in link:
-        return dropbox(link)
+        return dropbox2(link)
     else:
         raise DirectDownloadLinkException(
             f"No Direct link function found for {link}")
@@ -472,16 +474,18 @@ def mastersource(url: str) -> str:
     return f"{url}" + "?viasf=1"
 
 
-def dropbox(url: str) -> str:
-    """Dropbox Downloader
+def dropbox1(url: str) -> str:
+    """Dropbox Downloader file
     Based On https://github.com/thomas-xin/Miza-Player
     And https://github.com/Jusidama18"""
-    if "dropbox.com" in url:
-        url1 = url.replace("dropbox.com", "dl.dropboxusercontent.com")
-        url2 = url1.replace("?dl=0", "?dl=1")
-    elif "dl.dropboxusercontent.com" in url:
+    return url.replace("dropbox.com", "dl.dropboxusercontent.com")
+
+
+def dropbox2(url: str) -> str:
+    """ Dropbox Downloader Folder """
+    if "dl.dropboxusercontent.com" in url or "?dl=0" in url:
         url3 = url.replace("?dl=0", "?dl=1")
-    return f"{url2}" or f"{url3}"
+    return f"{url3}"
 
 
 def useragent():
