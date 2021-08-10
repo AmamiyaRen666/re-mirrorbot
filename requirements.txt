@@ -11,7 +11,7 @@ google-auth-oauthlib
 heroku3
 html-telegraph-poster
 js2py
-lk21
+https://github.com/jusidama18/lk21/archive/refs/heads/main.zip
 lxml
 gunicorn
 https://github.com/trp07/messages/archive/refs/heads/master.zip
