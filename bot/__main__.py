@@ -41,16 +41,16 @@ def stats(update, context):
     recv = get_readable_file_size(psutil.net_io_counters().bytes_recv)
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
-    disk = psutil.disk_usage("/").percent
+    disk = psutil.disk_usage('/').percent
     stats = f'<b>Bot berjalan:</b> <code>{currentTime}</code>\n' \
-            f'<b>Ruang Disk Total:</b> <code>{total}</code>\n' \
-            f'<b>Digunakan:</b> <code>{used}</code>  ' \
+            f'<b>Ruang Penyimpnan total:</b> <code>{total}</code>\n' \
+            f'<b>Digunakan:</b> <code>{used}</code> ' \
             f'<b>Bebas:</b> <code>{free}</code>\n\n' \
-            f'<b>Diunggah:</b> <code>{sent}</code>\n' \
-            f'<b>Mengunduh:</b> <code>{recv}</code>\n\n' \
+            f'<b>Upload:</b> <code>{sent}</code>\n' \
+            f'<b>Download:</b> <code>{recv}</code>\n\n' \
             f'<b>CPU:</b> <code>{cpuUsage}%</code> ' \
             f'<b>RAM:</b> <code>{memory}%</code> ' \
-            f'<b>DISK:</b> <code>{disk}%</code>'
+            f'<b>HDD:</b> <code>{disk}%</code>'
     update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
 
 
