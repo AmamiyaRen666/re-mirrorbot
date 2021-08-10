@@ -1,14 +1,16 @@
 import logging
+import math
 import re
 import threading
 import time
-import math
 
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot import dispatcher, download_dict, download_dict_lock, FINISHED_PROGRESS_STR, UNFINISHED_PROGRESS_STR, STATUS_LIMIT
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CallbackQueryHandler
+
+from bot import (FINISHED_PROGRESS_STR, STATUS_LIMIT, UNFINISHED_PROGRESS_STR,
+                 dispatcher, download_dict, download_dict_lock)
 from bot.helper.telegram_helper import button_build, message_utils
+from bot.helper.telegram_helper.bot_commands import BotCommands
 
 LOGGER = logging.getLogger(__name__)
 
@@ -150,6 +152,7 @@ def get_readable_message():  # sourcery no-metrics
                         msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
                             f" | <b>Peers:</b> {download.aria_download().connections}" \
                             f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>"
+
                     except:
                         pass
 
@@ -157,10 +160,11 @@ def get_readable_message():  # sourcery no-metrics
                         msg += f"\n<b>Seeders:</b> <code>{download.torrent_info().num_seeds}</code>" \
                             f" | <b>Leechers:</b> <code>{download.torrent_info().num_leechs}</code>" \
 
-                        f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>"
                     except:
                         pass
-                    msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                    msg += f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>" \
+                        f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+
                 msg += "\n\n"
                 if STATUS_LIMIT is not None and INDEX >= COUNT + STATUS_LIMIT:
                     break

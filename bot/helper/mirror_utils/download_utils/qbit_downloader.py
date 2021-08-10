@@ -38,7 +38,7 @@ class qbittorrent:
         self.listener = listener
         is_file = False
         count = 0
-        pincode = ""
+        pincode = ''
         markup = None
         try:
             if os.path.exists(link):
