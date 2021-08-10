@@ -16,7 +16,7 @@ from bot import (BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, BUTTON_FIVE_NAME,
                  BUTTON_SIX_NAME, BUTTON_SIX_URL, DOWNLOAD_DIR, INDEX_URL,
                  SHORTENER, SHORTENER_API, TAR_UNZIP_LIMIT, VIEW_LINK,
                  Interval, aria2, dispatcher, download_dict,
-                 download_dict_lock)
+                 download_dict_lock, get_client)
 from bot.helper.ext_utils import bot_utils, fs_utils
 from bot.helper.ext_utils.bot_utils import get_mega_link_type
 from bot.helper.ext_utils.exceptions import (DirectDownloadLinkException,
@@ -64,6 +64,7 @@ class MirrorListener(listeners.MirrorListeners):
     def clean(self):
         try:
             aria2.purge()
+            get_client().torrents_delete(torrent_hashes="all", delete_files=True)
             Interval[0].cancel()
             del Interval[0]
             delete_all_messages()
