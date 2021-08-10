@@ -885,7 +885,7 @@ class GoogleDriveHelper:
             file_id = self.getIdFromUrl(link)
         except (KeyError, IndexError):
             msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
-            return msg, "", ""
+            return msg, "", "", ""
         LOGGER.info(f"File ID: {file_id}")
         try:
             drive_file = (
