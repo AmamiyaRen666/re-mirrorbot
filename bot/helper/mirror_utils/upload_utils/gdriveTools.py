@@ -146,7 +146,7 @@ class GoogleDriveHelper:
         media_body = MediaFileUpload(path, mimetype=mime_type, resumable=False)
         file_metadata = {
             "name": file_name,
-            "description": "Uploaded using re-mirrorbot",
+            "description": "Uploaded using re-cerminbot",
             "mimeType": mime_type,
         }
         if parent_id is not None:
@@ -479,8 +479,8 @@ class GoogleDriveHelper:
                         "Kloning Anda telah dihentikan dan data kloning telah dihapus!",
                         "dibatalkan",
                     )
-                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
-                msg += f"\n<b>Tipe: </b><code>Folder</code>"
+                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>' \
+                       f"\n<b>Tipe: </b><code>Folder</code>"
                 msg += f"\n<b>SubFolders: </b><code>{self.total_folders}</code>"
                 msg += f"\n<b>File: </b><code>{self.total_files}</code>"
                 buttons = button_build.ButtonMaker()
@@ -833,8 +833,8 @@ class GoogleDriveHelper:
             if drive_file["mimeType"] == self.__G_DRIVE_DIR_MIME_TYPE:
                 self.gDrive_directory(**drive_file)
                 msg += f"<b>Namafile: </b><code>{name}</code>"
-                msg += f"\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>"
-                msg += f"\n<b>Tipe: </b><code>Folder</code>"
+                msg += f"\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>" \
+                       f"\n<b>Tipe: </b><code>Folder</code>"
                 msg += f"\n<b>SubFolders: </b><code>{self.total_folders}</code>"
                 msg += f"\n<b>File: </b><code>{self.total_files}</code>"
             else:
