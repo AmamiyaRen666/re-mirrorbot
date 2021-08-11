@@ -31,7 +31,7 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 
 ## Additional Features (original slam)
 - qBittorrent supported
-- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-aria-mirror-bot/tree/master#setting-up-config-file))
+- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-tg-mirror-bot/tree/master#setting-up-config-file))
 - Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
@@ -338,7 +338,7 @@ Thanks to:
 - [magneto261290](https://github.com/magneto261290) for some features
 - [SVR666](https://github.com/SVR666) for some features & fixes
 - [anasty17](https://github.com/anasty17) for some features & help
-- [breakdowns](https://github.com/breakdowns) for slam-aria-mirror-bot
+- [breakdowns](https://github.com/breakdowns) for slam-tg-mirror-bot
 
 # for stuff i use 
 Thanks to:

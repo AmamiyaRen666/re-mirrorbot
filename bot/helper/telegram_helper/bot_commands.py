@@ -22,7 +22,7 @@ class _BotCommands:
         self.CloneCommand = 'ganda'
         self.CountCommand = 'hitung'
         self.WatchCommand = 'nonton'
-        self.TarWatchCommand = 'nontontat'
+        self.TarWatchCommand = 'nontontar'
         self.DeleteCommand = 'hapus'
         self.UsageCommand = 'sisakuota'
         self.MediaInfoCommand = 'mediainfo'
