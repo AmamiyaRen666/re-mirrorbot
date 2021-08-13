@@ -14,36 +14,34 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
 ![Docker Pulls](https://img.shields.io/docker/pulls/narima/megaria?label=Docker%20Pull)
 
-**re-cerminbot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive Forked from [slam-tg-mirrobot](https://github.com/breakdowns/slam-tg-mirror-bot)
+**re-cerminbot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive, Based on [slam-tg-mirrobot](https://github.com/breakdowns/slam-tg-mirror-bot)
 
 # Features supported:
 <details>
     <summary><b>Click Here For More Details</b></summary>
 
-## what different this repo rather original slam
+## what some different feature rather the original [slam-tg-mirror-bot](https://github.com/breakdowns/slam-tg-mirror-bot)
 - adding more direct link generator
 - still using some old stuff like image url on speedtest,index link, mediainfo,usage and etc
-- Aria and ffmpeg custom to maximize your bot to be efficient and powerfull
+- ffmpeg custom to make your bot to be something powerfull
 - you can change yt-dlp or ytdl because the docker has been included to dependencies
-- still support and keep using latest updated slam-aria-mirrobot
+- still support and keep using latest updated slam-tg-aria-mirror-bot
 - refactored some code to make some good perfomance
-- Using Qbittorrent Enhanced Edition (and slam using too XD)
+- Using Qbittorrent Enhanced Edition
 
-## Additional Features (original slam)
+## Additional Features On [slam-tg-mirror-bot](https://github.com/breakdowns/slam-tg-mirror-bot)
 - qBittorrent supported
 - Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-tg-mirror-bot/tree/master#setting-up-config-file))
 - Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
 - Tar/Unzip Google Drive link support
-- Speedtest with picture results
 - Select files before downloading
 - Sudo with Database support
 - Check Heroku dynos stats
 - Extracting **tar.xz** support
 - Counting Google Drive link
 - Heroku config support
-- Custom Image support
 - Custom Progress bar
 - Counting file/folder
 - View Link button
@@ -63,7 +61,7 @@ streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
 uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 ```
 
-## From Original Repos
+## From Original Repos Thx to [magneto261290](https://github.com/magneto261290)
 - Mirroring direct download links, Torrent, and Telegram files to Google Drive
 - Mirroring Mega.nz links to Google Drive (If your Mega account not premium, it will limit 5GB/6 hours)
 - Copy files from someone's Drive to your Drive (Using Autorclone)
@@ -81,7 +79,7 @@ uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 
 - Extract these filetypes and uploads to Google Drive
 ```
-ZIP, RAR, TAR, 7z, ISO, WIM, CAB, GZIP, BZIP2, 
+ZIP, RAR, TAR, XZ, 7z, ISO, WIM, CAB, GZIP, BZIP2, 
 APM, ARJ, CHM, CPIO, CramFS, DEB, DMG, FAT, 
 HFS, LZH, LZMA, LZMA2, MBR, MSI, MSLZ, NSIS, 
 NTFS, RPM, SquashFS, UDF, VHD, XAR, Z.
@@ -191,6 +189,7 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - **STATUS_LIMIT**: Status limit with buttons (**NOTE**: Recommend limit status to `4` tasks max).
 - **IS_VPS**: (Only for VPS) Set it to `True` if you use VPS
 - **SERVER_PORT**: (Only for VPS) Your VPS port
+- **IMAGE_URL**: Show Image/Logo in /start message, Use telegra.ph or any direct link image
 - **BASE_URL_OF_BOT**: (Required for Heroku) Valid BASE URL of where the bot is deploy. Ip/domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: No slash at the end)
 - **SHORTENER_API**: Fill your Shortener api key if you are using Shortener.
 - **SHORTENER**: if you want to use Shortener in Gdrive and index link, fill Shortener url here. Examples:
