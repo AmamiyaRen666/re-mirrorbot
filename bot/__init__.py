@@ -79,11 +79,11 @@ def get_client() -> qba.TorrentsAPIMixIn:
         qb_client.auth_log_in()
         qb_client.application.set_preferences(
             {
-                "disk_cache": 64,
+                "disk_cache": 32,
                 "incomplete_files_ext": True,
                 "max_connec": 10000,
                 "max_connec_per_torrent": 1000,
-                "async_io_threads": 32,
+                "async_io_threads": 16,
                 "preallocate_all": True,
                 "upnp": True,
                 "dl_limit": -1,
