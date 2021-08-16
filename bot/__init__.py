@@ -393,7 +393,7 @@ try:
     if len(TOKEN_PICKLE_URL) == 0:
         TOKEN_PICKLE_URL = None
     else:
-        out = subprocess.run(["wget", "-q", "-O", "token.pickle", TOKEN_PICKLE_URL])
+        out = subprocess.run(["wget", "--max-redirect=0", "-q", "-O", "token.pickle", TOKEN_PICKLE_URL])
         if out.returncode != 0:
             logging.error(out)
 except KeyError:
@@ -404,7 +404,7 @@ try:
     if len(ACCOUNTS_ZIP_URL) == 0:
         ACCOUNTS_ZIP_URL = None
     else:
-        out = subprocess.run(["wget", "-q", "-O", "accounts.zip", ACCOUNTS_ZIP_URL])
+        out = subprocess.run(["wget", "--max-redirect=0", "-q", "-O", "accounts.zip", ACCOUNTS_ZIP_URL])
         if out.returncode != 0:
             logging.error(out)
             raise KeyError

@@ -1,12 +1,17 @@
-from bot import aria2, download_dict_lock, STOP_DUPLICATE, TORRENT_DIRECT_LIMIT, TAR_UNZIP_LIMIT
-from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
-from bot.helper.ext_utils.bot_utils import *
-from .download_helper import DownloadHelper
-from bot.helper.mirror_utils.status_utils.aria_download_status import AriaDownloadStatus
-from bot.helper.telegram_helper.message_utils import *
 import threading
-from aria2p import API
 from time import sleep
+
+from aria2p import API
+
+from bot import (STOP_DUPLICATE, TAR_UNZIP_LIMIT, TORRENT_DIRECT_LIMIT, aria2,
+                 download_dict_lock)
+from bot.helper.ext_utils.bot_utils import *
+from bot.helper.mirror_utils.status_utils.aria_download_status import \
+    AriaDownloadStatus
+from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
+from bot.helper.telegram_helper.message_utils import *
+
+from .download_helper import DownloadHelper
 
 
 class AriaDownloadHelper(DownloadHelper):
@@ -30,18 +35,18 @@ class AriaDownloadHelper(DownloadHelper):
                 gdrive = GoogleDriveHelper(None)
                 smsg, button = gdrive.drive_list(sname)
             if smsg:
-                dl.getListener().onDownloadError(f'File/Folder already available in Drive.\n\n')
+                dl.getListener().onDownloadError(f'File/folder sudah tersedia di drive.\n\n')
                 aria2.remove([download], force=True)
-                sendMarkup("Here are the search results:", dl.getListener().bot, dl.getListener().update, button)
+                sendMarkup("Berikut adalah hasil pencarian:", dl.getListener().bot, dl.getListener().update, button)
                 return
         if (TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None) and dl is not None:
             size = aria2.get_download(gid).total_length
             if dl.getListener().isTar or dl.getListener().extract:
                 is_tar_ext = True
-                mssg = f'Tar/Unzip limit is {TAR_UNZIP_LIMIT}'
+                mssg = f'Batas tar/unzip adalah {TAR_UNZIP_LIMIT}'
             else:
                 is_tar_ext = False
-                mssg = f'Torrent/Direct limit is {TORRENT_DIRECT_LIMIT}'
+                mssg = f'Batas torrent/direct adalah {TORRENT_DIRECT_LIMIT}'
             result = check_limit(size, TORRENT_DIRECT_LIMIT, TAR_UNZIP_LIMIT, is_tar_ext)
             if result:
                 dl.getListener().onDownloadError(f'{mssg}.\nYour File/Folder size is {get_readable_file_size(size)}')

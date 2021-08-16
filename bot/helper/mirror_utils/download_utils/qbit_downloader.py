@@ -55,7 +55,7 @@ class qbittorrent:
             tor_info = self.client.torrents_info(torrent_hashes=self.ext_hash)
             if len(tor_info) > 0:
                 sendMessage(
-                    "This torrent is already in list.", listener.bot, listener.update
+                    "Torrent ini sudah ada dalam daftar.", listener.bot, listener.update
                 )
                 return
             if is_file:
@@ -69,7 +69,7 @@ class qbittorrent:
                     while True:
                         if time.time() - self.meta_time >= 300:
                             sendMessage(
-                                "The torrent was not added. report when u see this error",
+                                "Torrent tidak ditambahkan. Laporkan ketika Anda melihat kesalahan ini",
                                 listener.bot,
                                 listener.update,
                             )
@@ -81,7 +81,7 @@ class qbittorrent:
                             break
             else:
                 sendMessage(
-                    "This is an unsupported/invalid link.",
+                    "Ini adalah tautan yang tidak didukung/tidak valid.",
                     listener.bot,
                     listener.update,
                 )
@@ -103,7 +103,7 @@ class qbittorrent:
                     tor_info.state == "checkingResumeData" or tor_info.state == "metaDL"
                 ):
                     meta = sendMessage(
-                        "Downloading Metadata...Please wait then you can select files or mirror torrent file if it have low seeders",
+                        "Mengunduh metadata... Harap tunggu maka Anda dapat memilih file atau mencerminkan file torrent jika memiliki seeder rendah",
                         listener.bot,
                         listener.update,
                     )
@@ -129,11 +129,11 @@ class qbittorrent:
                 pindata = f"pin {gid} {pincode}"
                 donedata = f"done {gid} {self.ext_hash}"
                 buttons = button_build.ButtonMaker()
-                buttons.buildbutton("Select Files", URL)
+                buttons.buildbutton("Pilih File", URL)
                 buttons.sbutton("Pincode", pindata)
-                buttons.sbutton("Done Selecting", donedata)
+                buttons.sbutton("Selesai memilih", donedata)
                 QBBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
-                msg = "Your download paused. Choose files then press Done Selecting button to start downloading."
+                msg = "Unduhan Anda dijeda. Pilih file lalu tekan tombol Selesai Selesai untuk mulai mengunduh."
                 markup = sendMarkup(msg, listener.bot, listener.update, QBBUTTONS)
                 with download_dict_lock:
                     download = download_dict[listener.uid]
@@ -143,7 +143,7 @@ class qbittorrent:
         except qba.UnsupportedMediaType415Error as e:
             LOGGER.error(str(e))
             sendMessage(
-                "This is an unsupported/invalid link. {str(e)}",
+                "Ini adalah tautan yang tidak didukung/tidak valid. {str(e)}",
                 listener.bot,
                 listener.update,
             )
@@ -171,10 +171,10 @@ class qbittorrent:
             if (TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None) and not self.checked:
                 if self.listener.isTar or self.listener.extract:
                     is_tar_ext = True
-                    mssg = f'Tar/Unzip limit is {TAR_UNZIP_LIMIT}'
+                    mssg = f'Batas tar/unzip adalah {TAR_UNZIP_LIMIT}'
                 else:
                     is_tar_ext = False
-                    mssg = f'Torrent/Direct limit is {TORRENT_DIRECT_LIMIT}'
+                    mssg = f'Batas Torrent/Direct adalah {TORRENT_DIRECT_LIMIT}'
                 size = tor_info.size
                 result = check_limit(size, TORRENT_DIRECT_LIMIT, TAR_UNZIP_LIMIT, is_tar_ext)
                 self.checked = True
@@ -216,7 +216,7 @@ def get_confirm(update, context):
     qdl = getDownloadByGid(data[1])
     if qdl is not None:
         if user_id != qdl.listener.message.from_user.id:
-            query.answer(text="Don't waste your time!", show_alert=True)
+            query.answer(text="Jangan buang waktu Anda!", show_alert=True)
             return
         if data[0] == "pin":
             query.answer(text=data[2], show_alert=True)
@@ -226,7 +226,7 @@ def get_confirm(update, context):
             sendStatusMessage(qdl.listener.update, qdl.listener.bot)
             deleteMessage(context.bot, qdl.markup)
     else:
-        query.answer(text="This task has been cancelled!", show_alert=True)
+        query.answer(text="Tugas ini telah dibatalkan!", show_alert=True)
         query.delete_message()
 
 

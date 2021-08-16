@@ -198,10 +198,10 @@ class MegaDownloadHelper:
             size = api.getSize(node)
             if listener.isTar or listener.extract:
                 is_tar_ext = True
-                msg3 = f'Failed, Tar/Unzip limit is {TAR_UNZIP_LIMIT}.\nYour File/Folder size is {get_readable_file_size(api.getSize(node))}.'
+                msg3 = f'Gagal, batas tar/unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(api.getSize(node))}.'
             else:
                 is_tar_ext = False
-                msg3 = f'Failed, Mega limit is {MEGA_LIMIT}.\nYour File/Folder size is {get_readable_file_size(api.getSize(node))}.'
+                msg3 = f'Gagal, batas mega adalah {MEGA_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(api.getSize(node))}.'
             result = check_limit(size, MEGA_LIMIT, TAR_UNZIP_LIMIT, is_tar_ext)
             if result:
                 sendMessage(msg3, listener.bot, listener.update)

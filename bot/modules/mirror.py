@@ -363,7 +363,7 @@ def _mirror(bot, update, isTar=False, extract=False):  # sourcery no-metrics
         if TAR_UNZIP_LIMIT is not None:
             result = check_limit(size, TAR_UNZIP_LIMIT)
             if result:
-                msg = f'Failed, Tar/Unzip limit is {TAR_UNZIP_LIMIT}.\nYour File/Folder size is {get_readable_file_size(size)}.'
+                msg = f'Gagal, batas tar/unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(size)}.'
                 sendMessage(msg, listener.bot, listener.update)
                 return
         LOGGER.info(f"Download Name : {name}")

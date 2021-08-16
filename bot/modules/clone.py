@@ -23,20 +23,20 @@ def cloneNode(update, context):
             sendMessage(res, context.bot, update)
             return
         if STOP_DUPLICATE:
-            LOGGER.info(f"Checking File/Folder if already in Drive...")
+            LOGGER.info(f"Memeriksa File/Folder jika sudah di Drive...")
             smsg, button = gd.drive_list(name)
             if smsg:
-                msg3 = "File/Folder is already available in Drive.\nHere are the search results:"
+                msg3 = "Memeriksa File/Folder sudah ada di Drive\nBerikut adalah hasil pencarian:"
                 sendMarkup(msg3, context.bot, update, button)
                 return
         if CLONE_LIMIT is not None:
             result = check_limit(size, CLONE_LIMIT)
             if result:
-                msg2 = f'Failed, Clone limit is {CLONE_LIMIT}.\nYour File/Folder size is {get_readable_file_size(clonesize)}.'
+                msg2 = f'Gagal, batas klon adalah {CLONE_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(clonesize)}.'
                 sendMessage(msg2, context.bot, update)
                 return
         if files < 15:
-            msg = sendMessage(f"Cloning: <code>{link}</code>", context.bot, update)
+            msg = sendMessage(f"Kloning: <code>{link}</code>", context.bot, update)
             result, button = gd.clone(link)
             deleteMessage(context.bot, msg)
         else:
@@ -64,7 +64,7 @@ def cloneNode(update, context):
         else:
             uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
         if uname is not None:
-            cc = f'\n\ncc: {uname}'
+            cc = f'\n\ndari: {uname}'
             men = f'{uname} '
         if button in ["cancelled", ""]:
             sendMessage(men + result, context.bot, update)
