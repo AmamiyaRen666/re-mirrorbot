@@ -6,6 +6,7 @@ import socket
 import string
 import threading
 import time
+import subprocess
 
 import aria2p
 import psycopg2
@@ -91,6 +92,7 @@ def get_client() -> qba.TorrentsAPIMixIn:
                 "dht": True,
                 "pex": True,
                 "lsd": True,
+                "auto_delete_mode": True,
                 "encryption": 0,
                 "queueing_enabled": True,
                 "max_active_downloads": 10,
@@ -385,6 +387,31 @@ try:
 except KeyError:
     logging.warning('SERVER_PORT not provided!')
     SERVER_PORT = None
+
+try:
+    TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
+    if len(TOKEN_PICKLE_URL) == 0:
+        TOKEN_PICKLE_URL = None
+    else:
+        out = subprocess.run(["wget", "-q", "-O", "token.pickle", TOKEN_PICKLE_URL])
+        if out.returncode != 0:
+            logging.error(out)
+except KeyError:
+    TOKEN_PICKLE_URL = None
+
+try:
+    ACCOUNTS_ZIP_URL = getConfig('ACCOUNTS_ZIP_URL')
+    if len(ACCOUNTS_ZIP_URL) == 0:
+        ACCOUNTS_ZIP_URL = None
+    else:
+        out = subprocess.run(["wget", "-q", "-O", "accounts.zip", ACCOUNTS_ZIP_URL])
+        if out.returncode != 0:
+            logging.error(out)
+            raise KeyError
+        subprocess.run(["unzip", "-q", "-o", "accounts.zip"])
+        os.remove("accounts.zip")
+except KeyError:
+    ACCOUNTS_ZIP_URL = None
 
 updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot
