@@ -11,6 +11,7 @@ import pytz
 from pyrogram import idle
 from telegram import ParseMode
 from telegram.ext import CommandHandler
+from wserver import start_server_async
 
 from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, SERVER_PORT, app,
                  bot, botStartTime, dispatcher, updater)
@@ -18,7 +19,6 @@ from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
-from wserver import start_server_async
 
 from .helper.ext_utils.bot_utils import (get_readable_file_size,
                                          get_readable_time)
@@ -51,7 +51,8 @@ def stats(update, context):
             f'<b>CPU:</b> <code>{cpuUsage}%</code> ' \
             f'<b>RAM:</b> <code>{memory}%</code> ' \
             f'<b>HDD:</b> <code>{disk}%</code>'
-    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
+    update.effective_message.reply_photo(
+        IMAGE_URL, stats, parse_mode=ParseMode.HTML)
 
 
 def start(update, context):  # sourcery skip: move-assign
@@ -78,7 +79,8 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 
 
 def restart(update, context):
-    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)
+    restart_message = sendMessage(
+        "Mulai ulang, Harap tunggu!", context.bot, update)
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -166,6 +168,8 @@ def bot_help(update, context):
     help_string = f"""
 /{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
 
+/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive. Gunakan /{BotCommands.MirrorCommand} qb untuk mirror menggunakan qBittorrent, dan gunakan /{BotCommands.MirrorCommand} qbs untuk memilih file sebelum download
+
 /{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
 
 /{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah diarsipkan (.tar) version of the download
@@ -204,26 +208,32 @@ def bot_help(update, context):
 
 
 botcmds = [
-        (f'{BotCommands.HelpCommand}','Dapatkan bantuan terperinci'),
-        (f'{BotCommands.MirrorCommand}', 'Mulai mirroring'),
-        (f'{BotCommands.TarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar'),
-        (f'{BotCommands.UnzipMirrorCommand}','Ekstrak file'),
-        (f'{BotCommands.ZipMirrorCommand}','Mulai mirroring dan unggah sebagai .zip'),
-        (f'{BotCommands.CloneCommand}','Salin file/folder ke Drive'),
-        (f'{BotCommands.CountCommand}','Hitung file/folder dari link Drive'),
-        (f'{BotCommands.DeleteCommand}','Hapus file dari drive'),
-        (f'{BotCommands.WatchCommand}','Mirror video/audio menggunakan YouTube-DL'),
-        (f'{BotCommands.TarWatchCommand}','Cermin tautan daftar putar YouTube sebagai .tar'),
-        (f'{BotCommands.CancelMirror}','Batalkan tugas'),
-        (f'{BotCommands.CancelAllCommand}','Batalkan semua tugas'),
-        (f'{BotCommands.ListCommand}','Mencari file dalam drive'),
-        (f'{BotCommands.StatusCommand}','Dapatkan pesan status cermin'),
-        (f'{BotCommands.StatsCommand}','Statistik Penggunaan Bot.'),
-        (f'{BotCommands.PingCommand}','berlomba cepat koneksi.'),
-        (f'{BotCommands.RestartCommand}','Mulai ulang bot. [hanya owner/sudo]'),
-        (f'{BotCommands.LogCommand}','Dapatkan Log Bot [hanya owner/sudo]'),
-        (f'{BotCommands.TsHelpCommand}','Dapatkan bantuan untuk modul pencarian torrent')
-    ]
+    (f'{BotCommands.HelpCommand}', 'Dapatkan bantuan terperinci'),
+    (f'{BotCommands.MirrorCommand}', 'Mulai mirroring'),
+    (f'{BotCommands.TarMirrorCommand}',
+     'Mulai mirroring dan unggah sebagai .tar'),
+    (f'{BotCommands.UnzipMirrorCommand}', 'Ekstrak file'),
+    (f'{BotCommands.ZipMirrorCommand}',
+     'Mulai mirroring dan unggah sebagai .zip'),
+    (f'{BotCommands.CloneCommand}', 'Salin file/folder ke Drive'),
+    (f'{BotCommands.CountCommand}', 'Hitung file/folder dari link Drive'),
+    (f'{BotCommands.DeleteCommand}', 'Hapus file dari drive'),
+    (f'{BotCommands.WatchCommand}', 'Mirror video/audio menggunakan YouTube-DL'),
+    (f'{BotCommands.TarWatchCommand}',
+     'Cermin tautan daftar putar YouTube sebagai .tar'),
+    (f'{BotCommands.CancelMirror}', 'Batalkan tugas'),
+    (f'{BotCommands.CancelAllCommand}', 'Batalkan semua tugas'),
+    (f'{BotCommands.ListCommand}', 'Mencari file dalam drive'),
+    (f'{BotCommands.StatusCommand}', 'Dapatkan pesan status cermin'),
+    (f'{BotCommands.StatsCommand}', 'Statistik Penggunaan Bot.'),
+    (f'{BotCommands.PingCommand}', 'berlomba cepat koneksi.'),
+    (f'{BotCommands.RestartCommand}', 'Mulai ulang bot. [hanya owner/sudo]'),
+    (f'{BotCommands.LogCommand}', 'Dapatkan Log Bot [hanya owner/sudo]'),
+    (f'{BotCommands.MediaInfoCommand}',
+     'Dapatkan info detail tentang media yang dibalas'),
+    (f'{BotCommands.TsHelpCommand}',
+     'Dapatkan bantuan untuk modul pencarian torrent')
+]
 
 
 def main():
@@ -240,7 +250,8 @@ def main():
         os.remove(".restartmsg")
     bot.set_my_commands(botcmds)
 
-    start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
+    start_handler = CommandHandler(
+        BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(
         BotCommands.PingCommand,
         ping,

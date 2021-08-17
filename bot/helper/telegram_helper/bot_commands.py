@@ -11,7 +11,7 @@ class _BotCommands:
         self.StatusCommand = 'status'
         self.AuthorizedUsersCommand = 'pengguna'
         self.AuthorizeCommand = 'mengizinkan'
-        self.UnAuthorizeCommand = 'tidak sah'
+        self.UnAuthorizeCommand = 'tidaksah'
         self.AddSudoCommand = 'addsudo'
         self.RmSudoCommand = 'rmsudo'
         self.PingCommand = 'ping'
