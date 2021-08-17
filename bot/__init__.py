@@ -92,7 +92,6 @@ def get_client() -> qba.TorrentsAPIMixIn:
                 "dht": True,
                 "pex": True,
                 "lsd": True,
-                "auto_delete_mode": True,
                 "encryption": 0,
                 "queueing_enabled": True,
                 "max_active_downloads": 10,
