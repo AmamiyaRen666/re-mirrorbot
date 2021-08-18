@@ -17,7 +17,6 @@ class QbDownloadStatus(Status):
         self.__gid = gid
         self.__hash = qbhash
         self.client = client
-        self.markup = None
         self.__uid = listener.uid
         self.listener = listener
         self.message = listener.message

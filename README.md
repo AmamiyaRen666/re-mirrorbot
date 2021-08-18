@@ -36,7 +36,7 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
 - Tar/Unzip Google Drive link support
-- Select files before downloading
+- Select files from Torrent before downloading
 - Sudo with Database support
 - Check Heroku dynos stats
 - Extracting **tar.xz** support
@@ -243,7 +243,7 @@ sudo docker run mirrorbot
 ```
 
 ## Deploying on Heroku with Github Workflow
-<p><a href="https://github.com/breakdowns/slam-mirrorbot/blob/master/heroku-guide.md"> <img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="200""/></a></p>
+<p><a href="https://github.com/breakdowns/slam-mirrorbot/blob/master/heroku-guide.md"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="180""/></a></p>
 
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
@@ -331,7 +331,8 @@ Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of 
 # Credits
 Thanks to:
 - [out386](https://github.com/out386) heavily inspired from Telegram Bot which is written in JS
-- [Izzy12](https://github.com/lzzy12) for original repo
+- [Izzy12](https://github.com/lzzy12) for build up this bot from scratch
+- [jaskaranSM](https://github.com/jaskaranSM) for build up this bot from scratch
 - [Dank-del](https://github.com/Dank-del) for base repo
 - [magneto261290](https://github.com/magneto261290) for some features
 - [SVR666](https://github.com/SVR666) for some features & fixes

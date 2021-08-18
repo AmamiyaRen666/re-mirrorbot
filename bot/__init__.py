@@ -82,8 +82,8 @@ def get_client() -> qba.TorrentsAPIMixIn:
             {
                 "disk_cache": 32,
                 "incomplete_files_ext": True,
-                "max_connec": 10000,
-                "max_connec_per_torrent": 1000,
+                "max_connec": 3000,
+                "max_connec_per_torrent": 300,
                 "async_io_threads": 16,
                 "preallocate_all": True,
                 "upnp": True,

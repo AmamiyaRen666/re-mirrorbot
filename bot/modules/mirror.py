@@ -2,6 +2,7 @@ import os
 import pathlib
 import random
 import re
+import shutil
 import string
 import subprocess
 import threading
@@ -88,12 +89,15 @@ class MirrorListener(listeners.MirrorListeners):
             try:
                 with download_dict_lock:
                     download_dict[self.uid] = TarStatus(name, m_path, size)
-                path = fs_utils.zip(
-                    name, m_path) if self.isZip else fs_utils.tar(m_path)
+                path = fs_utils.zip(name, m_path) if self.isZip else fs_utils.tar(m_path)
             except FileNotFoundError:
                 LOGGER.info('File to archive not found!')
                 self.onUploadError('Terjadi kesalahan internal!!')
                 return
+            try:
+                shutil.rmtree(m_path)
+            except:
+                os.remove(m_path)
         elif self.extract:
             try:
                 path = fs_utils.get_base_name(m_path)
@@ -278,7 +282,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
             if link == "qbs":
                 qbitsel = True
             link = message_args[2]
-            if not bot_utils.is_magnet(link):
+            if bot_utils.is_url(link) and not bot_utils.is_magnet(link):
                 resp = requests.get(link)
                 if resp.status_code == 200:
                     file_name = str(time.time()).replace(".", "") + ".torrent"
