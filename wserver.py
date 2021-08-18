@@ -718,7 +718,7 @@ async def set_priority(request):  # sourcery skip: remove-dict-keys
 @routes.get('/')
 async def homepage(request):
 
-    return web.Response(text="<h1>See slam-mirrorbot <a href='https://github.com/breakdowns/slam-mirrorbot'>@GitHub</a> By <a href='https://github.com/breakdowns'>Breakdowns</a></h1>", content_type="text/html")
+    return web.Response(text="<h1>See re-cerminbot <a href='https://github.com/Ncode2014/re-cerminbot'>@GitHub</a> By <a href='https://github.com/Ncode2014/re-cerminbot'>Ncode2014 (thx to breakdowns)</a></h1>", content_type="text/html")
 
 
 async def e404_middleware(app, handler):
@@ -728,11 +728,11 @@ async def e404_middleware(app, handler):
         try:
             response = await handler(request)
             if response.status == 404:
-                return web.Response(text="<h1>404: Page not found</h2><br><h3>slam-mirrorbot</h3>", content_type="text/html")
+                return web.Response(text="<h1>404: Page not found</h2><br><h3>re-cerminbot</h3>", content_type="text/html")
             return response
         except web.HTTPException as ex:
             if ex.status == 404:
-                return web.Response(text="<h1>404: Page not found</h2><br><h3>slam-mirrorbot</h3>", content_type="text/html")
+                return web.Response(text="<h1>404: Page not found</h2><br><h3>re-cerminbot</h3>", content_type="text/html")
             raise
     return middleware_handler
 
