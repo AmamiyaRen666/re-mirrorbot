@@ -506,6 +506,7 @@ section span{
   </head>
 <body>
    <!--© Designed and coded by @bipuldey19-Telegram-->
+   <!--edited by narima-->
     <header>
       <div class="brand">
         <img
@@ -615,40 +616,7 @@ async def re_verfiy(paused, resumed, client, torr):
         LOGGER.error("Reverification Failed, correcting stuff...")
         client.auth_log_out()
         client = qba.Client(host="localhost", port="8090",
-                            username="admin", password="adminadmin")
-        client.auth_log_in()
-        try:
-            client.torrents_file_priority(
-                torrent_hash=torr, file_ids=paused, priority=0)
-        except:
-            LOGGER.error("Errored in reverification paused")
-        try:
-            client.torrents_file_priority(
-                torrent_hash=torr, file_ids=resumed, priority=1)
-        except:
-            LOGGER.error("Errored in reverification resumed")
-        client.auth_log_out()
-        LOGGER.error("Reverification Failed, correcting stuff...")
-        client.auth_log_out()
-        client = qba.Client(host="localhost", port="8090",
-                            username="admin", password="adminadmin")
-        client.auth_log_in()
-        try:
-            client.torrents_file_priority(
-                torrent_hash=torr, file_ids=paused, priority=0)
-        except:
-            LOGGER.error("Errored in reverification paused")
-        try:
-            client.torrents_file_priority(
-                torrent_hash=torr, file_ids=resumed, priority=1)
-        except:
-            LOGGER.error("Errored in reverification resumed")
-        client.auth_log_out()
-        LOGGER.info("Reverification Failed :- correcting stuff")
-        # reconnect and issue the request again
-        client.auth_log_out()
-        client = qba.Client(host="localhost", port="8090",
-                            username="admin", password="adminadmin")
+                           username="admin", password="adminadmin")
         client.auth_log_in()
         try:
             client.torrents_file_priority(
@@ -668,7 +636,7 @@ async def re_verfiy(paused, resumed, client, torr):
 
 
 @routes.post('/slam/files/{hash_id}')
-async def set_priority(request):  # sourcery skip: remove-dict-keys
+async def set_priority(request):
 
     torr = request.match_info["hash_id"]
     client = qba.Client(host="localhost", port="8090",
@@ -680,7 +648,7 @@ async def set_priority(request):  # sourcery skip: remove-dict-keys
     pause = ""
     data = dict(data)
 
-    for i in data.keys():
+    for i in data:
         if i.find("filenode") != -1:
             node_no = i.split("_")[-1]
 
