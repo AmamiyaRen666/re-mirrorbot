@@ -11,10 +11,8 @@ from bot.helper.mirror_utils.status_utils.aria_download_status import \
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
 from bot.helper.telegram_helper.message_utils import *
 
-from .download_helper import DownloadHelper
 
-
-class AriaDownloadHelper(DownloadHelper):
+class AriaDownloadHelper:
     def __init__(self):
         super().__init__()
 

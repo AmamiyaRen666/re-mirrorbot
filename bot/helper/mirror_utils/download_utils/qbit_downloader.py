@@ -98,9 +98,7 @@ class qbittorrent:
             LOGGER.info(f"QbitDownload started: {tor_info.name}")
             self.updater = setInterval(self.update_interval, self.update)
             if BASE_URL is not None and qbitsel:
-                if is_file:
-                    self.client.torrents_pause(torrent_hashes=self.ext_hash)
-                else:
+                if not is_file:
                     meta = sendMessage("Mengunduh metadata ... Harap tunggu maka Anda dapat memilih file atau mencerminkan file torrent jika memiliki seeder rendah", listener.bot, listener.update)
                     while True:
                             tor_info = self.client.torrents_info(torrent_hashes=self.ext_hash)
@@ -112,12 +110,13 @@ class qbittorrent:
                                 if tor_info.state == "metaDL" or tor_info.state == "checkingResumeData":
                                     time.sleep(0.5)
                                 else:
-                                    self.client.torrents_pause(torrent_hashes=self.ext_hash)
+                                    time.sleep(2)
                                     deleteMessage(listener.bot, meta)
                                     break
                             except:
                                 deleteMessage(listener.bot, meta)
                                 return False
+                self.client.torrents_pause(torrent_hashes=self.ext_hash)
                 for n in str(self.ext_hash):
                     if n.isdigit():
                         pincode += str(n)
