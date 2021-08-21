@@ -28,17 +28,18 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - still support and keep using latest updated slam-mirrorbot
 - refactored some code to make some good perfomance
 - Using Qbittorrent Enhanced Edition
+- dropped for method workflows or using button template
 
 ## Additional Features On [slam-mirrorbot](https://github.com/breakdowns/slam-mirrorbot)
 - qBittorrent supported
-- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-mirrorbot/tree/master#setting-up-config-file))
+- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-mirrorbot/tree/master#setting-up-config-file)
 - Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
 - Tar/Unzip Google Drive link support
 - Select files from Torrent before downloading
 - Sudo with Database support
-- Check Heroku dynos stats
+- Check Heroku dynos stats (optional)
 - Extracting **tar.xz** support
 - Counting Google Drive link
 - Heroku config support
@@ -242,14 +243,8 @@ docker build . --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
 sudo docker run mirrorbot
 ```
 
-## Deploying on Heroku with Github Workflow
-<p><a href="https://github.com/breakdowns/slam-mirrorbot/blob/master/heroku-guide.md"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="180""/></a></p>
-
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
-
-## Deploying on Heroku with Github Workflow 
-<p><a href="https://github.com/Ncode2014/re-cerminbot/blob/master/heroku-guide.md"> <img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="200""/></a></p>
 
 # Using Service Accounts for uploading to avoid user rate limit
 For Service Account to work, you must set **USE_SERVICE_ACCOUNTS=**"True" in config file or environment variables, 
@@ -338,6 +333,7 @@ Thanks to:
 - [SVR666](https://github.com/SVR666) for some features & fixes
 - [anasty17](https://github.com/anasty17) for some features & help
 - [breakdowns](https://github.com/breakdowns) for slam-mirrorbot
+- [yash-dk] (https://github.com/yash-dk/TorToolkit-Telegram) for implementation qbittorrent on python on TorToolkit-Telegram repo
 
 # for stuff i use 
 Thanks to:

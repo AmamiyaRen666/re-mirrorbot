@@ -1,5 +1,6 @@
 # Implement By - @anasty17 (https://github.com/breakdowns/slam-mirrorbot/commit/0bfba523f095ab1dccad431d72561e0e002e7a59)
 # (c) https://github.com/breakdowns/slam-mirrorbot
+# (c) https://github.com/yash-dk/TorToolkit-Telegram for original implemented on TorToolkit-Telegram repo
 # All rights reserved
 
 from bot import DOWNLOAD_DIR, LOGGER, get_client
