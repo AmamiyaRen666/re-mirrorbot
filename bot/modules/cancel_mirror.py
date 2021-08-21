@@ -1,12 +1,14 @@
+from time import sleep
+
 from telegram.ext import CommandHandler
-from bot import download_dict, dispatcher, download_dict_lock, DOWNLOAD_DIR
+
+from bot import DOWNLOAD_DIR, dispatcher, download_dict, download_dict_lock
+from bot.helper.ext_utils.bot_utils import (MirrorStatus, getAllDownload,
+                                            getDownloadByGid)
 from bot.helper.ext_utils.fs_utils import clean_download
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.message_utils import *
-
-from time import sleep
-from bot.helper.ext_utils.bot_utils import getDownloadByGid, MirrorStatus, getAllDownload
 
 
 def cancel_mirror(update, context):
