@@ -4,28 +4,8 @@ import shlex
 import heroku3
 
 from functools import wraps
-from pyrogram.types import Message
-from typing import Tuple
 from html_telegraph_poster import TelegraphPoster
 from bot import HEROKU_API_KEY, HEROKU_APP_NAME
-
-# Implement by https://github.com/jusidama18
-# Setting Message
-
-
-def get_text(message: Message) -> [None, str]:
-    """Extract Text From Commands"""
-    text_to_return = message.text
-    if message.text is None:
-        return None
-    if " " not in text_to_return:
-        return None
-
-    try:
-        return message.text.split(None, 1)[1]
-    except IndexError:
-        return None
-
 
 # Preparing For Setting Config
 # Implement by https://github.com/jusidama18 and Based on this

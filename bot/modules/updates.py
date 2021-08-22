@@ -12,12 +12,21 @@ from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 from pyrogram import filters
 
-from bot import OWNER_ID, UPSTREAM_BRANCH, UPSTREAM_REPO, app
-from bot.helper import HEROKU_URL, get_text
+from bot import app, OWNER_ID, UPSTREAM_REPO, UPSTREAM_BRANCH, bot
+from bot.helper import HEROKU_URL
 from bot.helper.telegram_helper.bot_commands import BotCommands
 
 REPO_ = UPSTREAM_REPO
 BRANCH_ = UPSTREAM_BRANCH
+
+
+def gen_chlog(repo, diff):
+    # sourcery skip: inline-immediately-returned-variable, use-join
+    ch_log = ''
+    d_form = "%d/%m/%y"
+    for c in repo.iter_commits(diff):
+        ch_log += f'• [{c.committed_datetime.strftime(d_form)}]: {c.summary} **{c.author}**\n'
+    return ch_log
 
 # Update Command
 
@@ -27,6 +36,7 @@ BRANCH_ = UPSTREAM_BRANCH
 )
 async def update_it(client, message):
     msg_ = await message.reply_text("`Memperbarui Harap Tunggu!`")
+    text = message.text.split(None, 1)[1]
     try:
         repo = Repo()
     except GitCommandError:
@@ -53,34 +63,41 @@ async def update_it(client, message):
         pass
     ups_rem = repo.remote("upstream")
     ups_rem.fetch(UPSTREAM_BRANCH)
-    if not HEROKU_URL:
-        try:
-            ups_rem.pull(UPSTREAM_BRANCH)
-        except GitCommandError:
-            repo.git.reset("--hard", "FETCH_HEAD")
-        subprocess.run(["pip3",  "install", "--no-cache-dir", "-r",  "requirements.txt"])
-        await msg_.edit("`Berhasil Diperbarui! Beri Saya Waktu Untuk Memulai Ulang!`")
-        with open("./aria.sh", 'rb') as file:
-            script = file.read()
-        subprocess.call("./aria.sh", shell=True)
-        args = [sys.executable, "-m", "bot"]
-        execle(sys.executable, *args, environ)
-        exit()
+    clogs = gen_chlog(repo, f'HEAD..upstream/{UPSTREAM_BRANCH}')
+
+    if not clogs:
+        await msg_.edit(f"Bot up-to-date dengan **{UPSTREAM_BRANCH}**", parse_mode="Markdown")
         return
-    else:
-        await msg_.edit("`Heroku Detected! Pushing, Mohon Tunggu!`")
-        ups_rem.fetch(UPSTREAM_BRANCH)
-        repo.git.reset("--hard", "FETCH_HEAD")
-        if "heroku" in repo.remotes:
-            remote = repo.remote("heroku")
-            remote.set_url(HEROKU_URL)
+
+    if text == "now":
+        await msg_.edit(f"`Bot memperbarui dengan` **{UPSTREAM_BRANCH}** `Branch harap tunggu...`", parse_mode="Markdown")
+        if not HEROKU_URL:
+            try:
+                ups_rem.pull(UPSTREAM_BRANCH)
+            except GitCommandError:
+                repo.git.reset("--hard", "FETCH_HEAD")
+            await subprocess.run(["pip3", "install", "--no-cache-dir", "-r", "requirements.txt"])
+            await msg_.edit("`Diperbarui! Beri saya waktu untuk memulai kembali!`")
+            with open("./aria.sh", 'rb') as file:
+                script = file.read()
+            subprocess.call("./aria.sh", shell=True)
+            args = [sys.executable, "-m", "bot"]
+            execle(sys.executable, *args, environ)
         else:
-            remote = repo.create_remote("heroku", HEROKU_URL)
-        try:
-            remote.push(refspec="HEAD:refs/heads/master", force=True)
-        except BaseException as error:
-            await msg_.edit(f"**Perbarui gagal** \nTraceBack : `{error}`")
-            return repo.__del__()
-        await msg_.edit(
-            f"`Perbarui sukses! \n\nCek config kamu dengan mengetik` `/{BotCommands.ConfigMenuCommand}`"
-        )
+            await msg_.edit("`Heroku terdeteksi! Pushing, Mohon tunggu!`")
+            ups_rem.fetch(UPSTREAM_BRANCH)
+            repo.git.reset("--hard", "FETCH_HEAD")
+            if "heroku" in repo.remotes:
+                remote = repo.remote("heroku")
+                remote.set_url(HEROKU_URL)
+            else:
+                remote = repo.create_remote("heroku", HEROKU_URL)
+            try:
+                remote.push(refspec="HEAD:refs/heads/master", force=True)
+            except BaseException as error:
+                await msg_.edit(f"**Updater Error** \nTraceBack : `{error}`")
+                return repo.__del__()
+            await msg_.edit(f"`Updated berhasil! \n\nPeriksa konfigurasi Anda dengan` `/{BotCommands.ConfigMenuCommand}`")
+    else:
+        await msg_.edit(f"**Pembaruan baru tersedia**\n\nDari [REPO]({REPO_})\nCHANGELOG:\n\n{clogs}\n\nlakukan `/perbarui now` Untuk memperbarui bot..", parse_mode="Markdown", disable_web_page_preview=True)
+        return

@@ -34,7 +34,13 @@ logging.basicConfig(
 
 LOGGER = logging.getLogger(__name__)
 
-load_dotenv("config.env")
+CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
+if CONFIG_FILE_URL is not None:
+    out = subprocess.run(["wget", "-q", "-O", "config.env", CONFIG_FILE_URL])
+    if out.returncode != 0:
+        logging.error(out)
+
+load_dotenv('config.env')
 
 Interval = []
 
