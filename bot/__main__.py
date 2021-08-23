@@ -14,7 +14,7 @@ from telegram.ext import CommandHandler
 from wserver import start_server_async
 
 from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, SERVER_PORT, app,
-                 bot, botStartTime, dispatcher, updater)
+                 bot, botStartTime, dispatcher, alive)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -23,9 +23,9 @@ from bot.helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import (get_readable_file_size,
                                          get_readable_time)
 from .helper.telegram_helper.filters import CustomFilters
-from .modules import (authorize, cancel_mirror, clone, config, count, delete,
+from .modules import (authorize, cancel_mirror, clone, count, delete,
                       eval, list, mediainfo, mirror, mirror_status, shell,
-                      speedtest, torrent_search, updates, usage, watch)
+                      speedtest, torrent_search, reboot, usage, watch)
 
 now = datetime.now(pytz.timezone("Asia/Jakarta"))
 
@@ -79,6 +79,7 @@ def restart(update, context):
         f.truncate(0)
         f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
     fs_utils.clean_all()
+    alive.terminate()
     os.execl(executable, executable, "-m", "bot")
 
 
@@ -142,8 +143,6 @@ def bot_help(update, context):
 /{BotCommands.LogCommand}: Dapatkan file log bot.Berguna untuk mendapatkan laporan kecelakaan
 
 /{BotCommands.ConfigMenuCommand}: Dapatkan Info Menu Tentang Bot Config (Hanya Pemilik)
-
-/{BotCommands.UpdateCommand}: Pembaruan bot dari repo upstream (hanya pemilik)
 
 /{BotCommands.UsageCommand}: Untuk melihat statistik Heroku Dyno (hanya pemilik & sudo)
 

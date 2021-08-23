@@ -29,7 +29,6 @@ class _BotCommands:
         self.MediaInfoCommand = 'mediainfo'
         self.ConfigMenuCommand = 'config'
         self.ShellCommand = 'cmd'
-        self.UpdateCommand = 'perbarui'
         self.ExecHelpCommand = 'tolongexec'
         self.TsHelpCommand = 'bantuants'
 
