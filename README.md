@@ -32,7 +32,6 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 
 ## Additional Features On [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
 - qBittorrent supported
-- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/SlamDevs/slam-mirrorbot/tree/master#setting-up-config-file))
 - Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
@@ -42,7 +41,6 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - Check Heroku dynos stats (optional)
 - Extracting **tar.xz** support
 - Counting Google Drive link
-- Heroku config support
 - Custom Progress bar
 - Counting file/folder
 - View Link button
@@ -191,7 +189,7 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - **HEROKU_APP_NAME**: (Only if you deploying on Heroku) Your Heroku app name.
 - **IGNORE_PENDING_REQUESTS**: If you want the bot to ignore pending requests after it restarts, set this to `True`.
 - **STATUS_LIMIT**: Status limit with buttons (**NOTE**: Recommend limit status to `4` tasks max).
-- **IS_VPS**: (Only for VPS) Don't set this to `True` even if you are using vps, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any port you want to use.
+- **IS_VPS**: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any port you want to use.
 - **SERVER_PORT**: (Only if IS_VPS is `True`) Base URL Port
 - **BASE_URL_OF_BOT**: (Required for Heroku) Valid BASE URL of where the bot is deploy. Ip/domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: No slash at the end)
 - **IMAGE_URL**: Show Image/Logo in /start message, Use telegra.ph or any direct link image
