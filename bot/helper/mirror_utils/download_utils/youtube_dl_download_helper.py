@@ -47,6 +47,7 @@ class YoutubeDLHelper(DownloadHelper):
             'geo-bypass': True,
             'geo-bypass-country': 'ID',
             'geo-bypass-ip-block': '10.100.0.0/14',
+            'compat_opts': ['filename'],
         }
         self.__download_speed = 0
         self.downloaded_bytes = 0
@@ -165,6 +166,7 @@ class YoutubeDLHelper(DownloadHelper):
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
             self.opts['format'] = 'bestaudio/best'
+            self.opts['compat_opts'] = ['filename']
             self.opts['postprocessors'] = [
                 {
                     'key': 'FFmpegExtractAudio',
@@ -177,7 +179,7 @@ class YoutubeDLHelper(DownloadHelper):
         if not self.is_playlist:
             self.opts['outtmpl'] = f"{path}/{self.name}"
         else:
-            self.opts['outtmpl'] = f"{path}/{self.name}/%(title)s.%(ext)s"
+            self.opts['outtmpl'] = f"{path}/{self.name}/%(title)s-%(ext)s"
         self.__download(link)
 
     def cancel_download(self):

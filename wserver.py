@@ -693,7 +693,7 @@ async def set_priority(request):
 
     await asyncio.sleep(2)
     if not await re_verfiy(pause, resume, client, torr):
-        LOGGER.error("The torrent choose errored reverification failed")
+        LOGGER.error("The Torrent choose errored reverification failed")
     client.auth_log_out()
     return await list_torrent_contents(request)
 
