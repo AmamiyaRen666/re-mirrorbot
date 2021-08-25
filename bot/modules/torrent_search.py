@@ -215,10 +215,12 @@ class TorrentSearch:
             )
         )
         app.add_handler(
-            CallbackQueryHandler(self.delete, filters.regex(f"{self.command}_delete"))
+            CallbackQueryHandler(
+                self.delete, filters.regex(f"{self.command}_delete"))
         )
         app.add_handler(
-            CallbackQueryHandler(self.next, filters.regex(f"{self.command}_next"))
+            CallbackQueryHandler(
+                self.next, filters.regex(f"{self.command}_next"))
         )
 
     @staticmethod
@@ -253,7 +255,8 @@ class TorrentSearch:
         delBtn = InlineKeyboardButton(
             f"{emoji.CROSS_MARK}", callback_data=f"{self.command}_delete"
         )
-        nextBtn = InlineKeyboardButton(f"Next", callback_data=f"{self.command}_next")
+        nextBtn = InlineKeyboardButton(
+            f"Next", callback_data=f"{self.command}_next")
 
         inline = []
         if self.index != 0:
@@ -263,7 +266,8 @@ class TorrentSearch:
             inline.append(nextBtn)
 
         res_lim = min(
-            self.RESULT_LIMIT, len(self.response) - self.RESULT_LIMIT * self.index
+            self.RESULT_LIMIT, len(self.response) -
+            self.RESULT_LIMIT * self.index
         )
         result = f"**Page - {self.index+1}**\n\n"
         result += "\n\n=======================\n\n".join(
@@ -350,38 +354,14 @@ RESULT_STR_ALL = (
 )
 
 torrents_dict = {
-    "1337x": {
-        "source": "https://slam-api.glitch.me/api/1337x/",
-        "result_str": RESULT_STR_1337,
-    },
-    "piratebay": {
-        "source": "https://slam-api.glitch.me/api/piratebay/",
-        "result_str": RESULT_STR_PIRATEBAY,
-    },
-    "tgx": {
-        "source": "https://slam-api.glitch.me/api/tgx/",
-        "result_str": RESULT_STR_TGX,
-    },
-    "yts": {
-        "source": "https://slam-api.glitch.me/api/yts/",
-        "result_str": RESULT_STR_YTS,
-    },
-    "eztv": {
-        "source": "https://slam-api.glitch.me/api/eztv/",
-        "result_str": RESULT_STR_EZTV,
-    },
-    "torlock": {
-        "source": "https://slam-api.glitch.me/api/torlock/",
-        "result_str": RESULT_STR_TORLOCK,
-    },
-    "rarbg": {
-        "source": "https://slam-api.glitch.me/api/rarbg/",
-        "result_str": RESULT_STR_RARBG,
-    },
-    "ts": {
-        "source": "https://slam-api.glitch.me/api/all/",
-        "result_str": RESULT_STR_ALL,
-    },
+    '1337x': {'source': "https://torrents--api.herokuapp.com/api/1337x/", 'result_str': RESULT_STR_1337},
+    'piratebay': {'source': "https://torrents--api.herokuapp.com/api/piratebay/", 'result_str': RESULT_STR_PIRATEBAY},
+    'tgx': {'source': "https://torrents--api.herokuapp.com/api/tgx/", 'result_str': RESULT_STR_TGX},
+    'yts': {'source': "https://torrents--api.herokuapp.com/api/yts/", 'result_str': RESULT_STR_YTS},
+    'eztv': {'source': "https://torrents--api.herokuapp.com/api/eztv/", 'result_str': RESULT_STR_EZTV},
+    'torlock': {'source': "https://torrents--api.herokuapp.com/api/torlock/", 'result_str': RESULT_STR_TORLOCK},
+    'rarbg': {'source': "https://torrents--api.herokuapp.com/api/rarbg/", 'result_str': RESULT_STR_RARBG},
+    'ts': {'source': "https://torrents--api.herokuapp.com/api/all/", 'result_str': RESULT_STR_ALL}
 }
 
 torrent_handlers = [
