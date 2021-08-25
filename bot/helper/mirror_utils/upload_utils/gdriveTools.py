@@ -22,7 +22,7 @@ from tenacity import *
 
 from bot import (BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_FOUR_NAME,
                  BUTTON_FOUR_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL,
-                 DOWNLOAD_DIR, INDEX_URL, IS_TEAM_DRIVE, SHORTENER,
+                 DOWNLOAD_DIR, IMAGE_URL, INDEX_URL, IS_TEAM_DRIVE, SHORTENER,
                  SHORTENER_API, USE_SERVICE_ACCOUNTS, VIEW_LINK, parent_id,
                  telegraph_token)
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, setInterval
@@ -838,13 +838,12 @@ class GoogleDriveHelper:
                 except TypeError:
                     pass
         except Exception as err:
-            err = str(err).replace(">", "").replace("<", "")
+            err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
-            if "File not found" in str(err):
-                msg = "Berkas tidak ditemukan."
+            if 'File not found' in str(err):
+                return 'Berkas tidak ditemukan.'
             else:
-                msg = f"Error.\n{err}"
-            return msg
+                return f'Error.\n{err}'
         return msg
 
     def gDrive_file(self, **kwargs):
@@ -979,39 +978,31 @@ class GoogleDriveHelper:
         fh = io.FileIO(f"{path}{filename}", "wb")
         downloader = MediaIoBaseDownload(fh, request, chunksize=65 * 1024 * 1024)
         done = False
-        while done is False:
+        while not done:
             if self.is_cancelled:
                 fh.close()
                 break
             try:
                 self.dstatus, done = downloader.next_chunk()
             except HttpError as err:
-                if err.resp.get("content-type", "").startswith("application/json"):
-                    reason = (
-                        json.loads(err.content)
-                        .get("error")
-                        .get("errors")[0]
-                        .get("reason")
-                    )
-                    if (
-                        reason == "downloadQuotaExceeded"
-                        or reason == "dailyLimitExceeded"
-                    ):
-                        if USE_SERVICE_ACCOUNTS:
-                            if self.sa_count == self.service_account_count:
-                                self.is_cancelled = True
-                                raise err
-                            else:
-                                self.switchServiceAccount()
-                                LOGGER.info(f"Got: {reason}, Trying Again...")
-                                return self.download_file(
-                                    file_id, path, filename, mime_type
-                                )
-                        else:
+                if err.resp.get('content-type', '').startswith('application/json'):
+                    reason = json.loads(err.content).get('error').get('errors')[0].get('reason')
+                    if reason not in [
+                        'downloadQuotaExceeded',
+                        'dailyLimitExceeded',
+                    ]:
+                        raise err
+                    if USE_SERVICE_ACCOUNTS:
+                        if self.sa_count == self.service_account_count:
                             self.is_cancelled = True
-                            LOGGER.info(f"Got: {reason}")
                             raise err
+                        else:
+                            self.switchServiceAccount()
+                            LOGGER.info(f'Got: {reason}, Trying Again...')
+                            return self.download_file(file_id, path, filename, mime_type)
                     else:
+                        self.is_cancelled = True
+                        LOGGER.info(f'Got: {reason}')
                         raise err
         self._file_downloaded_bytes = 0
 

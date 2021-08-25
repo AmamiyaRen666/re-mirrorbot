@@ -27,7 +27,6 @@ class _BotCommands:
         self.DeleteCommand = 'hapus'
         self.UsageCommand = 'sisakuota'
         self.MediaInfoCommand = 'mediainfo'
-        self.ConfigMenuCommand = 'config'
         self.ShellCommand = 'cmd'
         self.ExecHelpCommand = 'tolongexec'
         self.TsHelpCommand = 'bantuants'

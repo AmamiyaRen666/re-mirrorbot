@@ -117,7 +117,7 @@ def get_progress_bar_string(status):
     return p_str
 
 
-def get_readable_message():  # sourcery no-metrics
+def get_readable_message():  # sourcery no-metrics skip: remove-redundant-pass
     with download_dict_lock:
         msg = ""
         INDEX = 0
@@ -150,20 +150,18 @@ def get_readable_message():  # sourcery no-metrics
                     # if hasattr(download, 'is_torrent'):
                     try:
                         msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
-                            f" | <b>Peers:</b> {download.aria_download().connections}" \
-                            f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>"
-
+                            f" | <b>Peers:</b> {download.aria_download().connections}"
                     except:
                         pass
 
                     try:
                         msg += f"\n<b>Seeders:</b> <code>{download.torrent_info().num_seeds}</code>" \
-                            f" | <b>Leechers:</b> <code>{download.torrent_info().num_leechs}</code>" \
-                            f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>"
+                            f" | <b>Leechers:</b> <code>{download.torrent_info().num_leechs}</code>"
 
                     except:
-                        f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
-
+                        pass
+                        msg += f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>"
+                        msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if STATUS_LIMIT is not None and INDEX >= COUNT + STATUS_LIMIT:
                     break
@@ -214,6 +212,7 @@ def check_limit(size, limit, tar_unzip_limit=None, is_tar_ext=False):
         elif 'T' in limit[1] or 't' in limit[1]:
             if size > limitint * 1024**4:
                 return True
+
 
 def get_readable_time(seconds: int) -> str:
     result = ''

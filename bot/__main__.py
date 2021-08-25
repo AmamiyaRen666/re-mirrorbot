@@ -14,7 +14,7 @@ from telegram.ext import CommandHandler
 from wserver import start_server_async
 
 from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, SERVER_PORT, app,
-                 bot, botStartTime, dispatcher, alive)
+                 bot, botStartTime, dispatcher, alive, updater)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -141,8 +141,6 @@ def bot_help(update, context):
 /{BotCommands.RestartCommand}: Mulai ulang bot.
 
 /{BotCommands.LogCommand}: Dapatkan file log bot.Berguna untuk mendapatkan laporan kecelakaan
-
-/{BotCommands.ConfigMenuCommand}: Dapatkan Info Menu Tentang Bot Config (Hanya Pemilik)
 
 /{BotCommands.UsageCommand}: Untuk melihat statistik Heroku Dyno (hanya pemilik & sudo)
 
