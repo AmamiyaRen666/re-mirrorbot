@@ -631,7 +631,7 @@ async def re_verfiy(paused, resumed, client, torr):
         LOGGER.error("Reverification Failed, correcting stuff...")
         client.auth_log_out()
         client = qba.Client(host="localhost", port="8090",
-                           username="admin", password="adminadmin")
+                            username="admin", password="adminadmin")
         client.auth_log_in()
         try:
             client.torrents_file_priority(
@@ -645,7 +645,7 @@ async def re_verfiy(paused, resumed, client, torr):
             LOGGER.error("Errored in reverification resumed")
         client.auth_log_out()
         k += 1
-        if k >= 4:
+        if k > 4:
             return False
     return True
 
