@@ -35,3 +35,4 @@ pytz
 https://github.com/sivel/speedtest-cli/archive/refs/heads/master.zip
 telegraph
 TgCrypto
+pyshorteners

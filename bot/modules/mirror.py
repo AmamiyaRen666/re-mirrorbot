@@ -20,7 +20,7 @@ from bot import (BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, BUTTON_FIVE_NAME,
                  Interval, aria2, dispatcher, download_dict,
                  download_dict_lock, get_client)
 from bot.helper.ext_utils import bot_utils, fs_utils
-from bot.helper.ext_utils.bot_utils import check_limit, get_mega_link_type
+from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import (DirectDownloadLinkException,
                                              NotSupportedExtractionArchive)
 from bot.helper.mirror_utils.download_utils.aria2_download import \
@@ -179,9 +179,7 @@ class MirrorListener(listeners.MirrorListeners):
                 msg += f'\n<b>Tipe: </b><code>{typ}</code>'
             buttons = button_build.ButtonMaker()
             if SHORTENER is not None and SHORTENER_API is not None:
-                surl = requests.get(
-                    f'https://{SHORTENER}/api?api={SHORTENER_API}&url={link}&format=text'
-                ).text
+                surl = short_url(link)
                 buttons.buildbutton("☁️ Link Drive", surl)
             else:
                 buttons.buildbutton("☁️ Link Drive", link)
@@ -196,24 +194,18 @@ class MirrorListener(listeners.MirrorListeners):
                 ):
                     share_url += '/'
                     if SHORTENER is not None and SHORTENER_API is not None:
-                        siurl = requests.get(
-                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={share_url}&format=text'
-                        ).text
+                        siurl = short_url(share_url)
                         buttons.buildbutton("⚡ Link Index", siurl)
                     else:
                         buttons.buildbutton("⚡ Link Index", share_url)
                 else:
                     share_urls = f'{INDEX_URL}/{url_path}?a=view'
                     if SHORTENER is not None and SHORTENER_API is not None:
-                        siurl = requests.get(
-                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={share_url}&format=text'
-                        ).text
-                        siurls = requests.get(
-                            f'https://{SHORTENER}/api?api={SHORTENER_API}&url={share_urls}&format=text'
-                        ).text
+                        siurl = short_url(share_url)
                         buttons.buildbutton("⚡ Link Index", siurl)
                         if VIEW_LINK:
-                            buttons.buildbutton("🌐 Lihat link", siurls)
+                            siurls = short_url(share_urls)
+                            buttons.buildbutton("🌐 Lihat Link", siurls)
                     else:
                         buttons.buildbutton("⚡ Link Index", share_url)
                         if VIEW_LINK:
@@ -382,7 +374,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
             sendMessage(res, bot, update)
             return
         if TAR_UNZIP_LIMIT is not None:
-            result = check_limit(size, TAR_UNZIP_LIMIT)
+            result = bot_utils.check_limit(size, TAR_UNZIP_LIMIT)
             if result:
                 msg = f'Gagal, batas tar/unzip adalah {TAR_UNZIP_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(size)}.'
                 sendMessage(msg, listener.bot, listener.update)
@@ -401,11 +393,12 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
         drive.download(link)
 
     elif bot_utils.is_mega_link(link):
-        link_type = get_mega_link_type(link)
+        if BLOCK_MEGA_LINKS:
+            sendMessage("Tautan Mega diblokir!", bot, update)
+            return
+        link_type = bot_utils.get_mega_link_type(link)
         if link_type == "folder" and BLOCK_MEGA_FOLDER:
             sendMessage("Folder Mega diblokir!", bot, update)
-        elif BLOCK_MEGA_LINKS:
-            sendMessage("Tautan Mega diblokir!", bot, update)
         else:
             mega_dl = MegaDownloadHelper()
             mega_dl.add_download(
