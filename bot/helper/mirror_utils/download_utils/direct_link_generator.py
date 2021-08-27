@@ -117,27 +117,30 @@ def zippy_share(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("No Zippyshare links found")
     try:
-        base_url = re.search('http.+.zippyshare.com', link).group()
-        response = requests.get(link).content
-        pages = BeautifulSoup(response, "lxml")
-        try:
-            js_script = pages.find("div", {
-                "class": "center"
-            }).find_all("script")[1]
-        except IndexError:
-            js_script = pages.find("div", {
-                "class": "right"
-            }).find_all("script")[0]
-        js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
-        js_content = 'var x = "/' + js_content[0] + '"'
-        evaljs = EvalJs()
-        setattr(evaljs, "x", None)
-        evaljs.execute(js_content)
-        js_content = getattr(evaljs, "x")
-        return base_url + js_content
+        return _extracted_from_zippy_share_8(link)
     except IndexError:
         raise DirectDownloadLinkException(
             "ERROR: Tidak dapat menemukan tombol Unduh")
+
+def _extracted_from_zippy_share_8(link):
+    base_url = re.search('http.+.zippyshare.com', link).group()
+    response = requests.get(link).content
+    pages = BeautifulSoup(response, "lxml")
+    try:
+        js_script = pages.find("div", {
+            "class": "center"
+        }).find_all("script")[1]
+    except IndexError:
+        js_script = pages.find("div", {
+            "class": "right"
+        }).find_all("script")[0]
+    js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
+    js_content = 'var x = "/' + js_content[0] + '"'
+    evaljs = EvalJs()
+    setattr(evaljs, "x", None)
+    evaljs.execute(js_content)
+    js_content = getattr(evaljs, "x")
+    return base_url + js_content
 
 
 def yandex_disk(url: str) -> str:
@@ -392,7 +395,7 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             req = requests.post(url)
         else:
             pw = {"pass": pswd}
-            req = requests.post(url, data=pe)
+            req = requests.post(url, data=pw)
     except BaseException:
         raise DirectDownloadLinkException(
             "ERROR: Tidak dapat mencapai server 1fichier!"

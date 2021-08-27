@@ -204,25 +204,28 @@ class qbittorrent:
                 self.updater.cancel()
                 return
             elif tor_info.state == "uploading" or tor_info.state.lower().endswith("up"):
-                self.client.torrents_pause(torrent_hashes=self.ext_hash)
-                if self.qbitsel:
-                    for dirpath, subdir, files in os.walk(f"{self.dire}", topdown=False):
-                        for file in files:
-                            if fnmatch(file, "*.!qB"):
-                                os.remove(os.path.join(dirpath, file))
-                        for folder in subdir:
-                            if fnmatch(folder, ".unwanted"):
-                                shutil.rmtree(os.path.join(dirpath, folder))
-                    for dirpath, subdir, files in os.walk(f"{self.dire}", topdown=False):
-                        if not os.listdir(dirpath):
-                            os.rmdir(dirpath)
-                self.listener.onDownloadComplete()
-                self.client.torrents_delete(
-                    torrent_hashes=self.ext_hash, delete_files=True)
-                self.client.auth_log_out()
-                self.updater.cancel()
+                self._extracted_from_update_55()
         except:
             self.updater.cancel()
+
+    def _extracted_from_update_55(self):
+        self.client.torrents_pause(torrent_hashes=self.ext_hash)
+        if self.qbitsel:
+            for dirpath, subdir, files in os.walk(f"{self.dire}", topdown=False):
+                for file in files:
+                    if fnmatch(file, "*.!qB"):
+                        os.remove(os.path.join(dirpath, file))
+                for folder in subdir:
+                    if fnmatch(folder, ".unwanted"):
+                        shutil.rmtree(os.path.join(dirpath, folder))
+            for dirpath, subdir, files in os.walk(f"{self.dire}", topdown=False):
+                if not os.listdir(dirpath):
+                    os.rmdir(dirpath)
+        self.listener.onDownloadComplete()
+        self.client.torrents_delete(
+            torrent_hashes=self.ext_hash, delete_files=True)
+        self.client.auth_log_out()
+        self.updater.cancel()
 
 
 def get_confirm(update, context):
