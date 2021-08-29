@@ -1,41 +1,46 @@
-[![Slam](https://telegra.ph/file/db03910496f06094f1f7a.jpg)](https://youtu.be/Pk_TthHfLeE)
+[![lofi](https://images.unsplash.com/photo-1608875004752-2fdb6a39ba4c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80)](https://www.youtube.com/watch?v=AzV77KFsLn4)
 
-# Slam Aria Mirror Bot
-![GitHub Repo stars](https://img.shields.io/github/stars/breakdowns/slam-aria-mirror-bot?color=blue&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/breakdowns/slam-aria-mirror-bot?color=green&style=flat)
-![GitHub issues](https://img.shields.io/github/issues/breakdowns/slam-aria-mirror-bot)
-![GitHub closed issues](https://img.shields.io/github/issues-closed/breakdowns/slam-aria-mirror-bot)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/breakdowns/slam-aria-mirror-bot)
-![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/breakdowns/slam-aria-mirror-bot)
-![GitHub watchers](https://img.shields.io/github/watchers/breakdowns/slam-aria-mirror-bot)
-![GitHub contributors](https://img.shields.io/github/contributors/breakdowns/slam-aria-mirror-bot?style=flat)
-![GitHub repo size](https://img.shields.io/github/repo-size/breakdowns/slam-aria-mirror-bot?color=red)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/breakdowns/slam-aria-mirror-bot)
-![GitHub](https://img.shields.io/github/license/breakdowns/slam-aria-mirror-bot)
+Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
+
+# re-mirrorbot
+![GitHub forks](https://img.shields.io/github/forks/Ncode2014/re-mirrorbot?color=green&style=flat)
+![GitHub issues](https://img.shields.io/github/issues/Ncode2014/re-mirrorbot)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Ncode2014/re-mirrorbot)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/Ncode2014/re-mirrorbot)
+![GitHub watchers](https://img.shields.io/github/watchers/Ncode2014/re-mirrorbot)
+![GitHub repo size](https://img.shields.io/github/repo-size/Ncode2014/re-mirrorbot?color=red)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Ncode2014/re-mirrorbot)
+![GitHub](https://img.shields.io/github/license/SlamDevs/slam-mirrorbot)
 ![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)
-![Docker Pulls](https://img.shields.io/docker/pulls/breakdowns/mega-sdk-python?label=Docker%20Pull)
-[![Channel](https://img.shields.io/badge/Join%20Channel-!-red)](https://t.me/SlamMirrorUpdates)
+![Docker Pulls](https://img.shields.io/docker/pulls/narima/megaria?label=Docker%20Pull)
 
-**Slam Aria Mirror Bot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive.
+**re-cerminbot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive, Based on [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
 
 # Features supported:
 <details>
     <summary><b>Click Here For More Details</b></summary>
 
-## Additional Features
-- Updater (**NOTE**: You must upload your **token.pickle** to Index and fill your **token.pickle** url to **TOKEN_PICKLE_URL**, because your **token.pickle** will deleted after update, for more info please check [Setting up config file](https://github.com/breakdowns/slam-aria-mirror-bot/tree/master#setting-up-config-file))
+## what some different feature rather the original [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
+- adding more direct link generator
+- still using some old stuff like image url on speedtest,index link, mediainfo,usage and etc
+- ffmpeg custom to make your bot to be something powerfull
+- you can change yt-dlp or ytdl because the docker has been included to dependencies
+- still support and keep using latest updated slam-mirrorbot
+- refactored some code to make some good perfomance
+- Using Qbittorrent Enhanced Edition
+- dropped using button template (cli still supported or using whatever method)
+
+## Additional Features On [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
+- qBittorrent supported
 - Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
 - Get detailed info about replied media (Only for Telegram file)
 - Stop duplicate cloning Google Drive & mirroring Mega support
 - Tar/Unzip Google Drive link support
-- Speedtest with picture results
+- Select files from Torrent before downloading
 - Sudo with Database support
-- Multiple Trackers support
-- Check Heroku dynos stats
+- Check Heroku dynos stats (optional)
 - Extracting **tar.xz** support
 - Counting Google Drive link
-- Heroku config support
-- Custom Image support
 - Custom Progress bar
 - Counting file/folder
 - View Link button
@@ -52,9 +57,10 @@ fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream,
 sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com,
 streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
 1fichier.com, 1drv.ms (Only works for file not folder or business account),
-uptobox.com (Uptobox account must be premium), solidfiles.com
+uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 ```
-## From Original Repos
+
+## From Original Repos Thx to [magneto261290](https://github.com/magneto261290)
 - Mirroring direct download links, Torrent, and Telegram files to Google Drive
 - Mirroring Mega.nz links to Google Drive (If your Mega account not premium, it will limit 5GB/6 hours)
 - Copy files from someone's Drive to your Drive (Using Autorclone)
@@ -68,11 +74,11 @@ uptobox.com (Uptobox account must be premium), solidfiles.com
 - Shortener support
 - Custom Filename (Only for URL, Telegram files and Youtube-dl. Not for Mega links and Magnet/Torrents)
 - Extracting password protected files, using custom filename and download from password protected Index Links see these examples:
-<p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
+<p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/See%20Telegraph-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
 
 - Extract these filetypes and uploads to Google Drive
 ```
-ZIP, RAR, TAR, 7z, ISO, WIM, CAB, GZIP, BZIP2, 
+ZIP, RAR, TAR, XZ, 7z, ISO, WIM, CAB, GZIP, BZIP2, 
 APM, ARJ, CHM, CPIO, CramFS, DEB, DMG, FAT, 
 HFS, LZH, LZMA, LZMA2, MBR, MSI, MSLZ, NSIS, 
 NTFS, RPM, SquashFS, UDF, VHD, XAR, Z.
@@ -86,7 +92,7 @@ Deploying is pretty much straight forward and is divided into several steps as f
 
 - Clone this repo:
 ```
-git clone https://github.com/breakdowns/slam-aria-mirror-bot mirrorbot/
+git clone https://github.com/Ncode2014/re-mirrorbot mirrorbot/
 cd mirrorbot
 ```
 
@@ -95,16 +101,27 @@ For Debian based distros
 ```
 sudo apt install python3
 ```
-Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/)
 
+Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/) or using [snap tutorial](https://snapcraft.io/install/docker/ubuntu) for easier way
+
+```
+sudo snap install docker 
+```
 - For Arch and it's derivatives:
 ```
 sudo pacman -S docker python
 ```
+
+- For easy way using snap: 
+```
+sudo snap install docker
+```
+
 - Install dependencies for running setup scripts:
 ```
 pip3 install -r requirements-cli.txt
 ```
+
 ## Generate Database
 <details>
     <summary><b>Click Here For More Details</b></summary>
@@ -117,10 +134,10 @@ pip3 install -r requirements-cli.txt
 - Hit **Review**
 - Hit **Create instance**
 - Select your database name
-- Copy your database url, and fill to **DATABASE_URL** in config
+- Copy your database url, and fill to `DATABASE_URL` in config
 
 **2. Using Heroku PostgreSQL**
-<p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/see%20on%20dev.to-black?style=for-the-badge&logo=dev-dot-to" width="190""/></a></p>
+<p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/See%20Dev.to-black?style=for-the-badge&logo=dev.to" width="170""/></a></p>
 
 </details>
 
@@ -137,58 +154,60 @@ _____REMOVE_THIS_LINE_____=True
 ```
 Fill up rest of the fields. Meaning of each fields are discussed below:
 ### Required Field
-- **BOT_TOKEN**: The Telegram bot token that you get from [@BotFather](https://t.me/BotFather)
-- **TELEGRAM_API**: This is to authenticate to your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org DO NOT put this in quotes.
-- **TELEGRAM_HASH**: This is to authenticate to your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org
-- **OWNER_ID**: The Telegram user ID (not username) of the Owner of the bot
-- **GDRIVE_FOLDER_ID**: This is the folder ID of the Google Drive Folder to which you want to upload all the mirrors.
-- **DOWNLOAD_DIR**: The path to the local folder where the downloads should be downloaded to
-- **DOWNLOAD_STATUS_UPDATE_INTERVAL**: A short interval of time in seconds after which the Mirror progress message is updated. (I recommend to keep it `5` seconds at least)  
-- **AUTO_DELETE_MESSAGE_DURATION**: Interval of time (in seconds), after which the bot deletes it's message (and command message) which is expected to be viewed instantly. (**Note**: Set to `-1` to never automatically delete messages)
-- **UPSTREAM_REPO**: Link for Bot Upstream Repo, if you want default update, fill `https://github.com/breakdowns/slam-aria-mirror-bot`.
-- **UPSTREAM_BRANCH**: Branch name for Bot Upstream Repo, fill `master`.
+- `BOT_TOKEN`: The Telegram bot token that you get from [@BotFather](https://t.me/BotFather)
+- `TELEGRAM_API`: This is to authenticate to your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org DO NOT put this in quotes.
+- `TELEGRAM_HASH`: This is to authenticate to your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org
+- `OWNER_ID`: The Telegram user ID (not username) of the Owner of the bot
+- `GDRIVE_FOLDER_ID`: This is the folder ID of the Google Drive Folder to which you want to upload all the mirrors.
+- `DOWNLOAD_DIR`: The path to the local folder where the downloads should be downloaded to
+- `DOWNLOAD_STATUS_UPDATE_INTERVAL`: A short interval of time in seconds after which the Mirror progress message is updated. (I recommend to keep it `5` seconds at least)  
+- `AUTO_DELETE_MESSAGE_DURATION`: Interval of time (in seconds), after which the bot deletes it's message (and command message) which is expected to be viewed instantly. (**Note**: Set to `-1` to never automatically delete messages)
 ### Optional Field
-- **ACCOUNTS_ZIP_URL**: Only if you want to load your Service Account externally from an Index Link. Archive your Service Account json files to a zip file directly (don't archive the accounts folder. Select all the jsons inside and zip them only instead. Name the zip file with whatever you want, it doesn't matter). Fill this with the direct link of that file.
-- **TOKEN_PICKLE_URL**: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
-- **DATABASE_URL**: Your Database URL. See [Generate Database](https://github.com/breakdowns/slam-aria-mirror-bot/tree/master#generate-database) to generate database (**NOTE**: If you use database you can save your sudo id permanent using `/addsudo` command).
-- **AUTHORIZED_CHATS**: Fill user_id and chat_id (not username) of you want to authorize, Seprate them with space, Examples: `-0123456789 -1122334455 6915401739`.
-- **SUDO_USERS**: Fill user_id (not username) of you want to sudoers, Seprate them with space, Examples: `0123456789 1122334455 6915401739` (**NOTE**: If you want save sudo id permanent without database, you must fill your sudo id there).
-- **IS_TEAM_DRIVE**: Set to `True` if `GDRIVE_FOLDER_ID` is from a Team Drive else `False` or Leave it empty.
-- **USE_SERVICE_ACCOUNTS**: (Leave empty if unsure) Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/breakdowns/slam-aria-mirror-bot#generate-service-accounts-what-is-service-account) section below.
-- **INDEX_URL**: Refer to https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index The URL should not have any trailing '/'
-- **MEGA_API_KEY**: Mega.nz api key to mirror mega.nz links. Get it from [Mega SDK Page](https://mega.nz/sdk)
-- **MEGA_EMAIL_ID**: Your email id you used to sign up on mega.nz for using premium accounts (Leave th)
-- **MEGA_PASSWORD**: Your password for your mega.nz account
-- **BLOCK_MEGA_FOLDER**: If you want to remove mega.nz folder support, set it to `True`.
-- **BLOCK_MEGA_LINKS**: If you want to remove mega.nz mirror support, set it to `True`.
-- **STOP_DUPLICATE**: (Leave empty if unsure) if this field is set to `True`, bot will check file in Drive, if it is present in Drive, downloading or cloning will be stopped. (**Note**: File will be checked using filename, not using filehash, so this feature is not perfect yet)
-- **CLONE_LIMIT**: To limit cloning Google Drive (leave space between number and unit, Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
-- **MEGA_LIMIT**: To limit downloading Mega (leave space between number and unit, Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
-- **TORRENT_DIRECT_LIMIT**: To limit the Torrent/Direct mirror size, Leave space between number and unit. Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
-- **TAR_UNZIP_LIMIT**: To limit mirroring as Tar or unzipmirror. Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
-- **VIEW_LINK**: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if the END of link from browser link bar is `?a=view`, if yes make it `True` it will work (Compatible with [Bhadoo Index](https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index) Code)
-- **UPTOBOX_TOKEN**: Uptobox token to mirror uptobox links. Get it from [Uptobox Premium Account](https://uptobox.com/my_account).
-- **HEROKU_API_KEY**: (Only if you deploying on Heroku) Your Heroku API key, get it from https://dashboard.heroku.com/account.
-- **HEROKU_APP_NAME**: (Only if you deploying on Heroku) Your Heroku app name.
-- **IGNORE_PENDING_REQUESTS**: If you want the bot to ignore pending requests after it restarts, set this to `True`.
-- **STATUS_LIMIT**: Status limit with buttons (**NOTE**: Recommend limit status to `4` tasks max).
-- **SHORTENER_API**: Fill your Shortener api key if you are using Shortener.
-- **SHORTENER**: if you want to use Shortener in Gdrive and index link, fill Shortener url here. Examples:
+- `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link. Archive the accounts folder to a zip file. Fill this with the direct link of that file.
+- `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
+- `DATABASE_URL`: Your Database URL. See [Generate Database](https://github.com/SlamDevs/slam-mirrorbot/tree/master#generate-database) to generate database (**NOTE**: If you use database you can save your sudo id permanent using `/addsudo` command).
+- `AUTHORIZED_CHATS`: Fill user_id and chat_id (not username) of you want to authorize, Seprate them with space, Examples: `-0123456789 -1122334455 6915401739`.
+- `SUDO_USERS`: Fill user_id (not username) of you want to sudoers, Seprate them with space, Examples: `0123456789 1122334455 6915401739` (**NOTE**: If you want save sudo id permanent without database, you must fill your sudo id there).
+- `IS_TEAM_DRIVE`: Set to `True` if `GDRIVE_FOLDER_ID` is from a Team Drive else `False` or Leave it empty.
+- `USE_SERVICE_ACCOUNTS`: (Leave empty if unsure) Whether to use Service Accounts or not. For this to work see [Using Service Accounts](https://github.com/SlamDevs/slam-mirrorbot#generate-service-accounts-what-is-service-account) section below.
+- `INDEX_URL`: Refer to https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index The URL should not have any trailing '/'
+- `MEGA_API_KEY`: Mega.nz api key to mirror mega.nz links. Get it from [Mega SDK Page](https://mega.nz/sdk)
+- `MEGA_EMAIL_ID`: Your email id you used to sign up on mega.nz for using premium accounts (Leave th)
+- `MEGA_PASSWORD`: Your password for your mega.nz account
+- `BLOCK_MEGA_FOLDER`: If you want to remove mega.nz folder support, set it to `True`.
+- `BLOCK_MEGA_LINKS`: If you want to remove mega.nz mirror support, set it to `True`.
+- `STOP_DUPLICATE`: (Leave empty if unsure) if this field is set to `True`, bot will check file in Drive, if it is present in Drive, downloading or cloning will be stopped. (**Note**: File will be checked using filename, not using filehash, so this feature is not perfect yet)
+- `CLONE_LIMIT`: To limit cloning Google Drive (leave space between number and unit, Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
+- `MEGA_LIMIT`: To limit downloading Mega (leave space between number and unit, Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
+- `TORRENT_DIRECT_LIMIT`: To limit the Torrent/Direct mirror size, Leave space between number and unit. Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
+- `TAR_UNZIP_LIMIT`: To limit mirroring as Tar or unzipmirror. Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
+- `VIEW_LINK`: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if the END of link from browser link bar is `?a=view`, if yes make it `True` it will work (Compatible with [Bhadoo Index](https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index) Code)
+- `UPTOBOX_TOKEN`: Uptobox token to mirror uptobox links. Get it from [Uptobox Premium Account](https://uptobox.com/my_account).
+- `HEROKU_EMAIL`: Heroku Account email Id in which the above app will be deployed (**NOTE**: Only needed if you deploying on Heroku with Github Workflow).
+- `HEROKU_API_KEY`: (Only if you deploying on Heroku) Your Heroku API key, get it from https://dashboard.heroku.com/account.
+- `HEROKU_APP_NAME`: (Only if you deploying on Heroku) Your Heroku app name.
+- `IGNORE_PENDING_REQUESTS`: If you want the bot to ignore pending requests after it restarts, set this to `True`.
+- `STATUS_LIMIT`: Status limit with buttons (**NOTE**: Recommend limit status to `4` tasks max).
+- `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any port you want to use.
+- `SERVER_PORT`: (Only if IS_VPS is `True`) Base URL Port
+- `BASE_URL_OF_BOT`: (Required for Heroku) Valid BASE URL of where the bot is deploy. Ip/domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: No slash at the end)
+- `IMAGE_URL`: Show Image/Logo in /start message, Use telegra.ph or any direct link image
+- `SHORTENER_API`: Fill your Shortener api key if you are using Shortener.
+- `SHORTENER`: if you want to use Shortener in Gdrive and index link, fill Shortener url here. Examples:
 ```
 exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com
 ```
 
 Above are the supported url Shorteners. Except these only some url Shorteners are supported.
 
-**Note**: You can limit maximum concurrent downloads by changing the value of **MAX_CONCURRENT_DOWNLOADS** in aria.sh. By default, it's set to `7`.
 ### Add more buttons (Optional Field)
 Three buttons are already added of Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are below entries, simply leave them, don't fill anything in them.
-- **BUTTON_FOUR_NAME**:
-- **BUTTON_FOUR_URL**:
-- **BUTTON_FIVE_NAME**:
-- **BUTTON_FIVE_URL**:
-- **BUTTON_SIX_NAME**:
-- **BUTTON_SIX_URL**:
+- `BUTTON_FOUR_NAME`:
+- `BUTTON_FOUR_URL`:
+- `BUTTON_FIVE_NAME`:
+- `BUTTON_FIVE_URL`:
+- `BUTTON_SIX_NAME`:
+- `BUTTON_SIX_URL`:
 
 </details>
 
@@ -215,26 +234,21 @@ sudo dockerd
 ```
 - Build Docker image:
 ```
-docker build . --rm --force-rm --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
+docker build . --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
 ```
 - Run the image:
 ```
 sudo docker run mirrorbot
 ```
-
-## Deploying on Heroku
-
-- Give stars and Fork this repo then upload **token.pickle** to your forks, or you can upload your **token.pickle** to your Index and put your **token.pickle** link to **TOKEN_PICKLE_URL** (**NOTE**: If you didn't upload **token.pickle** uploading will not work). How to generate **token.pickle**? [Read here](https://github.com/breakdowns/slam-aria-mirror-bot#getting-google-oauth-api-credential-file)
-- Hit the **DEPLOY TO HEROKU** button and follow the further instructions in the screen (**NOTE**: If vars not coming, just change deploy link to your fork, Example: `https://dashboard.heroku.com/new?template=https://github.com/yourgithubname/slam-aria-mirror-bot`)
-- Recommended to use 1 App in 1 Heroku accounts
-
-<p><a href="https://heroku.com/deploy"> <img src="https://img.shields.io/badge/Deploy%20To%20Heroku-blueviolet?style=for-the-badge&logo=heroku" width="200""/></a></p>
-
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
 
+## Deploying on Heroku
+- Deploying on Heroku with Github Workflow
+<p><a href="https://github.com/SlamDevs/slam-mirrorbot/blob/master/heroku-guide.md"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
+
 # Using Service Accounts for uploading to avoid user rate limit
-For Service Account to work, you must set **USE_SERVICE_ACCOUNTS=**"True" in config file or environment variables, 
+For Service Account to work, you must set `USE_SERVICE_ACCOUNTS`="True" in config file or environment variables, 
 Many thanks to [AutoRClone](https://github.com/xyou365/AutoRclone) for the scripts.
 **NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
@@ -286,6 +300,7 @@ cd -
 Then add emails from emails.txt to Google Group, after that add Google Group to your Shared Drive and promote it to manager.
 
 **NOTE**: If you have created SAs in past from this script, you can also just re download the keys by running:
+
 ```
 python3 gen_sa_accounts.py --download-keys project_id
 ```
@@ -298,7 +313,7 @@ python3 gen_sa_accounts.py --download-keys project_id
 python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 ```
 
-# Youtube-dl authentication using .netrc file
+# Youtube-dl authentication using [.netrc](https://github.com/SlamDevs/slam-mirrorbot/blob/master/.netrc) file
 For using your premium accounts in Youtube-dl or for protected Index Links, edit the netrc file according to following format:
 ```
 machine host login username password my_youtube_password
@@ -310,14 +325,21 @@ machine example.workers.dev password index_password
 Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
 # Credits
-
 Thanks to:
 - [out386](https://github.com/out386) heavily inspired from Telegram Bot which is written in JS
-- [Izzy12](https://github.com/lzzy12) for original repo
+- [Izzy12](https://github.com/lzzy12) for build up this bot from scratch
+- [jaskaranSM](https://github.com/jaskaranSM) for build up this bot from scratch
 - [Dank-del](https://github.com/Dank-del) for base repo
 - [magneto261290](https://github.com/magneto261290) for some features
 - [SVR666](https://github.com/SVR666) for some features & fixes
 - [anasty17](https://github.com/anasty17) for some features & help
-- [breakdowns](https://github.com/breakdowns) for slam-aria-mirror-bot
+- [breakdowns](https://github.com/breakdowns) for slam-mirrorbot
+- [yash-dk](https://github.com/yash-dk) for implementation qbittorrent in python on TorToolkit-Telegram repo
 
-And many more people who aren't mentioned here, but may be found in [Contributors](https://github.com/breakdowns/slam-aria-mirror-bot/graphs/contributors).
+# for stuff i use 
+Thanks to:
+- [Marek Oron](https://unsplash.com/@marekokon) for banner image on this repo
+- [zevtyardt](https://github.com/zevtyardt) for some direct links
+- [CORE](https://github.com/c0re100) for Qbittorrent Enhanced Edition
+
+And many more people who aren't mentioned here, but may be found in [Contributors](https://github.com/SlamDevs/slam-mirrorbot/graphs/contributors).

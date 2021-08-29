@@ -15,44 +15,40 @@ def authorize(update, context):
     message_ = update.message.text.split(' ')
     if len(message_) == 2:
         user_id = int(message_[1])
-        if user_id not in AUTHORIZED_CHATS:
-            if DB_URI is not None:
-                msg = DbManger().db_auth(user_id)
-            else:
-                with open('authorized_chats.txt', 'a') as file:
-                    file.write(f'{user_id}\n')
-                    AUTHORIZED_CHATS.add(user_id)
-                    msg = 'User Authorized'
-        else:
+        if user_id in AUTHORIZED_CHATS:
             msg = 'Pengguna sudah diotorisasi'
-    else:
-        if reply_message is None:
-            # Trying to authorize a chat
-            chat_id = update.effective_chat.id
-            if chat_id not in AUTHORIZED_CHATS:
-                if DB_URI is not None:
-                    msg = DbManger().db_auth(chat_id)
-                else:
-                    with open('authorized_chats.txt', 'a') as file:
-                        file.write(f'{chat_id}\n')
-                        AUTHORIZED_CHATS.add(chat_id)
-                        msg = 'Chat Authorized'
-            else:
-                msg = 'Sudah diotorisasi obrolan'
-
+        elif DB_URI is not None:
+            msg = DbManger().db_auth(user_id)
         else:
-            # Trying to authorize someone by replying
-            user_id = reply_message.from_user.id
-            if user_id not in AUTHORIZED_CHATS:
-                if DB_URI is not None:
-                    msg = DbManger().db_auth(user_id)
-                else:
-                    with open('authorized_chats.txt', 'a') as file:
-                        file.write(f'{user_id}\n')
-                        AUTHORIZED_CHATS.add(user_id)
-                        msg = 'User Authorized'
-            else:
-                msg = 'Pengguna sudah diotorisasi'
+            with open('authorized_chats.txt', 'a') as file:
+                file.write(f'{user_id}\n')
+                AUTHORIZED_CHATS.add(user_id)
+                msg = 'Pengguna Diotorisasi'
+    elif reply_message is None:
+        # Trying to authorize a chat
+        chat_id = update.effective_chat.id
+        if chat_id in AUTHORIZED_CHATS:
+            msg = 'Sudah diotorisasi obrolan'
+
+        elif DB_URI is not None:
+            msg = DbManger().db_auth(chat_id)
+        else:
+            with open('authorized_chats.txt', 'a') as file:
+                file.write(f'{chat_id}\n')
+                AUTHORIZED_CHATS.add(chat_id)
+                msg = 'Obrolan diizinkan'
+    else:
+        # Trying to authorize someone by replying
+        user_id = reply_message.from_user.id
+        if user_id in AUTHORIZED_CHATS:
+            msg = 'Pengguna sudah diotorisasi'
+        elif DB_URI is not None:
+            msg = DbManger().db_auth(user_id)
+        else:
+            with open('authorized_chats.txt', 'a') as file:
+                file.write(f'{user_id}\n')
+                AUTHORIZED_CHATS.add(user_id)
+                msg = 'Pengguna Diotorisasi'
     sendMessage(msg, context.bot, update)
 
 
@@ -71,29 +67,28 @@ def unauthorize(update, context):
                 msg = 'User Unauthorized'
         else:
             msg = 'Pengguna sudah tidak sah'
-    else:
-        if reply_message is None:
-            # Trying to unauthorize a chat
-            chat_id = update.effective_chat.id
-            if chat_id in AUTHORIZED_CHATS:
-                if DB_URI is not None:
-                    msg = DbManger().db_unauth(chat_id)
-                else:
-                    AUTHORIZED_CHATS.remove(chat_id)
-                    msg = 'Chat Unauthorized'
+    elif reply_message is None:
+        # Trying to unauthorize a chat
+        chat_id = update.effective_chat.id
+        if chat_id in AUTHORIZED_CHATS:
+            if DB_URI is not None:
+                msg = DbManger().db_unauth(chat_id)
             else:
-                msg = 'Obrolan yang sudah tidak sah'
+                AUTHORIZED_CHATS.remove(chat_id)
+                msg = 'Obrolan Tidak Sah'
         else:
-            # Trying to authorize someone by replying
-            user_id = reply_message.from_user.id
-            if user_id in AUTHORIZED_CHATS:
-                if DB_URI is not None:
-                    msg = DbManger().db_unauth(user_id)
-                else:
-                    AUTHORIZED_CHATS.remove(user_id)
-                    msg = 'User Unauthorized'
+            msg = 'Obrolan yang sudah tidak sah'
+    else:
+        # Trying to authorize someone by replying
+        user_id = reply_message.from_user.id
+        if user_id in AUTHORIZED_CHATS:
+            if DB_URI is not None:
+                msg = DbManger().db_unauth(user_id)
             else:
-                msg = 'Pengguna sudah tidak sah'
+                AUTHORIZED_CHATS.remove(user_id)
+                msg = 'Pengguna tidak sah'
+        else:
+            msg = 'Pengguna sudah tidak sah'
     with open('authorized_chats.txt', 'a') as file:
         file.truncate(0)
         for i in AUTHORIZED_CHATS:
@@ -108,32 +103,29 @@ def addSudo(update, context):
     message_ = update.message.text.split(' ')
     if len(message_) == 2:
         user_id = int(message_[1])
-        if user_id not in SUDO_USERS:
-            if DB_URI is not None:
-                msg = DbManger().db_addsudo(user_id)
-            else:
-                with open('sudo_users.txt', 'a') as file:
-                    file.write(f'{user_id}\n')
-                    SUDO_USERS.add(user_id)
-                    msg = 'Promoted as Sudo'
-        else:
+        if user_id in SUDO_USERS:
             msg = 'Sudah di kasih akses Sudo'
-    else:
-        if reply_message is None:
-            msg = "Berikan ID atau Balas Ke pesan yang ingin Anda Promosikan"
+        elif DB_URI is not None:
+            msg = DbManger().db_addsudo(user_id)
         else:
-            # Trying to authorize someone by replying
-            user_id = reply_message.from_user.id
-            if user_id not in SUDO_USERS:
-                if DB_URI is not None:
-                    msg = DbManger().db_addsudo(user_id)
-                else:
-                    with open('sudo_users.txt', 'a') as file:
-                        file.write(f'{user_id}\n')
-                        SUDO_USERS.add(user_id)
-                        msg = 'Promoted as Sudo'
-            else:
-                msg = 'Sudah di kasih akses Sudo'
+            with open('sudo_users.txt', 'a') as file:
+                file.write(f'{user_id}\n')
+                SUDO_USERS.add(user_id)
+                msg = 'Dipromosikan sebagai VIP user'
+    elif reply_message is None:
+        msg = "Berikan ID atau Balas Ke pesan yang ingin Anda Promosikan"
+    else:
+        # Trying to authorize someone by replying
+        user_id = reply_message.from_user.id
+        if user_id in SUDO_USERS:
+            msg = 'Sudah di kasih akses Sudo'
+        elif DB_URI is not None:
+            msg = DbManger().db_addsudo(user_id)
+        else:
+            with open('sudo_users.txt', 'a') as file:
+                file.write(f'{user_id}\n')
+                SUDO_USERS.add(user_id)
+                msg = 'Dipromosikan sebagai VIP user'
     sendMessage(msg, context.bot, update)
 
 
@@ -149,22 +141,21 @@ def removeSudo(update, context):
                 msg = DbManger().db_rmsudo(user_id)
             else:
                 SUDO_USERS.remove(user_id)
-                msg = 'Demoted'
+                msg = 'Dicabut'
         else:
             msg = 'Tidak dikasih akses sudo'
+    elif reply_message is None:
+        msg = "Berikan ID atau Balas Ke pesan yang ingin Anda hapus dari Sudo"
     else:
-        if reply_message is None:
-            msg = "Berikan ID atau Balas Ke pesan yang ingin Anda hapus dari Sudo"
-        else:
-            user_id = reply_message.from_user.id
-            if user_id in SUDO_USERS:
-                if DB_URI is not None:
-                    msg = DbManger().db_rmsudo(user_id)
-                else:
-                    SUDO_USERS.remove(user_id)
-                    msg = 'Demoted'
+        user_id = reply_message.from_user.id
+        if user_id in SUDO_USERS:
+            if DB_URI is not None:
+                msg = DbManger().db_rmsudo(user_id)
             else:
-                msg = 'Tidak dikasih akses sudo'
+                SUDO_USERS.remove(user_id)
+                msg = 'Dicabut'
+        else:
+            msg = 'Tidak dikasih akses sudo'
     if DB_URI is None:
         with open('sudo_users.txt', 'a') as file:
             file.truncate(0)

@@ -1,14 +1,16 @@
 import logging
+import math
 import re
 import threading
 import time
-import math
 
-from bot.helper.telegram_helper.bot_commands import BotCommands
-from bot import dispatcher, download_dict, download_dict_lock, FINISHED_PROGRESS_STR, UNFINISHED_PROGRESS_STR, STATUS_LIMIT
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CallbackQueryHandler
+
+from bot import (FINISHED_PROGRESS_STR, STATUS_LIMIT, UNFINISHED_PROGRESS_STR,
+                 dispatcher, download_dict, download_dict_lock)
 from bot.helper.telegram_helper import button_build, message_utils
+from bot.helper.telegram_helper.bot_commands import BotCommands
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +28,7 @@ class MirrorStatus:
     STATUS_CLONING = "Cloning...♻️"
     STATUS_WAITING = "Queued...📝"
     STATUS_FAILED = "Failed 🚫. Cleaning Download..."
+    STATUS_PAUSE = "Paused...⭕️"
     STATUS_ARCHIVING = "Archiving...🔐"
     STATUS_EXTRACTING = "Extracting...📂"
 
@@ -85,7 +88,7 @@ def getDownloadByGid(gid):
 
 def getAllDownload():
     with download_dict_lock:
-        for dlDetails in list(download_dict.values()):
+        for dlDetails in download_dict.values():
             if (
                 dlDetails.status()
                 in [
@@ -114,7 +117,7 @@ def get_progress_bar_string(status):
     return p_str
 
 
-def get_readable_message():
+def get_readable_message():  # sourcery no-metrics skip: remove-redundant-pass
     with download_dict_lock:
         msg = ""
         INDEX = 0
@@ -135,26 +138,30 @@ def get_readable_message():
                     MirrorStatus.STATUS_EXTRACTING,
                 ]:
                     msg += f"\n<code>{get_progress_bar_string(download)} {download.progress()}</code>"
-                    if download.status() == MirrorStatus.STATUS_DOWNLOADING:
-                        msg += f"\n<b>Diunduh:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
-                    elif download.status() == MirrorStatus.STATUS_CLONING:
+                    if download.status() == MirrorStatus.STATUS_CLONING:
                         msg += f"\n<b>Kloning:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
-                    else:
+                    elif download.status() == MirrorStatus.STATUS_UPLOADING:
                         msg += f"\n<b>Diunggah:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                    else:
+                        msg += f"\n<b>Diunduh:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                     msg += f"\n<b>Kecepatan:</b> {download.speed()}" \
                         f", <b>Kapan:</b> {download.eta()} "
+
                     # if hasattr(download, 'is_torrent'):
                     try:
                         msg += f"\n<b>Seeders:</b> {download.aria_download().num_seeders}" \
                             f" | <b>Peers:</b> {download.aria_download().connections}"
                     except:
                         pass
-                    msg += f'\n<b>Pengguna:</b> <a href="tg://user?id={download.message.from_user.id}">{download.message.from_user.first_name}</a>'
-                if download.status() in [
-                    MirrorStatus.STATUS_DOWNLOADING,
-                    MirrorStatus.STATUS_CLONING,
-                ]:
-                    msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+
+                    try:
+                        msg += f"\n<b>Seeders:</b> <code>{download.torrent_info().num_seeds}</code>" \
+                            f" | <b>Leechers:</b> <code>{download.torrent_info().num_leechs}</code>"
+
+                    except:
+                        pass
+                        msg += f"\n<b>Pengguna:</b> <a href='tg://user?id={download.message.from_user.id}'>{download.message.from_user.first_name}</a>"
+                        msg += f"\n<b>Untuk berhenti:</b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
                 msg += "\n\n"
                 if STATUS_LIMIT is not None and INDEX >= COUNT + STATUS_LIMIT:
                     break
@@ -162,7 +169,7 @@ def get_readable_message():
             if INDEX > COUNT + STATUS_LIMIT:
                 return None, None
             if dick_no > STATUS_LIMIT:
-                msg += f"Halaman: {PAGE_NO}/{pages} | Tugas: {dick_no}\n"
+                msg += f"Halaman: <code>{PAGE_NO}/{pages}</code> | <code>Tugas: {dick_no}</code>\n"
                 buttons = button_build.ButtonMaker()
                 buttons.sbutton("Sebelumnya", "pre")
                 buttons.sbutton("Selanjutnya", "nex")
@@ -190,6 +197,21 @@ def flip(update, context):
             COUNT -= STATUS_LIMIT
             PAGE_NO -= 1
     message_utils.update_all_messages()
+
+
+def check_limit(size, limit, tar_unzip_limit=None, is_tar_ext=False):
+    LOGGER.info(f"Checking File/Folder Size...")
+    if is_tar_ext and tar_unzip_limit is not None:
+        limit = tar_unzip_limit
+    if limit is not None:
+        limit = limit.split(' ', maxsplit=1)
+        limitint = int(limit[0])
+        if 'G' in limit[1] or 'g' in limit[1]:
+            if size > limitint * 1024**3:
+                return True
+        elif 'T' in limit[1] or 't' in limit[1]:
+            if size > limitint * 1024**4:
+                return True
 
 
 def get_readable_time(seconds: int) -> str:

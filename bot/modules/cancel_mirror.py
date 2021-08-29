@@ -1,12 +1,14 @@
+from time import sleep
+
 from telegram.ext import CommandHandler
-from bot import download_dict, dispatcher, download_dict_lock, DOWNLOAD_DIR
+
+from bot import DOWNLOAD_DIR, dispatcher, download_dict, download_dict_lock
+from bot.helper.ext_utils.bot_utils import (MirrorStatus, getAllDownload,
+                                            getDownloadByGid)
 from bot.helper.ext_utils.fs_utils import clean_download
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.message_utils import *
-
-from time import sleep
-from bot.helper.ext_utils.bot_utils import getDownloadByGid, MirrorStatus, getAllDownload
 
 
 def cancel_mirror(update, context):
@@ -44,16 +46,10 @@ def cancel_mirror(update, context):
         elif not mirror_message:
             sendMessage(msg, context.bot, update)
             return
-    if dl.status() == "Archiving...🔐":
-        sendMessage(
-            "Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
-            context.bot, update
-        )
-    elif dl.status() == "Extracting...📂":
-        sendMessage(
-            "Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.",
-            context.bot, update
-        )
+    if dl.status() == MirrorStatus.STATUS_ARCHIVING:
+        sendMessage("Pengarsipan Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
+    elif dl.status() == MirrorStatus.STATUS_EXTRACTING:
+        sendMessage("Ekstrak Sedang Berlangsung, Anda Tidak Dapat Membatalkannya.", context.bot, update)
     else:
         dl.download().cancel_download()
         sleep(3)  # incase of any error with ondownloaderror listener
@@ -62,11 +58,16 @@ def cancel_mirror(update, context):
 
 def cancel_all(update, context):
     count = 0
-    gid = 1
+    gid = 0
     while True:
         dl = getAllDownload()
         if not dl:
             break
+        if dl.gid() != gid:
+            gid = dl.gid()
+            dl.download().cancel_download()
+            count += 1
+            sleep(0.3)
         if dl.gid() == gid:
             continue
         gid = dl.gid()

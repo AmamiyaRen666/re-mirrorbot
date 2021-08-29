@@ -21,10 +21,7 @@ def list_drive(update, context):
         if button:
             editMessage(msg, reply, button)
         else:
-            editMessage(
-                f'Tidak ada hasil ditemukan untuk <b>{search}</b>', reply,
-                button
-            )
+            editMessage(f'Tidak ada hasil ditemukan untuk <code>{search}</code>', reply, button)
 
     except IndexError:
         sendMessage(

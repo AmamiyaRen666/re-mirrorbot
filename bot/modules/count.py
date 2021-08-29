@@ -1,5 +1,6 @@
-# Implement By https://github.com/anasty17
-# (c) https://github.com/breakdowns/slam-aria-mirror-bot
+# Implement By - @anasty17 (https://github.com/SlamDevs/slam-mirrorbot/pull/111)
+# (c) https://github.com/SlamDevs/slam-mirrorbot
+# All rights reserved
 
 from telegram.ext import CommandHandler
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper

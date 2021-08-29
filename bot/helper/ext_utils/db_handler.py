@@ -24,7 +24,7 @@ class DbManger:
         if self.err:
             return "There's some error check log for details"
         else:
-            sql = 'INSERT INTO users VALUES ({});'.format(chat_id)
+            sql = f'INSERT INTO users VALUES ({chat_id});'
             self.cur.execute(sql)
             self.conn.commit()
             self.disconnect()
@@ -36,7 +36,7 @@ class DbManger:
         if self.err:
             return "There's some error check log for details"
         else:
-            sql = 'DELETE from users where uid = {};'.format(chat_id)
+            sql = f'DELETE from users where uid = {chat_id};'
             self.cur.execute(sql)
             self.conn.commit()
             self.disconnect()
@@ -58,7 +58,7 @@ class DbManger:
                 SUDO_USERS.add(chat_id)
                 return 'Successfully promoted as Sudo'
             else:
-                sql = 'INSERT INTO users VALUES ({},TRUE);'.format(chat_id)
+                sql = f'INSERT INTO users VALUES ({chat_id},TRUE);'
                 self.cur.execute(sql)
                 self.conn.commit()
                 self.disconnect()

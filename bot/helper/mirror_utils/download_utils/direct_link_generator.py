@@ -8,28 +8,29 @@ from https://github.com/AvinashReddy3108/PaperplaneExtended . I hereby take no c
 than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtended/commits/master/userbot/modules/direct_links.py
 for original authorship. """
 
-from bot import LOGGER, UPTOBOX_TOKEN
 import json
 import math
 import re
 import urllib.parse
+from base64 import standard_b64encode
 from os import popen
 from random import choice
 from urllib.parse import urlparse
 
+import cloudscraper
 import lk21
 import requests
-import cloudscraper
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
-from base64 import standard_b64encode
-from bot.helper.telegram_helper.bot_commands import BotCommands
+
+from bot import LOGGER, UPTOBOX_TOKEN
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
+from bot.helper.telegram_helper.bot_commands import BotCommands
 
 
 def direct_link_generator(link: str):  # sourcery no-metrics
-    """ direct links generator """
+    """direct links generator"""
     if not link:
         raise DirectDownloadLinkException("Tidak ditemukan tautan!")
     elif 'youtube.com' in link or 'youtu.be' in link:
@@ -40,8 +41,6 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return zippy_share(link)
     elif 'yadi.sk' in link:
         return yandex_disk(link)
-    elif 'cloud.mail.ru' in link:
-        return cm_ru(link)
     elif 'mediafire.com' in link:
         return mediafire(link)
     elif 'uptobox.com' in link:
@@ -94,16 +93,19 @@ def direct_link_generator(link: str):  # sourcery no-metrics
         return racaty(link)
     elif '1fichier.com' in link:
         return fichier(link)
-    elif 'sourceforge.net' in link:
+    elif 'https://sourceforge.net' in link:
         return sourceforge(link)
-    elif 'mxplayer.in' in link:
-        return mxplayer(link)
+    elif 'https://master.dl.sourceforge.net' in link:
+        return mastersource(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
+    elif "dropbox.com/s/" in link:
+        return dropbox1(link)
+    elif "dropbox.com" in link:
+        return dropbox2(link)
     else:
         raise DirectDownloadLinkException(
-            f'No Direct link function found for {link}'
-        )
+            f"No Direct link function found for {link}")
 
 
 def zippy_share(url: str) -> str:
@@ -115,37 +117,31 @@ def zippy_share(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException("No Zippyshare links found")
     try:
-        base_url = re.search('http.+.zippyshare.com', link).group()
-        response = requests.get(link).content
-        pages = BeautifulSoup(response, "lxml")
-        try:
-            js_script = pages.find("div", {
-                "class": "center"
-            }).find_all("script")[1]
-        except IndexError:
-            js_script = pages.find("div", {
-                "class": "right"
-            }).find_all("script")[0]
-        js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
-        js_content = 'var x = "/' + js_content[0] + '"'
-        evaljs = EvalJs()
-        setattr(evaljs, "x", None)
-        evaljs.execute(js_content)
-        js_content = getattr(evaljs, "x")
-        return base_url + js_content
+        return _extracted_from_zippy_share_8(link)
     except IndexError:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat menemukan tombol Unduh")
+        raise DirectDownloadLinkException(
+            "ERROR: Tidak dapat menemukan tombol Unduh")
 
-def mxplayer(url: str) -> str:
-    """ Mxplayer direct links generator 
-    Based On https://github.com/Manssizz/CendrawasihLeech """
+def _extracted_from_zippy_share_8(link):
+    base_url = re.search('http.+.zippyshare.com', link).group()
+    response = requests.get(link).content
+    pages = BeautifulSoup(response, "lxml")
     try:
-        link = re.findall(r'\bhttps?://.*mxplayer\.in\S+', url)[0]
+        js_script = pages.find("div", {
+            "class": "center"
+        }).find_all("script")[1]
     except IndexError:
-        raise DirectDownloadLinkException("`Tidak ditemukan tautan MXPlayer`\n")
-    page = BeautifulSoup(requests.get(link).content, 'lxml')
-    info = page.find('a', {'aria-label': 'Download file'})
-    return info.get('href')
+        js_script = pages.find("div", {
+            "class": "right"
+        }).find_all("script")[0]
+    js_content = re.findall(r'\.href.=."/(.*?)";', str(js_script))
+    js_content = 'var x = "/' + js_content[0] + '"'
+    evaljs = EvalJs()
+    setattr(evaljs, "x", None)
+    evaljs.execute(js_content)
+    js_content = getattr(evaljs, "x")
+    return base_url + js_content
+
 
 def yandex_disk(url: str) -> str:
     """ Yandex.Disk direct links generator
@@ -158,13 +154,15 @@ def yandex_disk(url: str) -> str:
     try:
         return requests.get(api.format(link)).json()['href']
     except KeyError:
-        raise DirectDownloadLinkException("ERROR: File not found/Download limit reached\n")
+        raise DirectDownloadLinkException(
+            "ERROR: File not found/Download limit reached\n")
+
 
 def sourceforge(url: str) -> str:
     """ SourceForge direct links generator
     Based on https://github.com/REBEL75/REBELUSERBOT """
     try:
-        link = re.findall(r"\bhttps?://.*sourceforge\.net\S+", url)[0]
+        link = re.findall(r"\bhttps?://sourceforge\.net\S+", url)[0]
     except IndexError:
         return "`No SourceForge links found`\n"
     file_path = re.findall(r"files(.*)/download", link)[0]
@@ -177,28 +175,10 @@ def sourceforge(url: str) -> str:
     info = page.find("ul", {"id": "mirrorList"}).findAll("li")
     for mirror in info[1:]:
         name = re.findall(r"\((.*)\)", mirror.text.strip())[0]
-        dl_url1 = (
+        dl_url = (
             f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
         )
-    else:
-        dl_url = (f"{dl_url1}" + "?viasf=1")
     return dl_url
-
-def cm_ru(url: str) -> str:
-    """cloud.mail.ru direct links generator
-    Using https://github.com/JrMasterModelBuilder/cmrudl.py"""
-    try:
-        link = re.findall(r'\bhttps?://.*cloud\.mail\.ru\S+', url)[0]
-    except IndexError:
-        raise DirectDownloadLinkException('No cloud.mail.ru links found\n')
-    command = f'vendor/cmrudl/cmrudl -s {link}'
-    result = popen(command).read()
-    result = result.splitlines()[-1]
-    try:
-        data = json.loads(result)
-    except json.decoder.JSONDecodeError:
-        raise DirectDownloadLinkException("Error: Tidak dapat mengekstrak tautan\n")
-    return data["download"]
 
 
 def uptobox(url: str) -> str:
@@ -217,7 +197,7 @@ def uptobox(url: str) -> str:
             dl_url = link
         except:
             file_id = re.findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
-            file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (
+            file_link = 'https://uptobox.com/api/link?token={}&file_code={}'.format(
                 UPTOBOX_TOKEN, file_id)
             req = requests.get(file_link)
             result = req.json()
@@ -261,36 +241,42 @@ def github(url: str) -> str:
     try:
         re.findall(r'\bhttps?://.*github\.com.*releases\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("Tidak ada tautan rilis github yang ditemukan\n")
+        raise DirectDownloadLinkException(
+            "Tidak ada tautan rilis github yang ditemukan\n")
     download = requests.get(url, stream=True, allow_redirects=False)
     try:
         return download.headers["location"]
     except KeyError:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengekstrak tautan\n")
+        raise DirectDownloadLinkException(
+            "ERROR: Tidak dapat mengekstrak tautan\n")
 
 
 def hxfile(url: str) -> str:
     """ Hxfile direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_filesIm(url)
 
 
 def anonfiles(url: str) -> str:
     """ Anonfiles direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_anonfiles(url)
 
 
 def letsupload(url: str) -> str:
     """ Letsupload direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     dl_url = ''
     try:
         link = re.findall(r'\bhttps?://.*letsupload\.io\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("Tidak ada tautan letsupload yang ditemukan\n")
+        raise DirectDownloadLinkException(
+            "Tidak ada tautan letsupload yang ditemukan\n")
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_url(link)
     return dl_url
@@ -298,7 +284,8 @@ def letsupload(url: str) -> str:
 
 def fembed(link: str) -> str:
     """ Fembed direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_fembed(link)
     count = len(dl_url)
@@ -308,7 +295,8 @@ def fembed(link: str) -> str:
 
 def sbembed(link: str) -> str:
     """ Sbembed direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     bypasser = lk21.Bypass()
     dl_url = bypasser.bypass_sbembed(link)
     count = len(dl_url)
@@ -344,32 +332,36 @@ def pixeldrain(url: str) -> str:
         return dl_link
     else:
         raise DirectDownloadLinkException(
-            "ERROR: Tidak dapat mengunduh karena {}.".format(resp.text["value"])
+            "ERROR: Tidak dapat mengunduh karena {}.".format(
+                resp.text["value"])
         )
 
 
 def antfiles(url: str) -> str:
     """ Antfiles direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_antfiles(url)
 
 
 def streamtape(url: str) -> str:
     """ Streamtape direct link generator
-    Based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/zevtyardt/lk21
+             https://github.com/SlamDevs/slam-mirrorbot """
     bypasser = lk21.Bypass()
     return bypasser.bypass_streamtape(url)
 
 
 def racaty(url: str) -> str:
     """ Racaty direct links generator
-    based on https://github.com/breakdowns/slam-aria-mirror-bot """
+    based on https://github.com/SlamDevs/slam-mirrorbot """
     dl_url = ''
     try:
         link = re.findall(r'\bhttps?://.*racaty\.net\S+', url)[0]
     except IndexError:
-        raise DirectDownloadLinkException("Tidak ada tautan racaty yang ditemukan\n")
+        raise DirectDownloadLinkException(
+            "Tidak ada tautan racaty yang ditemukan\n")
     scraper = cloudscraper.create_scraper()
     r = scraper.get(url)
     soup = BeautifulSoup(r.text, "lxml")
@@ -384,8 +376,8 @@ def racaty(url: str) -> str:
 
 def fichier(link: str) -> str:  # sourcery no-metrics
     """ 1Fichier direct links generator
-    Based on https://github.com/Maujar/updateref-16-7-21
-             https://github.com/breakdowns/slam-aria-mirror-bot """
+    Based on https://github.com/Maujar
+             https://github.com/SlamDevs/slam-mirrorbot """
     regex = r"^([http:\/\/|https:\/\/]+)?.*1fichier\.com\/\?.+"
     gan = re.match(regex, link)
     if not gan:
@@ -403,13 +395,14 @@ def fichier(link: str) -> str:  # sourcery no-metrics
             req = requests.post(url)
         else:
             pw = {"pass": pswd}
-            req = requests.post(url, data=pe)
+            req = requests.post(url, data=pw)
     except BaseException:
         raise DirectDownloadLinkException(
             "ERROR: Tidak dapat mencapai server 1fichier!"
         )
     if req.status_code == 404:
-      raise DirectDownloadLinkException("ERROR: File tidak ditemukan/tautan yang Anda masukkan salah!")
+        raise DirectDownloadLinkException(
+            "ERROR: File tidak ditemukan/tautan yang Anda masukkan salah!")
     soup = BeautifulSoup(req.content, 'lxml')
     if soup.find("a", {"class": "ok btn-general btn-orange"}) is not None:
         dl_url = soup.find("a", {"class": "ok btn-general btn-orange"})["href"]
@@ -465,6 +458,7 @@ def fichier(link: str) -> str:  # sourcery no-metrics
                 "ERROR: Kesalahan mencoba menghasilkan tautan langsung dari 1fichier!"
             )
 
+
 def solidfiles(url: str) -> str:
     """ Solidfiles direct links generator
     Based on https://github.com/Xonshiz/SolidFiles-Downloader
@@ -472,9 +466,27 @@ def solidfiles(url: str) -> str:
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36'
     }
-    pageSource = requests.get(url, headers = headers).text
-    mainOptions = str(re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
+    pageSource = requests.get(url, headers=headers).text
+    mainOptions = str(
+        re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
     return json.loads(mainOptions)["downloadUrl"]
+
+
+def mastersource(url: str) -> str:
+    """ Sourceforge Master.dl bypass """
+    return f"{url}" + "?viasf=1"
+
+
+def dropbox1(url: str) -> str:
+    """Dropbox Downloader file
+    Based On https://github.com/thomas-xin/Miza-Player
+    And https://github.com/Jusidama18"""
+    return url.replace("dropbox.com", "dl.dropboxusercontent.com")
+
+
+def dropbox2(url: str) -> str:
+    """ Dropbox Downloader Folder """
+    return url.replace("?dl=0", "?dl=1")
 
 
 def useragent():
@@ -483,9 +495,10 @@ def useragent():
     """
     useragents = BeautifulSoup(
         requests.get(
-            'https://developers.whatismybrowser.com/'
-            'useragents/explore/operating_system_name/android/'
-        ).content, 'lxml'
-    ).findAll('td', {'class': 'useragent'})
+            "https://developers.whatismybrowser.com/"
+            "useragents/explore/operating_system_name/android/"
+        ).content,
+        "lxml",
+    ).findAll("td", {"class": "useragent"})
     user_agent = choice(useragents)
     return user_agent.text

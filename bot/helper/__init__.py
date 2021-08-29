@@ -4,28 +4,8 @@ import shlex
 import heroku3
 
 from functools import wraps
-from pyrogram.types import Message
-from typing import Tuple
 from html_telegraph_poster import TelegraphPoster
 from bot import HEROKU_API_KEY, HEROKU_APP_NAME
-
-# Implement by https://github.com/jusidama18
-# Setting Message
-
-
-def get_text(message: Message) -> [None, str]:
-    """Extract Text From Commands"""
-    text_to_return = message.text
-    if message.text is None:
-        return None
-    if " " in text_to_return:
-        try:
-            return message.text.split(None, 1)[1]
-        except IndexError:
-            return None
-    else:
-        return None
-
 
 # Preparing For Setting Config
 # Implement by https://github.com/jusidama18 and Based on this
@@ -65,36 +45,6 @@ def check_heroku(func):
     return heroku_cli
 
 
-# Preparing For Update Bot
-# Implement by https://github.com/jusidama18 and Based on this
-# https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/updater.py
-
-
-def fetch_heroku_git_url(api_key, app_name):
-    if not api_key:
-        return None
-    if not app_name:
-        return None
-    heroku = heroku3.from_key(api_key)
-    try:
-        heroku_applications = heroku.apps()
-    except BaseException:
-        return None
-    heroku_app = None
-    for app in heroku_applications:
-        if app.name == app_name:
-            heroku_app = app
-            break
-    if not heroku_app:
-        return None
-    return heroku_app.git_url.replace(
-        "https://", "https://api:" + api_key + "@"
-    )
-
-
-HEROKU_URL = fetch_heroku_git_url(HEROKU_API_KEY, HEROKU_APP_NAME)
-
-
 def post_to_telegraph(a_title: str, content: str) -> str:
     """ Create a Telegram Post using HTML Content """
     post_client = TelegraphPoster(use_api=True)
@@ -109,7 +59,7 @@ def post_to_telegraph(a_title: str, content: str) -> str:
     return post_page["url"]
 
 
-async def runcmd(cmd: str) -> Tuple[str, str, int, int]:
+async def runcmd(cmd: str) -> tuple[str, str, int, int]:
     """ run command in terminal """
     args = shlex.split(cmd)
     process = await asyncio.create_subprocess_exec(

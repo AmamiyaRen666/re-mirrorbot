@@ -4,6 +4,7 @@ config.env
 downloads/*
 download/*
 data*
+heroku-guide.md
 .vscode
 .idea
 *.json
