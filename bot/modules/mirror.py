@@ -18,7 +18,7 @@ from bot import (BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, BUTTON_FIVE_NAME,
                  BUTTON_SIX_NAME, BUTTON_SIX_URL, DOWNLOAD_DIR, INDEX_URL,
                  SHORTENER, SHORTENER_API, TAR_UNZIP_LIMIT, VIEW_LINK,
                  Interval, aria2, dispatcher, download_dict,
-                 download_dict_lock, get_client)
+                 download_dict_lock)
 from bot.helper.ext_utils import bot_utils, fs_utils
 from bot.helper.ext_utils.shortenurl import short_url
 from bot.helper.ext_utils.exceptions import (DirectDownloadLinkException,
@@ -67,8 +67,6 @@ class MirrorListener(listeners.MirrorListeners):
     def clean(self):
         try:
             aria2.purge()
-            get_client().torrents_delete(torrent_hashes="all", delete_files=True)
-            get_client().auth_log_out()
             Interval[0].cancel()
             del Interval[0]
             delete_all_messages()
@@ -282,7 +280,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
                     file_name = str(time.time()).replace(".", "") + ".torrent"
                     with open(file_name, "wb") as f:
                         f.write(resp.content)
-                    link = f"/usr/src/app/{file_name}"
+                    link = f"{file_name}"
                 else:
                     sendMessage("ERROR: link got HTTP response:" +
                                 resp.status_code, bot, update)
@@ -323,24 +321,18 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
                 file = i
                 break
 
-        if (
-            not bot_utils.is_url(link)
-            and not bot_utils.is_magnet(link)
-            or len(link) == 0
-        ) and file is not None:
-            if file.mime_type != "application/x-bittorrent":
-                listener = MirrorListener(
-                    bot, update, pswd, isTar, extract, isZip)
-                tg_downloader = TelegramDownloadHelper(listener)
-                ms = update.message
-                tg_downloader.add_download(
-                    ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
-                return
-            else:
+        if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) or len(link) == 0:
+            if file is not None:
                 if isQbit:
-                    file.get_file().download(
-                        custom_path=f"/usr/src/app/{file.file_name}")
-                    link = f"/usr/src/app/{file.file_name}"
+                    file_name = str(time.time()).replace(".", "") + ".torrent"
+                    file.get_file().download(custom_path=f"{file_name}")
+                    link = f"{file_name}"
+                elif file.mime_type != "application/x-bittorrent":
+                    listener = MirrorListener(bot, update, pswd, isTar, extract, isZip)
+                    tg_downloader = TelegramDownloadHelper(listener)
+                    ms = update.message
+                    tg_downloader.add_download(ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
+                    return
                 else:
                     link = file.get_file().file_path
 

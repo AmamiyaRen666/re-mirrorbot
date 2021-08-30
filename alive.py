@@ -21,5 +21,5 @@ except KeyError:
 
 if not IS_VPS and BASE_URL is not None:
     while True:
-        time.sleep(1000)
+        time.sleep(600)
         status = requests.get(BASE_URL).status_code

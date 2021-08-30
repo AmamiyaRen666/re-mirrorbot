@@ -32,12 +32,12 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 
 ## Additional Features On [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
 - qBittorrent supported
-- Limiting size Torrent/Direct, Tar/Unzip, Mega, cloning Google Drive support
+- Size limiting for Torrent/Direct, Tar/Unzip, Mega and clone
 - Get detailed info about replied media (Only for Telegram file)
-- Stop duplicate cloning Google Drive & mirroring Mega support
+- Stop duplicate for all except qbittorrent tasks
 - Tar/Unzip Google Drive link support
-- Select files from Torrent before downloading
-- Sudo with Database support
+- Select files from Torrent before downloading using qbittorrent
+- Sudo with Database or without Database
 - Check Heroku dynos stats (optional)
 - Extracting **tar.xz** support
 - Counting Google Drive link
@@ -45,11 +45,9 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - Counting file/folder
 - View Link button
 - Shell and Executor
-- Torrent search Supported:
-```
-nyaa.si, sukebei, 1337x, piratebay,
-tgx, yts, eztv, torlock, rarbg
-```
+- Speedtest
+- Status Pages for unlimited tasks
+- Clone status
 - Direct links Supported:
 ```
 letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
@@ -59,6 +57,7 @@ streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
 1fichier.com, 1drv.ms (Only works for file not folder or business account),
 uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 ```
+- Many bugs has been fixed
 
 ## From Original Repos Thx to [magneto261290](https://github.com/magneto261290)
 - Mirroring direct download links, Torrent, and Telegram files to Google Drive
@@ -137,7 +136,7 @@ pip3 install -r requirements-cli.txt
 - Copy your database url, and fill to `DATABASE_URL` in config
 
 **2. Using Heroku PostgreSQL**
-<p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/See%20Dev.to-black?style=for-the-badge&logo=dev.to" width="170""/></a></p>
+<p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/See%20Dev.to-black?style=for-the-badge&logo=dev.to" width="160""/></a></p>
 
 </details>
 
@@ -176,7 +175,7 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - `MEGA_PASSWORD`: Your password for your mega.nz account
 - `BLOCK_MEGA_FOLDER`: If you want to remove mega.nz folder support, set it to `True`.
 - `BLOCK_MEGA_LINKS`: If you want to remove mega.nz mirror support, set it to `True`.
-- `STOP_DUPLICATE`: (Leave empty if unsure) if this field is set to `True`, bot will check file in Drive, if it is present in Drive, downloading or cloning will be stopped. (**Note**: File will be checked using filename, not using filehash, so this feature is not perfect yet)
+- `STOP_DUPLICATE`: (Leave empty if unsure) if this field is set to `True`, bot will check file in Drive, if it is present in Drive, downloading or cloning will be stopped. (**NOTE**: File will be checked using filename, not using filehash, so this feature is not perfect yet)
 - `CLONE_LIMIT`: To limit cloning Google Drive (leave space between number and unit, Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
 - `MEGA_LIMIT`: To limit downloading Mega (leave space between number and unit, Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
 - `TORRENT_DIRECT_LIMIT`: To limit the Torrent/Direct mirror size, Leave space between number and unit. Available units is (gb or GB, tb or TB), Examples: `100 gb, 100 GB, 10 tb, 10 TB`
@@ -190,7 +189,7 @@ Fill up rest of the fields. Meaning of each fields are discussed below:
 - `STATUS_LIMIT`: Status limit with buttons (**NOTE**: Recommend limit status to `4` tasks max).
 - `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any port you want to use.
 - `SERVER_PORT`: (Only if IS_VPS is `True`) Base URL Port
-- `BASE_URL_OF_BOT`: (Required for Heroku) Valid BASE URL of where the bot is deploy. Ip/domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: No slash at the end)
+- `BASE_URL_OF_BOT`: (Required for Heroku to avoid sleep) Valid BASE URL of where the bot is deploy. Ip/domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: No slash at the end), still got idling? You can use http://cron-job.org to ping you Heroku app.
 - `IMAGE_URL`: Show Image/Logo in /start message, Use telegra.ph or any direct link image
 - `SHORTENER_API`: Fill your Shortener api key if you are using Shortener.
 - `SHORTENER`: if you want to use Shortener in Gdrive and index link, fill Shortener url here. Examples:
@@ -226,7 +225,9 @@ pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 python3 generate_drive_token.py
 ```
 
-## Deploying
+## Deploy On VPS
+
+**IMPORTANT NOTE**: In start.sh you must replace `$PORT` with 80 or any other port you want to use
 
 - Start Docker daemon (skip if already running):
 ```
@@ -234,14 +235,53 @@ sudo dockerd
 ```
 - Build Docker image:
 ```
-docker build . --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
+sudo docker build . --compress --no-cache=true --pull --file Dockerfile -t mirrorbot
 ```
 - Run the image:
 ```
-sudo docker run mirrorbot
+sudo docker run -p 80:80 mirror-bot
+```
+OR
+
+**NOTE**: If you want to use port other than 80, so change it in [docker-compose.yml](https://github.com/SlamDevs/slam-mirrorbot/blob/master/docker-compose.yml)
+
+- Using Docker-compose so you can edit and build your image in seconds:
+```
+sudo apt install docker-compose
+```
+- Build and run Docker image:
+```
+sudo docker-compose up
+```
+- After edit files with nano for example (nano start.sh):
+```
+sudo docker-compose build
+sudo docker-compose up
+```
+OR
+```
+sudo docker-compose up --build
+```
+- To stop Docker run 
+```
+sudo docker ps
+```
+```
+sudo docker stop id
+```
+- To clear the container (this will not effect on image):
+```
+sudo docker container prune
+```
+- To delete the image:
+```
+sudo docker image prune -a
 ```
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
+
+- Video from Tortoolkit repo
+<p><a href="https://youtu.be/c8_TU1sPK08"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
 
 ## Deploying on Heroku
 - Deploying on Heroku with Github Workflow
