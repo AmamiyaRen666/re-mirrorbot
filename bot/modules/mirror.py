@@ -321,20 +321,23 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
                 file = i
                 break
 
-        if not bot_utils.is_url(link) and not bot_utils.is_magnet(link) or len(link) == 0:
-            if file is not None:
-                if isQbit:
-                    file_name = str(time.time()).replace(".", "") + ".torrent"
-                    file.get_file().download(custom_path=f"{file_name}")
-                    link = f"{file_name}"
-                elif file.mime_type != "application/x-bittorrent":
-                    listener = MirrorListener(bot, update, pswd, isTar, extract, isZip)
-                    tg_downloader = TelegramDownloadHelper(listener)
-                    ms = update.message
-                    tg_downloader.add_download(ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
-                    return
-                else:
-                    link = file.get_file().file_path
+        if (
+            not bot_utils.is_url(link)
+            and not bot_utils.is_magnet(link)
+            or len(link) == 0
+        ) and file is not None:
+            if isQbit:
+                file_name = str(time.time()).replace(".", "") + ".torrent"
+                file.get_file().download(custom_path=f"{file_name}")
+                link = f"{file_name}"
+            elif file.mime_type != "application/x-bittorrent":
+                listener = MirrorListener(bot, update, pswd, isTar, extract, isZip)
+                tg_downloader = TelegramDownloadHelper(listener)
+                ms = update.message
+                tg_downloader.add_download(ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
+                return
+            else:
+                link = file.get_file().file_path
 
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link):
         sendMessage('Tidak ada sumber unduhan yang disediakan', bot, update)

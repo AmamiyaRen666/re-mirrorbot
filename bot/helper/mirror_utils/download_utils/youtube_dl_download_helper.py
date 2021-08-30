@@ -47,7 +47,7 @@ class YoutubeDLHelper(DownloadHelper):
             'geo_bypass': True,
             'geo_bypass_country': 'ID',
             'geo-bypass-ip-block': '10.100.0.0/14',
-            'compat_opts': 'filename',
+            'compat_opts': 'youtube-dl',
         }
         self.__download_speed = 0
         self.downloaded_bytes = 0
