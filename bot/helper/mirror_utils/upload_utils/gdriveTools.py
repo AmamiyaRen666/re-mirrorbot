@@ -404,7 +404,7 @@ class GoogleDriveHelper:
                     LOGGER.info(f"{msg}")
                     return "Kloning Anda telah dihentikan dan data kloning telah dihapus!", "dibatalkan"
                 msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
-                msg += f'\n<b>Tipe: </b><code>Folder</code>'
+                msg += '\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
                 msg += f'\n<b>Files: </b><code>{self.total_files}</code>'
                 buttons = button_build.ButtonMaker()
@@ -708,7 +708,7 @@ class GoogleDriveHelper:
                 self.gDrive_directory(**drive_file)
                 msg += f'<b>Namafile: </b><code>{name}</code>'
                 msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
-                msg += f'\n<b>Tipe: </b><code>Folder</code>'
+                msg += '\n<b>Tipe: </b><code>Folder</code>'
                 msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
                 msg += f'\n<b>File: </b><code>{self.total_files}</code>'
             else:
@@ -728,10 +728,7 @@ class GoogleDriveHelper:
         except Exception as err:
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
-            if "File not found" in str(err):
-                msg = "File not found."
-            else:
-                msg = f"Error.\n{err}"
+            msg = "File not found." if "File not found" in str(err) else f"Error.\n{err}"
             return msg
         return msg
 
@@ -856,7 +853,7 @@ class GoogleDriveHelper:
         downloader = MediaIoBaseDownload(
             fh, request, chunksize=65 * 1024 * 1024)
         done = False
-        while done is False:
+        while not done:
             if self.is_cancelled:
                 fh.close()
                 break
@@ -866,20 +863,22 @@ class GoogleDriveHelper:
                 if err.resp.get('content-type', '').startswith('application/json'):
                     reason = json.loads(err.content).get(
                         'error').get('errors')[0].get('reason')
-                    if reason == 'downloadQuotaExceeded' or reason == 'dailyLimitExceeded':
-                        if USE_SERVICE_ACCOUNTS:
-                            if self.sa_count == self.service_account_count:
-                                self.is_cancelled = True
-                                raise err
-                            else:
-                                self.switchServiceAccount()
-                                LOGGER.info(f"Got: {reason}, Trying Again...")
-                                return self.download_file(file_id, path, filename, mime_type)
-                        else:
+                    if reason not in [
+                        'downloadQuotaExceeded',
+                        'dailyLimitExceeded',
+                    ]:
+                        raise err
+                    if USE_SERVICE_ACCOUNTS:
+                        if self.sa_count == self.service_account_count:
                             self.is_cancelled = True
-                            LOGGER.info(f"Got: {reason}")
                             raise err
+                        else:
+                            self.switchServiceAccount()
+                            LOGGER.info(f"Got: {reason}, Trying Again...")
+                            return self.download_file(file_id, path, filename, mime_type)
                     else:
+                        self.is_cancelled = True
+                        LOGGER.info(f"Got: {reason}")
                         raise err
         self._file_downloaded_bytes = 0
 

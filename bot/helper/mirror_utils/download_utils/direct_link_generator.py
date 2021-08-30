@@ -9,7 +9,6 @@ than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtend
 for original authorship. """
 
 import json
-import math
 import re
 import urllib.parse
 from base64 import standard_b64encode

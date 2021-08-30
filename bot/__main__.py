@@ -55,20 +55,24 @@ def stats(update, context):
         IMAGE_URL, stats, parse_mode=ParseMode.HTML)
 
 
-def start(update, context):  # sourcery skip: move-assign
-    start_string = f"""
-Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
-Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
-"""
+def start(update, context):
     buttons = button_build.ButtonMaker()
     buttons.buildbutton("Repo", "https://github.com/Ncode2014/re-cerminbot")
     buttons.buildbutton("Support Group", "https://t.me/rumahmirorr")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update) or update.message.chat.type == "private":
+        start_string = f"""
+Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
+Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
+"""
         sendMarkup(start_string, context.bot, update, reply_markup)
     else:
-        sendMarkup(f"Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.",
-                   context.bot, update, reply_markup)
+        sendMarkup(
+            'Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.',
+            context.bot,
+            update,
+            reply_markup,
+        )
 
 
 def restart(update, context):

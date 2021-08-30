@@ -11,9 +11,7 @@ from bot import HEROKU_API_KEY, HEROKU_APP_NAME
 # Implement by https://github.com/jusidama18 and Based on this
 # https://github.com/DevsExpo/FridayUserbot/blob/master/plugins/heroku_helpers.py
 
-heroku_client = None
-if HEROKU_API_KEY:
-    heroku_client = heroku3.from_key(HEROKU_API_KEY)
+heroku_client = heroku3.from_key(HEROKU_API_KEY) if HEROKU_API_KEY else None
 
 
 def check_heroku(func):

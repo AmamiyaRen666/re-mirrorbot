@@ -203,7 +203,7 @@ def flip(update, context):
 
 
 def check_limit(size, limit, tar_unzip_limit=None, is_tar_ext=False):
-    LOGGER.info(f"Checking File/Folder Size...")
+    LOGGER.info('Checking File/Folder Size...')
     if is_tar_ext and tar_unzip_limit is not None:
         limit = tar_unzip_limit
     if limit is not None:
