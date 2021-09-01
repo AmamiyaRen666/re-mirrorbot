@@ -23,7 +23,7 @@ def cloneNode(update, context):
             sendMessage(res, context.bot, update)
             return
         if STOP_DUPLICATE:
-            LOGGER.info(f"Memeriksa File/Folder jika sudah di Drive...")
+            LOGGER.info('Memeriksa File/Folder jika sudah di Drive...')
             smsg, button = gd.drive_list(name)
             if smsg:
                 msg3 = "Memeriksa File/Folder sudah ada di Drive\nBerikut adalah hasil pencarian:"
@@ -32,7 +32,7 @@ def cloneNode(update, context):
         if CLONE_LIMIT is not None:
             result = check_limit(size, CLONE_LIMIT)
             if result:
-                msg2 = f'Gagal, batas klon adalah {CLONE_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(clonesize)}.'
+                msg2 = f'Gagal, batas klon adalah {CLONE_LIMIT}.\nUkuran file/folder Anda {get_readable_file_size(size)}.'
                 sendMessage(msg2, context.bot, update)
                 return
         if files < 15:

@@ -23,7 +23,7 @@ class AriaDownloadHelper:
             dl = getDownloadByGid(gid)
             download = aria2.get_download(gid)
         if STOP_DUPLICATE and dl is not None:
-            LOGGER.info(f"Checking File/Folder if already in Drive...")
+            LOGGER.info('Checking File/Folder if already in Drive...')
             sname = aria2.get_download(gid).name
             if dl.getListener().isTar:
                 sname = sname + ".tar"
@@ -33,7 +33,7 @@ class AriaDownloadHelper:
                 gdrive = GoogleDriveHelper(None)
                 smsg, button = gdrive.drive_list(sname)
             if smsg:
-                dl.getListener().onDownloadError(f'File/folder sudah tersedia di drive.\n\n')
+                dl.getListener().onDownloadError('File/folder sudah tersedia di drive.\n\n')
                 aria2.remove([download], force=True)
                 sendMarkup("Berikut adalah hasil pencarian:", dl.getListener().bot, dl.getListener().update, button)
                 return

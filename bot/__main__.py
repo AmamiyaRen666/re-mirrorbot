@@ -25,7 +25,7 @@ from .helper.ext_utils.bot_utils import (get_readable_file_size,
 from .helper.telegram_helper.filters import CustomFilters
 from .modules import (authorize, cancel_mirror, clone, count, delete,
                       eval, list, mediainfo, mirror, mirror_status, shell,
-                      speedtest, torrent_search, reboot, usage, watch)
+                      speedtest, reboot, usage, watch)
 
 now = datetime.now(pytz.timezone("Asia/Jakarta"))
 
@@ -55,20 +55,24 @@ def stats(update, context):
         IMAGE_URL, stats, parse_mode=ParseMode.HTML)
 
 
-def start(update, context):  # sourcery skip: move-assign
-    start_string = f"""
-Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
-Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
-"""
+def start(update, context):
     buttons = button_build.ButtonMaker()
     buttons.buildbutton("Repo", "https://github.com/Ncode2014/re-cerminbot")
     buttons.buildbutton("Support Group", "https://t.me/rumahmirorr")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update) or update.message.chat.type == "private":
+        start_string = f"""
+Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
+Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
+"""
         sendMarkup(start_string, context.bot, update, reply_markup)
     else:
-        sendMarkup(f"Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.",
-                   context.bot, update, reply_markup)
+        sendMarkup(
+            'Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.',
+            context.bot,
+            update,
+            reply_markup,
+        )
 
 
 def restart(update, context):
@@ -152,7 +156,6 @@ def bot_help(update, context):
 
 /{BotCommands.ExecHelpCommand}: Dapatkan bantuan untuk modul pelaksana
 
-/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian torrent
 """
 
     help_string = f"""
@@ -188,7 +191,6 @@ def bot_help(update, context):
 
 /{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian torrent
 """
 
     if CustomFilters.sudo_user(update) or CustomFilters.owner_filter(update):
@@ -220,9 +222,7 @@ botcmds = [
     (f'{BotCommands.RestartCommand}', 'Mulai ulang bot. [hanya owner/sudo]'),
     (f'{BotCommands.LogCommand}', 'Dapatkan Log Bot [hanya owner/sudo]'),
     (f'{BotCommands.MediaInfoCommand}',
-     'Dapatkan info detail tentang media yang dibalas'),
-    (f'{BotCommands.TsHelpCommand}',
-     'Dapatkan bantuan untuk modul pencarian torrent')
+     'Dapatkan info detail tentang media yang dibalas')
 ]
 
 

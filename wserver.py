@@ -663,11 +663,11 @@ async def set_priority(request):
     pause = ""
     data = dict(data)
 
-    for i in data:
+    for i, value in data.items():
         if i.find("filenode") != -1:
             node_no = i.split("_")[-1]
 
-            if data[i] == "on":
+            if value == "on":
                 resume += f"{node_no}|"
             else:
                 pause += f"{node_no}|"

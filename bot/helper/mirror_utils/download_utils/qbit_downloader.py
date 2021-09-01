@@ -60,8 +60,7 @@ class qbittorrent:
                 self.client.auth_log_out()
                 return
             if is_file:
-                op = self.client.torrents_add(
-                    torrent_files=[link], save_path=dire)
+                op = self.client.torrents_add(torrent_files=[link], save_path=dire)
                 os.remove(link)
             else:
                 op = self.client.torrents_add(link, save_path=dire)
@@ -70,9 +69,9 @@ class qbittorrent:
                     torrent_hashes=self.ext_hash)
                 if len(tor_info) == 0:
                     while True:
-                        if time.time() - self.meta_time >= 300:
-                            sendMessage(
-                                "Torrent tidak ditambahkan. Laporkan ketika Anda melihat kesalahan ini", listener.bot, listener.update)
+                        if time.time() - self.meta_time >= 20:
+                            sendMessage("Torrent tidak ditambahkan. Laporkan ketika Anda melihat kesalahan ini", listener.bot, listener.update)
+                            self.client.torrents_delete(torrent_hashes=self.ext_hash, delete_files=True)
                             self.client.auth_log_out()
                             return False
                         tor_info = self.client.torrents_info(
@@ -81,11 +80,9 @@ class qbittorrent:
                         if len(tor_info) > 0:
                             break
             else:
-                sendMessage(
-                    "Ini adalah tautan yang tidak didukung/tidak valid.",
-                    listener.bot,
-                    listener.update,
-                )
+                sendMessage("Ini adalah tautan yang tidak didukung/tidak valid.", listener.bot, listener.update)
+                self.client.torrents_delete(torrent_hashes=self.ext_hash, delete_files=True)
+                self.client.auth_log_out()
                 return
             gid = ''.join(
                 random.SystemRandom().choices(
@@ -111,9 +108,8 @@ class qbittorrent:
                         try:
                             tor_info = tor_info[0]
                             if tor_info.state == "metaDL" or tor_info.state == "checkingResumeData":
-                                time.sleep(0.5)
+                                time.sleep(1)
                             else:
-                                time.sleep(2)
                                 deleteMessage(listener.bot, meta)
                                 break
                         except:
@@ -140,8 +136,8 @@ class qbittorrent:
                 sendStatusMessage(listener.update, listener.bot)
         except qba.UnsupportedMediaType415Error as e:
             LOGGER.error(str(e))
-            sendMessage(
-                "Ini adalah tautan yang tidak didukung/tidak valid. {str(e)}", listener.bot, listener.update)
+            sendMessage("Ini adalah tautan yang tidak didukung/tidak valid: {str(e)}", listener.bot, listener.update)
+            self.client.torrents_delete(torrent_hashes=self.ext_hash, delete_files=True)
             self.client.auth_log_out()
         except Exception as e:
             LOGGER.error(str(e))
@@ -153,16 +149,18 @@ class qbittorrent:
     def update(self):  # sourcery no-metrics
         tor_info = self.client.torrents_info(torrent_hashes=self.ext_hash)
         if len(tor_info) == 0:
+            self.client.auth_log_out()
             self.updater.cancel()
             return
         try:
             tor_info = tor_info[0]
             if tor_info.state == "metaDL":
                 self.stalled_time = time.time()
-                if time.time() - self.meta_time >= 999999999:  # timeout while downloading metadata
+                if time.time() - self.meta_time >= 999999999: # timeout while downloading metadata
+                    self.client.torrents_pause(torrent_hashes=self.ext_hash)
+                    time.sleep(0.3)
                     self.listener.onDownloadError("Dead Torrent!")
-                    self.client.torrents_delete(
-                        torrent_hashes=self.ext_hash, delete_files=True)
+                    self.client.torrents_delete(torrent_hashes=self.ext_hash)
                     self.client.auth_log_out()
                     self.updater.cancel()
                     return
@@ -180,26 +178,27 @@ class qbittorrent:
                         size, TORRENT_DIRECT_LIMIT, TAR_UNZIP_LIMIT, is_tar_ext)
                     self.checked = True
                     if result:
-                        self.listener.onDownloadError(
-                            f"{mssg}.\nYour File/Folder size is {get_readable_file_size(size)}")
-                        self.client.torrents_delete(
-                            torrent_hashes=self.ext_hash, delete_files=True)
+                        self.client.torrents_pause(torrent_hashes=self.ext_hash)
+                        time.sleep(0.3)
+                        self.listener.onDownloadError(f"{mssg}.\nUkuran File/Folder Anda adalah {get_readable_file_size(size)}")
+                        self.client.torrents_delete(torrent_hashes=self.ext_hash)
                         self.client.auth_log_out()
                         self.updater.cancel()
                         return
             elif tor_info.state == "stalledDL":
-                if time.time() - self.stalled_time >= 999999999:  # timeout after downloading metadata
+                if time.time() - self.stalled_time >= 999999999: # timeout after downloading metadata
+                    self.client.torrents_pause(torrent_hashes=self.ext_hash)
+                    time.sleep(0.3)
                     self.listener.onDownloadError("Dead Torrent!")
-                    self.client.torrents_delete(
-                        torrent_hashes=self.ext_hash, delete_files=True)
+                    self.client.torrents_delete(torrent_hashes=self.ext_hash)
                     self.client.auth_log_out()
                     self.updater.cancel()
                     return
             elif tor_info.state == "error":
-                self.listener.onDownloadError(
-                    "Error. IDK why, report in support group")
-                self.client.torrents_delete(
-                    torrent_hashes=self.ext_hash, delete_files=True)
+                self.client.torrents_pause(torrent_hashes=self.ext_hash)
+                time.sleep(0.3)
+                self.listener.onDownloadError("Error. IDK why, report in support group")
+                self.client.torrents_delete(torrent_hashes=self.ext_hash)
                 self.client.auth_log_out()
                 self.updater.cancel()
                 return
@@ -222,8 +221,7 @@ class qbittorrent:
                 if not os.listdir(dirpath):
                     os.rmdir(dirpath)
         self.listener.onDownloadComplete()
-        self.client.torrents_delete(
-            torrent_hashes=self.ext_hash, delete_files=True)
+        self.client.torrents_delete(torrent_hashes=self.ext_hash)
         self.client.auth_log_out()
         self.updater.cancel()
 
@@ -253,20 +251,15 @@ def get_confirm(update, context):
 def get_hash_magnet(mgt):
     if mgt.startswith('magnet:'):
         _, _, _, _, query, _ = urlparse(mgt)
-
     qs = parse_qs(query)
     v = qs.get('xt', None)
-
     if v is None or v == []:
         LOGGER.error('Invalid magnet URI: no "xt" query parameter.')
-        return False
-
+        return
     v = v[0]
     if not v.startswith('urn:btih:'):
-        LOGGER.error(
-            'Invalid magnet URI: "xt" value not valid for BitTorrent.')
-        return False
-
+        LOGGER.error('Invalid magnet URI: "xt" value not valid for BitTorrent.')
+        return
     mgt = v[len('urn:btih:'):]
     return mgt.lower()
 

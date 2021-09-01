@@ -44,9 +44,9 @@ load_dotenv('config.env')
 
 alive = subprocess.Popen(["python3", "alive.py"])
 
-subprocess.run(["mkdir", "-p", "./.config/qBittorrent"])
-subprocess.run(["cp", "qBittorrent.conf", "./.config/qBittorrent/qBittorrent.conf"])
-subprocess.run(["qbittorrent-nox", "-d"])
+subprocess.run(["mkdir", "-p", "qBittorrent/config"])
+subprocess.run(["cp", "qBittorrent.conf", "qBittorrent/config/qBittorrent.conf"])
+subprocess.run(["qbittorrent-nox", "-d", "--profile=."])
 
 Interval = []
 
@@ -297,10 +297,7 @@ except KeyError:
     IS_TEAM_DRIVE = False
 try:
     USE_SERVICE_ACCOUNTS = getConfig('USE_SERVICE_ACCOUNTS')
-    if USE_SERVICE_ACCOUNTS.lower() == 'true':
-        USE_SERVICE_ACCOUNTS = True
-    else:
-        USE_SERVICE_ACCOUNTS = False
+    USE_SERVICE_ACCOUNTS = USE_SERVICE_ACCOUNTS.lower() == 'true'
 except KeyError:
     USE_SERVICE_ACCOUNTS = False
 try:
@@ -331,10 +328,7 @@ except KeyError:
 IGNORE_PENDING_REQUESTS = False
 try:
     IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
-    if IGNORE_PENDING_REQUESTS.lower() == 'true':
-        IGNORE_PENDING_REQUESTS = True
-    else:
-        IGNORE_PENDING_REQUESTS = False
+    IGNORE_PENDING_REQUESTS = IGNORE_PENDING_REQUESTS.lower() == 'true'
 except KeyError:
     pass
 try:

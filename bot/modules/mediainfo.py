@@ -41,9 +41,7 @@ async def mediainfo(client, message):
     media_type = str(type(x_media)).split("'")[1]
     file_path = safe_filename(await reply.download())
     output_ = await runcmd(f'mediainfo "{file_path}"')
-    out = None
-    if len(output_) != 0:
-        out = output_[0]
+    out = output_[0] if len(output_) != 0 else None
     body_text = f"""
 <h2>JSON</h2>
 <pre>{x_media}</pre>
@@ -52,7 +50,7 @@ async def mediainfo(client, message):
 <h2>DETAILS</h2>
 <pre>{out or 'Not Supported'}</pre>
 """
-    title = f"re-mirrorbot Mediainfo"
+    title = 're-mirrorbot Mediainfo'
     text_ = media_type.split(".")[-1].upper()
     link = post_to_telegraph(title, body_text)
     markup = InlineKeyboardMarkup(

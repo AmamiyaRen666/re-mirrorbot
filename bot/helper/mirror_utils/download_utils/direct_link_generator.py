@@ -9,7 +9,6 @@ than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtend
 for original authorship. """
 
 import json
-import math
 import re
 import urllib.parse
 from base64 import standard_b64encode
@@ -96,7 +95,7 @@ def direct_link_generator(link: str):  # sourcery no-metrics
     elif 'https://sourceforge.net' in link:
         return sourceforge(link)
     elif 'https://master.dl.sourceforge.net' in link:
-        return mastersource(link)
+        return sourceforge2(link)
     elif 'solidfiles.com' in link:
         return solidfiles(link)
     elif "dropbox.com/s/" in link:
@@ -121,6 +120,7 @@ def zippy_share(url: str) -> str:
     except IndexError:
         raise DirectDownloadLinkException(
             "ERROR: Tidak dapat menemukan tombol Unduh")
+
 
 def _extracted_from_zippy_share_8(link):
     base_url = re.search('http.+.zippyshare.com', link).group()
@@ -162,7 +162,7 @@ def sourceforge(url: str) -> str:
     """ SourceForge direct links generator
     Based on https://github.com/REBEL75/REBELUSERBOT """
     try:
-        link = re.findall(r"\bhttps?://sourceforge\.net\S+", url)[0]
+        link = re.findall(r"\bhttps?://sourceforge\.net\S+", url)[0] 
     except IndexError:
         return "`No SourceForge links found`\n"
     file_path = re.findall(r"files(.*)/download", link)[0]
@@ -174,12 +174,12 @@ def sourceforge(url: str) -> str:
     page = BeautifulSoup(requests.get(mirrors).content, "html.parser")
     info = page.find("ul", {"id": "mirrorList"}).findAll("li")
     for mirror in info[1:]:
-        name = re.findall(r"\((.*)\)", mirror.text.strip())[0]
-        dl_url = (
-            f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}'
-        )
+        dl_url = (f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}?viasf=1')
     return dl_url
 
+def sourceforge2(url: str) -> str:
+    """ Sourceforge Master.dl bypass """
+    return f"{url}" + "?viasf=1"
 
 def uptobox(url: str) -> str:
     """ Uptobox direct links generator
@@ -470,11 +470,6 @@ def solidfiles(url: str) -> str:
     mainOptions = str(
         re.search(r'viewerOptions\'\,\ (.*?)\)\;', pageSource).group(1))
     return json.loads(mainOptions)["downloadUrl"]
-
-
-def mastersource(url: str) -> str:
-    """ Sourceforge Master.dl bypass """
-    return f"{url}" + "?viasf=1"
 
 
 def dropbox1(url: str) -> str:
