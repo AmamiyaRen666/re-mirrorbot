@@ -16,7 +16,7 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 
 **re-cerminbot** is a _multipurpose_ Telegram Bot written in Python for mirroring files on the Internet to our beloved Google Drive, Based on [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
 
-# Features supported:
+# Features:
 <details>
     <summary><b>Click Here For More Details</b></summary>
 
@@ -46,7 +46,6 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - Speedtest
 - Status Pages for unlimited tasks
 - Clone status
-- Many bugs has been fixed
 - Direct links Supported:
 ```
 letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
@@ -243,9 +242,9 @@ sudo docker run -p 80:80 mirror-bot
 ```
 OR
 
-**NOTE**: If you want to use port other than 80, so change it in [docker-compose.yml](https://github.com/SlamDevs/slam-mirrorbot/blob/master/docker-compose.yml)
+**NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/SlamDevs/slam-mirrorbot/blob/master/docker-compose.yml)
 
-- Using Docker-compose so you can edit and build your image in seconds:
+- Using Docker-compose, you can edit and build your image in seconds:
 ```
 sudo apt install docker-compose
 ```
@@ -253,7 +252,7 @@ sudo apt install docker-compose
 ```
 sudo docker-compose up
 ```
-- After edit files with nano for example (nano start.sh):
+- After editing files with nano for example (nano start.sh):
 ```
 sudo docker-compose build
 sudo docker-compose up
@@ -262,14 +261,14 @@ OR
 ```
 sudo docker-compose up --build
 ```
-- To stop Docker run 
+- To stop Docker : 
 ```
 sudo docker ps
 ```
 ```
 sudo docker stop id
 ```
-- To clear the container (this will not effect on image):
+- To clear the container (this will not affect the image):
 ```
 sudo docker container prune
 ```
