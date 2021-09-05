@@ -19,7 +19,7 @@ class AriaDownloadHelper:
     @new_thread
     def __onDownloadStarted(self, api, gid):  # sourcery no-metrics
         if STOP_DUPLICATE or TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None:
-            sleep(2)
+            sleep(1)
             dl = getDownloadByGid(gid)
             download = aria2.get_download(gid)
         if STOP_DUPLICATE and dl is not None:
@@ -30,14 +30,15 @@ class AriaDownloadHelper:
             if dl.getListener().extract:
                 smsg = None
             else:
-                gdrive = GoogleDriveHelper(None)
-                smsg, button = gdrive.drive_list(sname)
+                gdrive = GoogleDriveHelper()
+                smsg, button = gdrive.drive_list(sname, True)
             if smsg:
                 dl.getListener().onDownloadError('File/folder sudah tersedia di drive.\n\n')
                 aria2.remove([download], force=True)
                 sendMarkup("Berikut adalah hasil pencarian:", dl.getListener().bot, dl.getListener().update, button)
                 return
         if (TORRENT_DIRECT_LIMIT is not None or TAR_UNZIP_LIMIT is not None) and dl is not None:
+            sleep(1)
             size = aria2.get_download(gid).total_length
             if dl.getListener().isTar or dl.getListener().extract:
                 is_tar_ext = True

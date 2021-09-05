@@ -188,7 +188,7 @@ class MegaDownloadHelper:
                 smsg = None
             else:
                 gd = GoogleDriveHelper()
-                smsg, button = gd.drive_list(mname)
+                smsg, button = gd.drive_list(mname, True)
             if smsg:
                 msg1 = "File/folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:"
                 sendMarkup(msg1, listener.bot, listener.update, button)

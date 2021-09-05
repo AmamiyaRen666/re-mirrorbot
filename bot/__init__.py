@@ -7,6 +7,8 @@ import string
 import threading
 import time
 import subprocess
+import requests
+
 
 import aria2p
 import psycopg2
@@ -36,9 +38,13 @@ LOGGER = logging.getLogger(__name__)
 
 CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
 if CONFIG_FILE_URL is not None:
-    out = subprocess.run(["wget", "-q", "-O", "config.env", CONFIG_FILE_URL])
-    if out.returncode != 0:
-        logging.error(out)
+    res = requests.get(CONFIG_FILE_URL)
+    if res.status_code == 200:
+        with open('config.env', 'wb') as f:
+           f.truncate(0)
+           f.write(res.content)
+    else:
+        logging.error(res.status_code)
 
 load_dotenv('config.env')
 
@@ -62,9 +68,9 @@ def mktable():
         sql = "CREATE TABLE users (uid bigint, sudo boolean DEFAULT FALSE);"
         cur.execute(sql)
         conn.commit()
-        LOGGER.info("Table Created!")
+        logging.info("Table Created!")
     except Error as e:
-        LOGGER.error(e)
+        logging.error(e)
         exit(1)
 
 
@@ -93,7 +99,7 @@ def get_client() -> qba.TorrentsAPIMixIn:
         # qb_client.application.set_preferences({"disk_cache":64, "incomplete_files_ext":True, "max_connec":3000, "max_connec_per_torrent":300, "async_io_threads":8, "preallocate_all":True, "upnp":True, "dl_limit":-1, "up_limit":-1, "dht":True, "pex":True, "lsd":True, "encryption":0, "queueing_enabled":True, "max_active_downloads":15, "max_active_torrents":50, "dont_count_slow_torrents":True, "bittorrent_protocol":0, "recheck_completed_torrents":True, "enable_multi_connections_from_same_ip":True, "slow_torrent_dl_rate_threshold":100,"slow_torrent_inactive_timer":600})
         return qb_client
     except qba.LoginFailed as e:
-        LOGGER.error(str(e))
+        logging.error(str(e))
         return None
 
 
@@ -361,31 +367,41 @@ try:
     if len(SERVER_PORT) == 0:
         SERVER_PORT = None
 except KeyError:
-    logging.warning('SERVER_PORT not provided!')
+    if IS_VPS:
+        logging.warning('SERVER_PORT not provided!')
     SERVER_PORT = None
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
         TOKEN_PICKLE_URL = None
     else:
-        out = subprocess.run(["wget", "--max-redirect=0", "-q", "-O", "token.pickle", TOKEN_PICKLE_URL])
-        if out.returncode != 0:
-            logging.error(out)
+        res = requests.get(TOKEN_PICKLE_URL)
+        if res.status_code == 200:
+            with open('token.pickle', 'wb') as f:
+               f.truncate(0)
+               f.write(res.content)
+        else:
+            logging.error(res.status_code)
+            raise KeyError
 except KeyError:
-    TOKEN_PICKLE_URL = None
+    pass
 try:
     ACCOUNTS_ZIP_URL = getConfig('ACCOUNTS_ZIP_URL')
     if len(ACCOUNTS_ZIP_URL) == 0:
         ACCOUNTS_ZIP_URL = None
     else:
-        out = subprocess.run(["wget", "--max-redirect=0", "-q", "-O", "accounts.zip", ACCOUNTS_ZIP_URL])
-        if out.returncode != 0:
-            logging.error(out)
+        res = requests.get(ACCOUNTS_ZIP_URL)
+        if res.status_code == 200:
+            with open('accounts.zip', 'wb') as f:
+               f.truncate(0)
+               f.write(res.content)
+        else:
+            logging.error(res.status_code)
             raise KeyError
         subprocess.run(["unzip", "-q", "-o", "accounts.zip"])
         os.remove("accounts.zip")
 except KeyError:
-    ACCOUNTS_ZIP_URL = None
+     pass
 
 updater = tg.Updater(token=BOT_TOKEN)
 bot = updater.bot
