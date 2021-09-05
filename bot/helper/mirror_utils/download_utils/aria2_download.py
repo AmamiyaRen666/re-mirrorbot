@@ -31,7 +31,7 @@ class AriaDownloadHelper:
                 smsg = None
             else:
                 gdrive = GoogleDriveHelper()
-                smsg, button = gdrive.drive_list(sname, True)
+                smsg, button = gdrive.drive_list(sname)
             if smsg:
                 dl.getListener().onDownloadError('File/folder sudah tersedia di drive.\n\n')
                 aria2.remove([download], force=True)
