@@ -70,7 +70,7 @@ async def return_search(query, page=1, sukebei=False):
         except IndexError:
             return '', len(results), ttl
 
-message_info = dict()
+message_info = {}
 ignore = set()
 
 @app.on_message(filters.command(['nyaasi', f'nyaasi@{bot.username}']))
@@ -314,9 +314,10 @@ torrents_dict = {
     'ts': {'source': "https://torrents-api.netlify.app/.netlify/functions/api/all/", 'result_str': RESULT_STR_ALL}
 }
 
-torrent_handlers = []
-for command, value in torrents_dict.items():
-    torrent_handlers.append(TorrentSearch(command, value['source'], value['result_str']))
+torrent_handlers = [
+    TorrentSearch(command, value['source'], value['result_str'])
+    for command, value in torrents_dict.items()
+]
 
 def searchhelp(update, context):
     help_string = '''
