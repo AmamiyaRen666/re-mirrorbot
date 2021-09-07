@@ -23,11 +23,12 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 ## what some different feature rather the original [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
 - adding more direct link generator
 - still using some old stuff like image url on speedtest,index link, mediainfo,usage and etc
-- ffmpeg custom to make your bot to be something powerfull
+- ffmpeg custom to make your bot to be something powerfull (atleast all feature on decoding supported)
 - you can change yt-dlp or ytdl because the docker has been included to dependencies
 - still support and keep using latest updated slam-mirrorbot
 - refactored some code to make some good perfomance
 - Using Qbittorrent Enhanced Edition
+- Custom Progress bar
 - dropped using button template (cli still supported or using whatever method)
 
 ## Additional Features On [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
@@ -39,13 +40,14 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 - Sudo with Database or without Database
 - Check Heroku dynos stats (optional)
 - Extracting **tar.xz** support
-- Custom Progress bar
 - Counting files/folders from Google Drive link
 - View Link button instead of direct download link
 - Shell and Executor
 - Speedtest
 - Status Pages for unlimited tasks
 - Clone status
+- Search in multiple Drive folder/TD
+- Many bugs has been fixed
 - Direct links Supported:
 ```
 letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
@@ -55,7 +57,6 @@ streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
 1fichier.com, 1drv.ms (Only works for file not folder or business account),
 uptobox.com (Uptobox account must be premium), solidfiles.com, sourceforge.com
 ```
-- Many bugs has been fixed
 
 ## From Original Repos Thx to [magneto261290](https://github.com/magneto261290)
 - Mirroring direct download links, Torrent, and Telegram files to Google Drive
@@ -188,8 +189,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `STATUS_LIMIT`: Limit the no. of tasks shown in status message with button. (**NOTE**: Recommended limit is `4` tasks at max).
 - `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any port you want to use.
 - `SERVER_PORT`: (Only if IS_VPS is `True`) Base URL Port
-- `IMAGE_URL`: Show Image/Logo in /start message, Use telegra.ph or any direct link image
 - `BASE_URL_OF_BOT`: (Required for Heroku to avoid sleep/idling) Valid BASE URL of app where the bot is deployed. IP/Domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: Do not put slash at the end), still got idling? You can use http://cron-job.org to ping your Heroku app.
+- `IMAGE_URL`: Show Image/Logo in /start message, Use telegra.ph or any direct link image
 - `SHORTENER_API`: Fill your Shortener API key if you are using Shortener.
 - `SHORTENER`: if you want to use Shortener in G-Drive and index link, fill Shortener URL here. Examples:
 ```
@@ -197,7 +198,6 @@ exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com
 ```
 
 Above are the supported URL Shorteners. Except these only some URL Shorteners are supported.
-
 ### Add more buttons (Optional Field)
 Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are below entries, simply leave them, don't fill anything in them.
 - `BUTTON_FOUR_NAME`:
@@ -374,7 +374,7 @@ Thanks to:
 - [anasty17](https://github.com/anasty17) for some features & help
 - [breakdowns](https://github.com/breakdowns) for slam-mirrorbot
 - [yash-dk](https://github.com/yash-dk) for implementation qbittorrent in python on TorToolkit-Telegram repo
-- [`xyou365`](https://github.com/xyou365) for Service Accounts script.
+- [xyou365](https://github.com/xyou365) for Service Accounts script.
 
 # for stuff i use 
 Thanks to:
