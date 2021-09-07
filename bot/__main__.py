@@ -13,19 +13,43 @@ from telegram import ParseMode
 from telegram.ext import CommandHandler
 from wserver import start_server_async
 
-from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, SERVER_PORT, app,
-                 bot, botStartTime, dispatcher, alive, updater)
+from bot import (
+    IGNORE_PENDING_REQUESTS,
+    IMAGE_URL,
+    IS_VPS,
+    SERVER_PORT,
+    app,
+    bot,
+    botStartTime,
+    dispatcher,
+    alive,
+    updater,
+)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
 
-from .helper.ext_utils.bot_utils import (get_readable_file_size,
-                                         get_readable_time)
+from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
-from .modules import (authorize, cancel_mirror, clone, count, delete,
-                      eval, list, mediainfo, mirror, mirror_status, shell,
-                      speedtest, reboot, usage, watch)
+from .modules import (
+    authorize,
+    cancel_mirror,
+    clone,
+    count,
+    delete,
+    eval,
+    list,
+    mediainfo,
+    mirror,
+    mirror_status,
+    shell,
+    speedtest,
+    reboot,
+    usage,
+    watch,
+    torrent_search
+)
 
 now = datetime.now(pytz.timezone("Asia/Jakarta"))
 
@@ -41,18 +65,19 @@ def stats(update, context):
     recv = get_readable_file_size(psutil.net_io_counters().bytes_recv)
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
-    disk = psutil.disk_usage('/').percent
-    stats = f'<b>Bot berjalan:</b> <code>{currentTime}</code>\n' \
-            f'<b>Ruang Penyimpnan total:</b> <code>{total}</code>\n' \
-            f'<b>Digunakan:</b> <code>{used}</code> ' \
-            f'<b>Bebas:</b> <code>{free}</code>\n\n' \
-            f'<b>Upload:</b> <code>{sent}</code>\n' \
-            f'<b>Download:</b> <code>{recv}</code>\n\n' \
-            f'<b>CPU:</b> <code>{cpuUsage}%</code> ' \
-            f'<b>RAM:</b> <code>{memory}%</code> ' \
-            f'<b>HDD:</b> <code>{disk}%</code>'
-    update.effective_message.reply_photo(
-        IMAGE_URL, stats, parse_mode=ParseMode.HTML)
+    disk = psutil.disk_usage("/").percent
+    stats = (
+        f"<b>Bot berjalan:</b> <code>{currentTime}</code>\n"
+        f"<b>Ruang Penyimpnan total:</b> <code>{total}</code>\n"
+        f"<b>Digunakan:</b> <code>{used}</code> "
+        f"<b>Bebas:</b> <code>{free}</code>\n\n"
+        f"<b>Upload:</b> <code>{sent}</code>\n"
+        f"<b>Download:</b> <code>{recv}</code>\n\n"
+        f"<b>CPU:</b> <code>{cpuUsage}%</code> "
+        f"<b>RAM:</b> <code>{memory}%</code> "
+        f"<b>HDD:</b> <code>{disk}%</code>"
+    )
+    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
 
 
 def start(update, context):
@@ -60,7 +85,11 @@ def start(update, context):
     buttons.buildbutton("Repo", "https://github.com/Ncode2014/re-cerminbot")
     buttons.buildbutton("Support Group", "https://t.me/rumahmirorr")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
-    if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update) or update.message.chat.type == "private":
+    if (
+        CustomFilters.authorized_user(update)
+        or CustomFilters.authorized_chat(update)
+        or update.message.chat.type == "private"
+    ):
         start_string = f"""
 Bot ini dapat mencerminkan semua tautan Anda ke Google Drive!
 Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
@@ -68,7 +97,7 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
         sendMarkup(start_string, context.bot, update, reply_markup)
     else:
         sendMarkup(
-            'Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.',
+            "Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.",
             context.bot,
             update,
             reply_markup,
@@ -76,8 +105,7 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 
 
 def restart(update, context):
-    restart_message = sendMessage(
-        "Mulai ulang, Harap tunggu!", context.bot, update)
+    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -156,6 +184,8 @@ def bot_help(update, context):
 
 /{BotCommands.ExecHelpCommand}: Dapatkan bantuan untuk modul pelaksana
 
+/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
+
 """
 
     help_string = f"""
@@ -191,6 +221,7 @@ def bot_help(update, context):
 
 /{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
+/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
 """
 
     if CustomFilters.sudo_user(update) or CustomFilters.owner_filter(update):
@@ -200,29 +231,31 @@ def bot_help(update, context):
 
 
 botcmds = [
-    (f'{BotCommands.HelpCommand}', 'Dapatkan bantuan terperinci'),
-    (f'{BotCommands.MirrorCommand}', 'Mulai mirroring'),
-    (f'{BotCommands.TarMirrorCommand}',
-     'Mulai mirroring dan unggah sebagai .tar'),
-    (f'{BotCommands.UnzipMirrorCommand}', 'Ekstrak file'),
-    (f'{BotCommands.ZipMirrorCommand}',
-     'Mulai mirroring dan unggah sebagai .zip'),
-    (f'{BotCommands.CloneCommand}', 'Salin file/folder ke Drive'),
-    (f'{BotCommands.CountCommand}', 'Hitung file/folder dari link Drive'),
-    (f'{BotCommands.DeleteCommand}', 'Hapus file dari drive'),
-    (f'{BotCommands.WatchCommand}', 'Mirror video/audio menggunakan YouTube-DL'),
-    (f'{BotCommands.TarWatchCommand}',
-     'Cermin tautan daftar putar YouTube sebagai .tar'),
-    (f'{BotCommands.CancelMirror}', 'Batalkan tugas'),
-    (f'{BotCommands.CancelAllCommand}', 'Batalkan semua tugas'),
-    (f'{BotCommands.ListCommand}', 'Mencari file dalam drive'),
-    (f'{BotCommands.StatusCommand}', 'Dapatkan pesan status cermin'),
-    (f'{BotCommands.StatsCommand}', 'Statistik Penggunaan Bot.'),
-    (f'{BotCommands.PingCommand}', 'berlomba cepat koneksi.'),
-    (f'{BotCommands.RestartCommand}', 'Mulai ulang bot. [hanya owner/sudo]'),
-    (f'{BotCommands.LogCommand}', 'Dapatkan Log Bot [hanya owner/sudo]'),
-    (f'{BotCommands.MediaInfoCommand}',
-     'Dapatkan info detail tentang media yang dibalas')
+    (f"{BotCommands.HelpCommand}", "Dapatkan bantuan terperinci"),
+    (f"{BotCommands.MirrorCommand}", "Mulai mirroring"),
+    (f"{BotCommands.TarMirrorCommand}", "Mulai mirroring dan unggah sebagai .tar"),
+    (f"{BotCommands.UnzipMirrorCommand}", "Ekstrak file"),
+    (f"{BotCommands.ZipMirrorCommand}", "Mulai mirroring dan unggah sebagai .zip"),
+    (f"{BotCommands.CloneCommand}", "Salin file/folder ke Drive"),
+    (f"{BotCommands.CountCommand}", "Hitung file/folder dari link Drive"),
+    (f"{BotCommands.DeleteCommand}", "Hapus file dari drive"),
+    (f"{BotCommands.WatchCommand}", "Mirror video/audio menggunakan YouTube-DL"),
+    (
+        f"{BotCommands.TarWatchCommand}",
+        "Cermin tautan daftar putar YouTube sebagai .tar",
+    ),
+    (f"{BotCommands.CancelMirror}", "Batalkan tugas"),
+    (f"{BotCommands.CancelAllCommand}", "Batalkan semua tugas"),
+    (f"{BotCommands.ListCommand}", "Mencari file dalam drive"),
+    (f"{BotCommands.StatusCommand}", "Dapatkan pesan status cermin"),
+    (f"{BotCommands.StatsCommand}", "Statistik Penggunaan Bot."),
+    (f"{BotCommands.PingCommand}", "berlomba cepat koneksi."),
+    (f"{BotCommands.RestartCommand}", "Mulai ulang bot. [hanya owner/sudo]"),
+    (f"{BotCommands.LogCommand}", "Dapatkan Log Bot [hanya owner/sudo]"),
+    (
+        f"{BotCommands.MediaInfoCommand}",
+        "Dapatkan info detail tentang media yang dibalas",
+    )(f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
 ]
 
 
@@ -240,8 +273,7 @@ def main():
         os.remove(".restartmsg")
     bot.set_my_commands(botcmds)
 
-    start_handler = CommandHandler(
-        BotCommands.StartCommand, start, run_async=True)
+    start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(
         BotCommands.PingCommand,
         ping,
