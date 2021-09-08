@@ -39,9 +39,9 @@ CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
 if CONFIG_FILE_URL is not None:
     res = requests.get(CONFIG_FILE_URL)
     if res.status_code == 200:
-        with open('config.env', 'wb') as f:
-           f.truncate(0)
-           f.write(res.content)
+        with open('config.env', 'wb+') as f:
+            f.write(res.content)
+            f.close()
     else:
         logging.error(res.status_code)
 
@@ -382,9 +382,9 @@ try:
     else:
         res = requests.get(TOKEN_PICKLE_URL)
         if res.status_code == 200:
-            with open('token.pickle', 'wb') as f:
-               f.truncate(0)
-               f.write(res.content)
+            with open('token.pickle', 'wb+') as f:
+                f.write(res.content)
+                f.close()
         else:
             logging.error(res.status_code)
             raise KeyError
@@ -397,9 +397,9 @@ try:
     else:
         res = requests.get(ACCOUNTS_ZIP_URL)
         if res.status_code == 200:
-            with open('accounts.zip', 'wb') as f:
-               f.truncate(0)
-               f.write(res.content)
+            with open('accounts.zip', 'wb+') as f:
+                f.write(res.content)
+                f.close()
         else:
             logging.error(res.status_code)
             raise KeyError
@@ -414,9 +414,9 @@ try:
     else:
         res = requests.get(MULTI_SEARCH_URL)
         if res.status_code == 200:
-            with open('drive_folder', 'wb') as f:
-               f.truncate(0)
-               f.write(res.content)
+            with open('drive_folder', 'wb+') as f:
+                f.write(res.content)
+                f.close()
         else:
             logging.error(res.status_code)
             raise KeyError
