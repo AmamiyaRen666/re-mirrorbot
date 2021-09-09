@@ -330,10 +330,12 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
                 file.get_file().download(custom_path=f"{file_name}")
                 link = f"{file_name}"
             elif file.mime_type != "application/x-bittorrent":
-                listener = MirrorListener(bot, update, pswd, isTar, extract, isZip)
+                listener = MirrorListener(
+                    bot, update, pswd, isTar, extract, isZip)
                 tg_downloader = TelegramDownloadHelper(listener)
                 ms = update.message
-                tg_downloader.add_download(ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
+                tg_downloader.add_download(
+                    ms, f'{DOWNLOAD_DIR}{listener.uid}/', name)
                 return
             else:
                 link = file.get_file().file_path
@@ -341,7 +343,12 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
     if not bot_utils.is_url(link) and not bot_utils.is_magnet(link):
         sendMessage('Tidak ada sumber unduhan yang disediakan', bot, update)
         return
-    if not os.path.exists(link) and not bot_utils.is_mega_link(link) and not bot_utils.is_gdrive_link(link) and not bot_utils.is_magnet(link):
+    if (
+        not os.path.exists(link)
+        and not bot_utils.is_mega_link(link)
+        and not bot_utils.is_gdrive_link(link)
+        and not bot_utils.is_magnet(link)
+    ):
         try:
             link = direct_link_generator(link)
         except DirectDownloadLinkException as e:

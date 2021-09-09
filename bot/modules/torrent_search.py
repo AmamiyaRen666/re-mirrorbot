@@ -27,7 +27,7 @@ from bot.helper.telegram_helper.message_utils import sendMessage
 search_lock = asyncio.Lock()
 search_info = {False: dict(), True: dict()}
 
-async def return_search(query, page=1, sukebei=False):
+async def return_search(query, page=1, sukebei=False):  # sourcery no-metrics
     page -= 1
     query = query.lower().strip()
     used_search_info = search_info[sukebei]
@@ -73,12 +73,14 @@ async def return_search(query, page=1, sukebei=False):
 message_info = {}
 ignore = set()
 
+
 @app.on_message(filters.command(['nyaasi', f'nyaasi@{bot.username}']))
 async def nyaa_search(client, message):
     text = message.text.split(' ')
     text.pop(0)
     query = ' '.join(text)
     await init_search(client, message, query, False)
+
 
 @app.on_message(filters.command(['sukebei', f'sukebei@{bot.username}']))
 async def nyaa_search_sukebei(client, message):
@@ -87,24 +89,29 @@ async def nyaa_search_sukebei(client, message):
     query = ' '.join(text)
     await init_search(client, message, query, True)
 
+
 async def init_search(client, message, query, sukebei):
     result, pages, ttl = await return_search(query, sukebei=sukebei)
     if not result:
         await message.reply_text('No results found')
     else:
-        buttons = [InlineKeyboardButton(f'1/{pages}', 'nyaa_nop'), InlineKeyboardButton(f'Next', 'nyaa_next')]
+        buttons = [InlineKeyboardButton(f'1/{pages}', 'nyaa_nop'), InlineKeyboardButton('Next', 'nyaa_next')]
         if pages == 1:
             buttons.pop()
         reply = await message.reply_text(result, reply_markup=InlineKeyboardMarkup([
-            buttons 
+            buttons
         ]))
         message_info[(reply.chat.id, reply.message_id)] = message.from_user.id, ttl, query, 1, pages, sukebei
+
 
 @app.on_callback_query(custom_filters.callback_data('nyaa_nop'))
 async def nyaa_nop(client, callback_query):
     await callback_query.answer(cache_time=3600)
 
+
 callback_lock = asyncio.Lock()
+
+
 @app.on_callback_query(custom_filters.callback_data(['nyaa_back', 'nyaa_next']))
 async def nyaa_callback(client, callback_query):
     message = callback_query.message
@@ -132,7 +139,7 @@ async def nyaa_callback(client, callback_query):
                 await callback_query.answer('...no', cache_time=3600)
                 return
             text, pages, ttl = await return_search(query, current_page, sukebei)
-        buttons = [InlineKeyboardButton(f'Prev', 'nyaa_back'), InlineKeyboardButton(f'{current_page}/{pages}', 'nyaa_nop'), InlineKeyboardButton(f'Next', 'nyaa_next')]
+        buttons = [InlineKeyboardButton('Prev', 'nyaa_back'), InlineKeyboardButton(f'{current_page}/{pages}', 'nyaa_nop'), InlineKeyboardButton('Next', 'nyaa_next')]
         if ttl_ended:
             buttons = [InlineKeyboardButton('Search Expired', 'nyaa_nop')]
         else:
@@ -151,6 +158,7 @@ async def nyaa_callback(client, callback_query):
 
 # Using upstream API based on: https://github.com/Ryuk-me/Torrents-Api
 # Implemented by https://github.com/jusidama18
+
 
 class TorrentSearch:
     index = 0
@@ -171,7 +179,7 @@ class TorrentSearch:
         app.add_handler(CallbackQueryHandler(self.previous, filters.regex(f"{self.command}_previous")))
         app.add_handler(CallbackQueryHandler(self.delete, filters.regex(f"{self.command}_delete")))
         app.add_handler(CallbackQueryHandler(self.next, filters.regex(f"{self.command}_next")))
-        
+
     @staticmethod
     def format_magnet(string: str):
         if not string:
@@ -196,9 +204,9 @@ class TorrentSearch:
         return string
 
     async def update_message(self):
-        prevBtn = InlineKeyboardButton(f"Prev", callback_data=f"{self.command}_previous")
+        prevBtn = InlineKeyboardButton("Prev", callback_data=f"{self.command}_previous")
         delBtn = InlineKeyboardButton(f"{emoji.CROSS_MARK}", callback_data=f"{self.command}_delete")
-        nextBtn = InlineKeyboardButton(f"Next", callback_data=f"{self.command}_next")
+        nextBtn = InlineKeyboardButton("Next", callback_data=f"{self.command}_next")
 
         inline = []
         if (self.index != 0):
@@ -258,6 +266,7 @@ class TorrentSearch:
         self.index += 1
         await self.update_message()
 
+
 RESULT_STR_1337 = (
     "➲Name: `{Name}`\n"
     "➲Size: {Size}\n"
@@ -269,7 +278,7 @@ RESULT_STR_PIRATEBAY = (
     "➲Seeders: {Seeders} || ➲Leechers: {Leechers}"
 )
 RESULT_STR_TGX = (
-    "➲Name: `{Name}`\n" 
+    "➲Name: `{Name}`\n"
     "➲Size: {Size}\n"
     "➲Seeders: {Seeders} || ➲Leechers: {Leechers}"
 )
@@ -321,6 +330,7 @@ torrent_handlers = [
     for command, value in torrents_dict.items()
 ]
 
+
 def searchhelp(update, context):
     help_string = '''
 <b>Torrent Search</b>
@@ -336,7 +346,7 @@ def searchhelp(update, context):
 • /ts <i>[search query]</i>
 '''
     sendMessage(help_string, context.bot, update)
-    
-    
+
+
 SEARCHHELP_HANDLER = CommandHandler(BotCommands.TsHelpCommand, searchhelp, filters=(CustomFilters.authorized_chat | CustomFilters.authorized_user) & CustomFilters.mirror_owner_filter, run_async=True)
 dispatcher.add_handler(SEARCHHELP_HANDLER)

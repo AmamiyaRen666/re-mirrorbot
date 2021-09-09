@@ -1,6 +1,6 @@
 import psycopg2
-from psycopg2 import Error
-from bot import AUTHORIZED_CHATS, SUDO_USERS, DB_URI, LOGGER
+
+from bot import AUTHORIZED_CHATS, DB_URI, LOGGER, SUDO_USERS
 
 
 class DbManger:

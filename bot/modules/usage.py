@@ -10,7 +10,7 @@ from telegram import update
 from telegram.ext import CommandHandler
 
 
-def dyno_usage(update, context):
+def dyno_usage(context):
     heroku_api = "https://api.heroku.com"
     if HEROKU_API_KEY is not None and HEROKU_APP_NAME is not None:
         Heroku = heroku3.from_key(HEROKU_API_KEY)

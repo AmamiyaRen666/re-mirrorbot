@@ -2,11 +2,6 @@ import shutil
 import time
 
 import psutil
-from telegram import InlineKeyboardMarkup
-from telegram.error import BadRequest, TimedOut
-from telegram.message import Message
-from telegram.update import Update
-
 from bot import (AUTO_DELETE_MESSAGE_DURATION, DOWNLOAD_STATUS_UPDATE_INTERVAL,
                  LOGGER, Interval, bot, botStartTime, download_dict,
                  download_dict_lock, status_reply_dict, status_reply_dict_lock)
@@ -14,6 +9,10 @@ from bot.helper.ext_utils.bot_utils import (MirrorStatus,
                                             get_readable_file_size,
                                             get_readable_message,
                                             get_readable_time, setInterval)
+from telegram import InlineKeyboardMarkup
+from telegram.error import Timeout, Badrequest
+from telegram.message import Message
+from telegram.update import Update
 
 
 def sendMessage(text: str, bot, update: Update):
@@ -78,7 +77,8 @@ def auto_delete_message(bot, cmd_message: Message, bot_message: Message):
     if AUTO_DELETE_MESSAGE_DURATION != -1:
         time.sleep(AUTO_DELETE_MESSAGE_DURATION)
         try:
-            # Skip if None is passed meaning we don't want to delete bot xor cmd message
+            # Skip if None is passed meaning
+            # we don't want to delete bot xor cmd message
             deleteMessage(bot, cmd_message)
             deleteMessage(bot, bot_message)
         except AttributeError:
@@ -122,11 +122,11 @@ def update_all_messages():
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
         ulspeed = get_readable_file_size(uldl_bytes)
-        msg += f"\n<b>Bebas:</b> <code>{free}</code> | <b>Berjalan:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> 🔻 | <b>UL:</b> <code>{ulspeed}/s</code> 🔺\n"
+        msg += f"\n<b>Bebas:</b> <code>{free}</code> | <b>Berjalan:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> 🔻 | <b>UL:</b> <code>{ulspeed}/s</code> 🔺\n"  # noqa: E501
     with status_reply_dict_lock:
         for chat_id in list(status_reply_dict.keys()):
             if status_reply_dict[chat_id
-                                ] and msg != status_reply_dict[chat_id].text:
+                                 ] and msg != status_reply_dict[chat_id].text:
                 try:
                     if buttons == "":
                         editMessage(msg, status_reply_dict[chat_id])
@@ -139,7 +139,7 @@ def update_all_messages():
 
 def sendStatusMessage(msg, bot):  # sourcery no-metrics
     if len(Interval) == 0:
-        Interval.append(setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages))
+        Interval.append(setInterval(DOWNLOAD_STATUS_UPDATE_INTERVAL, update_all_messages))  # noqa: E501
     total, used, free = shutil.disk_usage('.')
     free = get_readable_file_size(free)
     currentTime = get_readable_time(time.time() - botStartTime)
@@ -147,8 +147,8 @@ def sendStatusMessage(msg, bot):  # sourcery no-metrics
     if progress is None:
         progress, buttons = get_readable_message()
     progress += f"<b>CPU:</b> <code>{psutil.cpu_percent()}%</code>" \
-           f" <b>RAM:</b> <code>{psutil.virtual_memory().percent}%</code>" \
-           f" <b>DISK:</b> <code>{psutil.disk_usage('/').percent}%</code>"
+        f" <b>RAM:</b> <code>{psutil.virtual_memory().percent}%</code>" \
+        f" <b>DISK:</b> <code>{psutil.disk_usage('/').percent}%</code>"
     with download_dict_lock:
         dlspeed_bytes = 0
         uldl_bytes = 0
@@ -166,7 +166,7 @@ def sendStatusMessage(msg, bot):  # sourcery no-metrics
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
         ulspeed = get_readable_file_size(uldl_bytes)
-        progress += f"\n<b>FREE:</b> <code>{free}</code> | <b>UPTIME:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> 🔻 | <b>UL:</b> <code>{ulspeed}/s</code> 🔺\n"
+        progress += f"\n<b>FREE:</b> <code>{free}</code> | <b>UPTIME:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> 🔻 | <b>UL:</b> <code>{ulspeed}/s</code> 🔺\n"  # noqa: E501
     with status_reply_dict_lock:
         if msg.message.chat.id in list(status_reply_dict.keys()):
             try:

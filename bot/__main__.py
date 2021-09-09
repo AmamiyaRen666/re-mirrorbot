@@ -13,43 +13,19 @@ from telegram import ParseMode
 from telegram.ext import CommandHandler
 from wserver import start_server_async
 
-from bot import (
-    IGNORE_PENDING_REQUESTS,
-    IMAGE_URL,
-    IS_VPS,
-    SERVER_PORT,
-    app,
-    bot,
-    botStartTime,
-    dispatcher,
-    alive,
-    updater,
-)
+from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, SERVER_PORT,
+                 alive, app, bot, botStartTime, dispatcher, updater)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
 
-from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
+from .helper.ext_utils.bot_utils import (get_readable_file_size,
+                                         get_readable_time)
 from .helper.telegram_helper.filters import CustomFilters
-from .modules import (
-    authorize,
-    cancel_mirror,
-    clone,
-    count,
-    delete,
-    eval,
-    list,
-    mediainfo,
-    mirror,
-    mirror_status,
-    shell,
-    speedtest,
-    reboot,
-    usage,
-    watch,
-    torrent_search
-)
+from .modules import (authorize, cancel_mirror, clone, count, delete, eval,
+                      list, mediainfo, mirror, mirror_status, reboot, shell,
+                      speedtest, torrent_search, usage, watch)
 
 now = datetime.now(pytz.timezone("Asia/Jakarta"))
 
@@ -77,7 +53,7 @@ def stats(update, context):
         f"<b>RAM:</b> <code>{memory}%</code> "
         f"<b>HDD:</b> <code>{disk}%</code>"
     )
-    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
+    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)  # noqa: E501
 
 
 def start(update, context):
@@ -97,7 +73,7 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
         sendMarkup(start_string, context.bot, update, reply_markup)
     else:
         sendMarkup(
-            "Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.",
+            "Ups! bukan pengguna Resmi.\nTolong deploy bot <b>re-cerminbot</b> buat kamu sendiri.",  # noqa: E501
             context.bot,
             update,
             reply_markup,
@@ -105,7 +81,7 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 
 
 def restart(update, context):
-    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)
+    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)  # noqa: E501
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)

@@ -1,5 +1,6 @@
 from pyrogram import filters
 
+
 def callback_data(data):
     def func(flt, client, callback_query):
         return callback_query.data in flt.data
@@ -10,6 +11,7 @@ def callback_data(data):
         'CustomCallbackDataFilter',
         data=data
     )
+
 
 def callback_chat(chats):
     def func(flt, client, callback_query):

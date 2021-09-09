@@ -43,13 +43,14 @@ class GoogleDriveHelper:
 
     def __init__(self, name=None, listener=None):
         self.__G_DRIVE_TOKEN_FILE = "token.pickle"
-        # Check https://developers.google.com/drive/scopes for all available scopes
+        # Check https://developers.google.com/drive/scopes
+        # for all available scopes
         self.__OAUTH_SCOPE = ['https://www.googleapis.com/auth/drive']
         # Redirect URI for installed apps, can be left as is
         self.__REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
         self.__G_DRIVE_DIR_MIME_TYPE = "application/vnd.google-apps.folder"
-        self.__G_DRIVE_BASE_DOWNLOAD_URL = "https://drive.google.com/uc?id={}&export=download"
-        self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL = "https://drive.google.com/drive/folders/{}"
+        self.__G_DRIVE_BASE_DOWNLOAD_URL = "https://drive.google.com/uc?id={}&export=download"  # noqa: E501
+        self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL = "https://drive.google.com/drive/folders/{}"  # noqa: E501
         self.__listener = listener
         self.__service = self.authorize()
         self._file_uploaded_bytes = 0
@@ -78,7 +79,8 @@ class GoogleDriveHelper:
 
     def speed(self):
         """
-        It calculates the average upload speed and returns it in bytes/seconds unit
+        It calculates the average upload speed
+        and returns it in bytes/seconds unit
         :return: Upload speed in bytes/second
         """
         try:
@@ -101,7 +103,7 @@ class GoogleDriveHelper:
     @staticmethod
     def getIdFromUrl(link: str):
         if "folders" in link or "file" in link:
-            regex = r"https://drive\.google\.com/(drive)?/?u?/?\d?/?(mobile)?/?(file)?(folders)?/?d?/([-\w]+)[?+]?/?(w+)?"
+            regex = r"https://drive\.google\.com/(drive)?/?u?/?\d?/?(mobile)?/?(file)?(folders)?/?d?/([-\w]+)[?+]?/?(w+)?"  # noqa: E501
             res = re.search(regex, link)
             if res is None:
                 raise IndexError("G-Drive ID not found.")
@@ -109,15 +111,15 @@ class GoogleDriveHelper:
         parsed = urlparse.urlparse(link)
         return parse_qs(parsed.query)['id'][0]
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),  # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))  # noqa: E501
     def _on_upload_progress(self):
         if self.status is not None:
             chunk_size = self.status.total_size * \
                 self.status.progress() - self._file_uploaded_bytes
-            self._file_uploaded_bytes = self.status.total_size * self.status.progress()
+            self._file_uploaded_bytes = self.status.total_size * self.status.progress()  # noqa: E501
             LOGGER.debug(
-                f'Uploading {self.name}, chunk size: {get_readable_file_size(chunk_size)}')
+                f'Uploading {self.name}, chunk size: {get_readable_file_size(chunk_size)}')  # noqa: E501
             self.uploaded_bytes += chunk_size
             self.total_time += self.update_interval
 
@@ -133,13 +135,13 @@ class GoogleDriveHelper:
         if parent_id is not None:
             file_metadata['parents'] = [parent_id]
         return self.__service.files().create(supportsTeamDrives=True,
-                                             body=file_metadata, media_body=media_body).execute()
+                                             body=file_metadata, media_body=media_body).execute()  # noqa: E501
 
     def deletefile(self, link: str):
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError, IndexError):
-            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"  # noqa: E501
             return msg
         msg = ''
         try:
@@ -166,8 +168,8 @@ class GoogleDriveHelper:
             f"Switching to {SERVICE_ACCOUNT_INDEX}.json service account")
         self.__service = self.authorize()
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),  # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))   # noqa: E501
     def __set_permission(self, drive_id):
         permissions = {
             'role': 'reader',
@@ -175,11 +177,11 @@ class GoogleDriveHelper:
             'value': None,
             'withLink': True
         }
-        return self.__service.permissions().create(supportsTeamDrives=True, fileId=drive_id,
+        return self.__service.permissions().create(supportsTeamDrives=True, fileId=drive_id,  # noqa: E501
                                                    body=permissions).execute()
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),    # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))  # noqa: E501
     def upload_file(self, file_path, file_name, mime_type, parent_id):
         # File body description
         file_metadata = {
@@ -189,7 +191,7 @@ class GoogleDriveHelper:
         }
         try:
             self.typee = file_metadata['mimeType']
-        except:
+        except:  # noqa: E722
             self.typee = 'File'
         if parent_id is not None:
             file_metadata['parents'] = [parent_id]
@@ -199,12 +201,12 @@ class GoogleDriveHelper:
                                          mimetype=mime_type,
                                          resumable=False)
             response = self.__service.files().create(supportsTeamDrives=True,
-                                                     body=file_metadata, media_body=media_body).execute()
+                                                     body=file_metadata, media_body=media_body).execute()  # noqa: E501
             if not IS_TEAM_DRIVE:
                 self.__set_permission(response['id'])
 
             drive_file = self.__service.files().get(supportsTeamDrives=True,
-                                                    fileId=response['id']).execute()
+                                                    fileId=response['id']).execute()  # noqa: E501
             download_url = self.__G_DRIVE_BASE_DOWNLOAD_URL.format(
                 drive_file.get('id'))
             return download_url
@@ -215,7 +217,7 @@ class GoogleDriveHelper:
 
         # Insert a file
         drive_file = self.__service.files().create(supportsTeamDrives=True,
-                                                   body=file_metadata, media_body=media_body)
+                                                   body=file_metadata, media_body=media_body)  # noqa: E501
         response = None
         while response is None:
             if self.is_cancelled:
@@ -223,7 +225,7 @@ class GoogleDriveHelper:
             try:
                 self.status, response = drive_file.next_chunk()
             except HttpError as err:
-                if err.resp.get('content-type', '').startswith('application/json'):
+                if err.resp.get('content-type', '').startswith('application/json'):  # noqa: E501
                     reason = json.loads(err.content).get(
                         'error').get('errors')[0].get('reason')
                     if reason not in [
@@ -234,7 +236,7 @@ class GoogleDriveHelper:
                     if USE_SERVICE_ACCOUNTS:
                         self.switchServiceAccount()
                         LOGGER.info(f"Got: {reason}, Trying Again.")
-                        return self.upload_file(file_path, file_name, mime_type, parent_id)
+                        return self.upload_file(file_path, file_name, mime_type, parent_id)  # noqa: E501
                     else:
                         self.is_cancelled = True
                         LOGGER.info(f"Got: {reason}")
@@ -322,8 +324,8 @@ class GoogleDriveHelper:
         self.__listener.onUploadComplete(link, size, files, folders, typ)
         return link
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),  # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))  # noqa: E501
     def copyFile(self, file_id, dest_id):
         body = {
             'parents': [dest_id]
@@ -331,7 +333,7 @@ class GoogleDriveHelper:
 
         try:
             return self.__service.files().copy(supportsAllDrives=True,
-                                               fileId=file_id, body=body).execute()
+                                               fileId=file_id, body=body).execute()  # noqa: E501
         except HttpError as err:
             if err.resp.get('content-type', '').startswith('application/json'):
                 reason = json.loads(err.content).get(
@@ -351,14 +353,14 @@ class GoogleDriveHelper:
                 else:
                     raise err
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),  # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))  # noqa: E501
     def getFileMetadata(self, file_id):
-        return self.__service.files().get(supportsAllDrives=True, fileId=file_id,
-                                          fields="name,id,mimeType,size").execute()
+        return self.__service.files().get(supportsAllDrives=True, fileId=file_id,  # noqa: E501
+                                          fields="name,id,mimeType,size").execute()  # noqa: E501
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),  # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))  # noqa: E501
     def getFilesByFolderId(self, folder_id):
         page_token = None
         q = f"'{folder_id}' in parents"
@@ -369,10 +371,10 @@ class GoogleDriveHelper:
                                                    q=q,
                                                    spaces='drive',
                                                    pageSize=200,
-                                                   fields='nextPageToken, files(id, name, mimeType,size)',
+                                                   fields='nextPageToken, files(id, name, mimeType,size)',  # noqa: E501
                                                    corpora='allDrives',
                                                    orderBy='folder, name',
-                                                   pageToken=page_token).execute()
+                                                   pageToken=page_token).execute()  # noqa: E501
             files.extend(response.get('files', []))
             page_token = response.get('nextPageToken', None)
             if page_token is None:
@@ -389,7 +391,7 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError, IndexError):
-            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"  # noqa: E501
             return msg
         msg = ""
         LOGGER.info(f"File ID: {file_id}")
@@ -404,10 +406,10 @@ class GoogleDriveHelper:
                     LOGGER.info("Deleting cloned data from Drive...")
                     msg = self.deletefile(durl)
                     LOGGER.info(f"{msg}")
-                    return "Kloning Anda telah dihentikan dan data kloning telah dihapus!", "dibatalkan"
-                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>'
+                    return "Kloning Anda telah dihentikan dan data kloning telah dihapus!", "dibatalkan"  # noqa: E501
+                msg += f'<b>Namafile: </b><code>{meta.get("name")}</code>\n<b>Size: </b><code>{get_readable_file_size(self.transferred_size)}</code>'  # noqa: E501
                 msg += '\n<b>Tipe: </b><code>Folder</code>'
-                msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
+                msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'  # noqa: E501
                 msg += f'\n<b>Files: </b><code>{self.total_files}</code>'
                 buttons = button_build.ButtonMaker()
                 if SHORTENER is not None and SHORTENER_API is not None:
@@ -435,10 +437,10 @@ class GoogleDriveHelper:
                     buttons.buildbutton("☁️ Link Drive", durl)
                 try:
                     typ = file.get('mimeType')
-                except:
+                except:  # noqa: E722
                     typ = 'File'
                 try:
-                    msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(int(meta.get("size")))}</code>'
+                    msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(int(meta.get("size")))}</code>'  # noqa: E501
                     msg += f'\n<b>Tipe: </b><code>{typ}</code>'
                 except TypeError:
                     pass
@@ -494,7 +496,7 @@ class GoogleDriveHelper:
                 current_dir_id = self.create_directory(
                     file.get('name'), parent_id)
                 new_id = self.cloneFolder(
-                    file.get('name'), file_path, file.get('id'), current_dir_id)
+                    file.get('name'), file_path, file.get('id'), current_dir_id)  # noqa: E501
             else:
                 try:
                     self.total_files += 1
@@ -506,8 +508,8 @@ class GoogleDriveHelper:
             if self.is_cancelled:
                 break
 
-    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),
-           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))
+    @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(5),  # noqa: E501
+           retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, logging.DEBUG))  # noqa: E501
     def create_directory(self, directory_name, parent_id):
         file_metadata = {
             "name": directory_name,
@@ -521,7 +523,7 @@ class GoogleDriveHelper:
         if not IS_TEAM_DRIVE:
             self.__set_permission(file_id)
         LOGGER.info(
-            "Created G-Drive Folder:\nName: {}\nID: {} ".format(file.get("name"), file_id))
+            "Created G-Drive Folder:\nName: {}\nID: {} ".format(file.get("name"), file_id))  # noqa: E501
         return file_id
 
     def upload_dir(self, input_directory, parent_id):
@@ -555,7 +557,11 @@ class GoogleDriveHelper:
                 with open(self.__G_DRIVE_TOKEN_FILE, 'rb') as f:
                     credentials = pickle.load(f)
             if credentials is None or not credentials.valid:
-                if credentials and credentials.expired and credentials.refresh_token:
+                if (
+                    credentials
+                    and credentials.expired
+                    and credentials.refresh_token
+                 ):
                     credentials.refresh(Request())
                 else:
                     flow = InstalledAppFlow.from_client_secrets_file(
@@ -568,31 +574,31 @@ class GoogleDriveHelper:
                     pickle.dump(credentials, token)
         else:
             LOGGER.info(
-                f"Authorizing with {SERVICE_ACCOUNT_INDEX}.json service account")
-            credentials = service_account.Credentials.from_service_account_file(
+                f"Authorizing with {SERVICE_ACCOUNT_INDEX}.json service account")  # noqa: E501
+            credentials = service_account.Credentials.from_service_account_file(  # noqa: E501
                 f'accounts/{SERVICE_ACCOUNT_INDEX}.json',
                 scopes=self.__OAUTH_SCOPE)
-        return build('drive', 'v3', credentials=credentials, cache_discovery=False)
+        return build('drive', 'v3', credentials=credentials, cache_discovery=False)  # noqa: E501
 
     def edit_telegraph(self):
         nxt_page = 1
         prev_page = 0
         for content in self.telegraph_content:
             if nxt_page == 1:
-                content += f'<b><a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'
+                content += f'<b><a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'  # noqa: E501
                 nxt_page += 1
             else:
                 if prev_page <= self.num_of_path:
-                    content += f'<b><a href="https://telegra.ph/{self.path[prev_page]}">Prev</a></b>'
+                    content += f'<b><a href="https://telegra.ph/{self.path[prev_page]}">Prev</a></b>'  # noqa: E501
                     prev_page += 1
                 if nxt_page < self.num_of_path:
-                    content += f'<b> | <a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'
+                    content += f'<b> | <a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'  # noqa: E501
                     nxt_page += 1
-            Telegraph(access_token=telegraph_token).edit_page(path=self.path[prev_page],
-                                                              title='re-mirrorbot pencarian',
-                                                              author_name='re-mirrorbot',
-                                                              author_url='https://github.com/Ncode2014/re-cerminbot',
-                                                              html_content=content)
+            Telegraph(access_token=telegraph_token).edit_page(path=self.path[prev_page],  # noqa: E501
+                                                              title='re-mirrorbot pencarian',  # noqa: E501
+                                                              author_name='re-mirrorbot',  # noqa: E501
+                                                              author_url='https://github.com/Ncode2014/re-cerminbot',  # noqa: E501
+                                                              html_content=content)  # noqa: E501
         return
 
     def escapes(self, str):
@@ -643,10 +649,10 @@ class GoogleDriveHelper:
                 msg += f'<h4>Search Result For: {fileName}</h4><br><br>'
                 Title = True
             if len(DRIVES_NAMES) > 1 and DRIVES_NAMES[index] is not None:
-                msg += f'<img src="{IMAGE_URL}" /><h4>╾────────────╼<br><b>{DRIVES_NAMES[index]}</b><br>╾────────────╼</h4><br>'
+                msg += f'<img src="{IMAGE_URL}" /><h4>╾────────────╼<br><b>{DRIVES_NAMES[index]}</b><br>╾────────────╼</h4><br>'  # noqa: E501
             for file in response.get('files', []):
-                if file.get('mimeType') == "application/vnd.google-apps.folder":
-                    furl = f"https://drive.google.com/drive/folders/{file.get('id')}"
+                if file.get('mimeType') == "application/vnd.google-apps.folder":  # noqa: E501
+                    furl = f"https://drive.google.com/drive/folders/{file.get('id')}"  # noqa: E501
                     msg += f"📁 <code>{file.get('name')}<br>(folder)</code><br>"
                     if SHORTENER is not None and SHORTENER_API is not None:
                         sfurl = short_url(furl)
@@ -658,16 +664,16 @@ class GoogleDriveHelper:
                         url = f'{INDEX_URLS[index]}/{url_path}/'
                         if SHORTENER is not None and SHORTENER_API is not None:
                             siurl = short_url(url)
-                            msg += f' <b>| <a href="{siurl}">Link Index</a></b>'
+                            msg += f' <b>| <a href="{siurl}">Link Index</a></b>'  # noqa: E501
                         else:
                             msg += f' <b>| <a href="{url}">Link Index</a></b>'
-                elif file.get('mimeType') == 'application/vnd.google-apps.shortcut':
-                    msg += f"⁍<a href='https://drive.google.com/drive/folders/{file.get('id')}'>{file.get('name')}" \
+                elif file.get('mimeType') == 'application/vnd.google-apps.shortcut':  # noqa: E501
+                    msg += f"⁍<a href='https://drive.google.com/drive/folders/{file.get('id')}'>{file.get('name')}"  \
                         f"</a> (shortcut)"
-                    # Excluded index link as indexes cant download or open these shortcuts
+                    # Excluded index link as indexes cant download or open these shortcuts  # noqa: E501
                 else:
-                    furl = f"https://drive.google.com/uc?id={file.get('id')}&export=download"
-                    msg += f"📄 <code>{file.get('name')}<br>({get_readable_file_size(int(file.get('size')))})</code><br>"
+                    furl = f"https://drive.google.com/uc?id={file.get('id')}&export=download"  # noqa: E501
+                    msg += f"📄 <code>{file.get('name')}<br>({get_readable_file_size(int(file.get('size')))})</code><br>"  # noqa: E501
                     if SHORTENER is not None and SHORTENER_API is not None:
                         sfurl = short_url(furl)
                         msg += f"<b><a href={sfurl}>Link Drive</a></b>"
@@ -679,14 +685,14 @@ class GoogleDriveHelper:
                         urls = f'{INDEX_URLS[index]}/{url_path}?a=view'
                         if SHORTENER is not None and SHORTENER_API is not None:
                             siurl = short_url(url)
-                            msg += f' <b>| <a href="{siurl}">Link Index</a></b>'
+                            msg += f' <b>| <a href="{siurl}">Link Index</a></b>'  # noqa: E501
                             if VIEW_LINK:
                                 siurls = short_url(urls)
-                                msg += f' <b>| <a href="{siurls}">Lihat Link</a></b>'
+                                msg += f' <b>| <a href="{siurls}">Lihat Link</a></b>'  # noqa: E501
                         else:
                             msg += f' <b>| <a href="{url}">Link Index</a></b>'
                             if VIEW_LINK:
-                                msg += f' <b>| <a href="{urls}">Lihat Link</a></b>'
+                                msg += f' <b>| <a href="{urls}">Lihat Link</a></b>'  # noqa: E501
                 msg += '<br><br>'
                 content_count += 1
                 all_contents_count += 1
@@ -702,7 +708,7 @@ class GoogleDriveHelper:
             return "", None
 
         for content in self.telegraph_content:
-            self.path.append(Telegraph(access_token=telegraph_token).create_page(
+            self.path.append(Telegraph(access_token=telegraph_token).create_page(  # noqa: E501
                 title='re-mirrorbot pencarian',
                 author_name='re-mirrorbot',
                 author_url='https://github.com/Ncode2014/re-cerminbot',
@@ -713,7 +719,7 @@ class GoogleDriveHelper:
         if self.num_of_path > 1:
             self.edit_telegraph()
 
-        msg = f"<b>Ditemukan <code>{all_contents_count}</code> hasil untuk <code>{fileName}</code></b>"
+        msg = f"<b>Ditemukan <code>{all_contents_count}</code> hasil untuk <code>{fileName}</code></b>"  # noqa: E501
         buttons = button_build.ButtonMaker()
         buttons.buildbutton(
             "🔎 LIHAT", f"https://telegra.ph/{self.path[0]}")
@@ -724,32 +730,32 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError, IndexError):
-            msg = "ID Google Drive tidak dapat ditemukan di tautan yang disediakan"
+            msg = "ID Google Drive tidak dapat ditemukan di tautan yang disediakan"  # noqa: E501
             return msg
         msg = ""
         LOGGER.info(f"File ID: {file_id}")
         try:
-            drive_file = self.__service.files().get(fileId=file_id, fields="id, name, mimeType, size",
-                                                    supportsTeamDrives=True).execute()
+            drive_file = self.__service.files().get(fileId=file_id, fields="id, name, mimeType, size",  # noqa: E501
+                                                    supportsTeamDrives=True).execute()  # noqa: E501
             name = drive_file['name']
             LOGGER.info(f"Counting: {name}")
             if drive_file['mimeType'] == self.__G_DRIVE_DIR_MIME_TYPE:
                 self.gDrive_directory(**drive_file)
                 msg += f'<b>Namafile: </b><code>{name}</code>'
-                msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
+                msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'  # noqa: E501
                 msg += '\n<b>Tipe: </b><code>Folder</code>'
-                msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'
+                msg += f'\n<b>SubFolders: </b><code>{self.total_folders}</code>'  # noqa: E501
                 msg += f'\n<b>File: </b><code>{self.total_files}</code>'
             else:
                 msg += f'<b>Namafile: </b><code>{name}</code>'
                 try:
                     typee = drive_file['mimeType']
-                except:
+                except:  # noqa: E722
                     typee = 'File'
                 try:
                     self.total_files += 1
                     self.gDrive_file(**drive_file)
-                    msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'
+                    msg += f'\n<b>Ukuran: </b><code>{get_readable_file_size(self.total_bytes)}</code>'  # noqa: E501
                     msg += f'\n<b>Tipe: </b><code>{typee}</code>'
                     msg += f'\n<b>File: </b><code>{self.total_files}</code>'
                 except TypeError:
@@ -765,7 +771,7 @@ class GoogleDriveHelper:
     def gDrive_file(self, **kwargs):
         try:
             size = int(kwargs['size'])
-        except:
+        except:  # noqa: E722
             size = 0
         self.total_bytes += size
 
@@ -785,12 +791,12 @@ class GoogleDriveHelper:
         try:
             file_id = self.getIdFromUrl(link)
         except (KeyError, IndexError):
-            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"
+            msg = "Google Drive ID tidak dapat ditemukan di tautan yang disediakan"  # noqa: E501
             return msg, "", "", ""
         LOGGER.info(f"File ID: {file_id}")
         try:
-            drive_file = self.__service.files().get(fileId=file_id, fields="id, name, mimeType, size",
-                                                    supportsTeamDrives=True).execute()
+            drive_file = self.__service.files().get(fileId=file_id, fields="id, name, mimeType, size",  # noqa: E501
+                                                    supportsTeamDrives=True).execute()  # noqa: E501
             name = drive_file['name']
             LOGGER.info(f"Checking: {name}")
             if drive_file['mimeType'] == self.__G_DRIVE_DIR_MIME_TYPE:
@@ -853,7 +859,7 @@ class GoogleDriveHelper:
                 supportsTeamDrives=True,
                 includeTeamDriveItems=True,
                 q=f"'{folder_id}' in parents",
-                fields='nextPageToken, files(id, name, mimeType, size, shortcutDetails)',
+                fields='nextPageToken, files(id, name, mimeType, size, shortcutDetails)',  # noqa: E501
                 pageToken=page_token,
                 pageSize=1000).execute()
             result.extend(files['files'])
@@ -867,7 +873,7 @@ class GoogleDriveHelper:
             filename = item['name']
             mime_type = item['mimeType']
             shortcut_details = item.get('shortcutDetails', None)
-            if shortcut_details != None:
+            if shortcut_details is not None:
                 file_id = shortcut_details['targetId']
                 mime_type = shortcut_details['targetMimeType']
             if mime_type == 'application/vnd.google-apps.folder':
@@ -890,7 +896,7 @@ class GoogleDriveHelper:
             try:
                 self.dstatus, done = downloader.next_chunk()
             except HttpError as err:
-                if err.resp.get('content-type', '').startswith('application/json'):
+                if err.resp.get('content-type', '').startswith('application/json'):  # noqa: E501
                     reason = json.loads(err.content).get(
                         'error').get('errors')[0].get('reason')
                     if reason not in [
@@ -905,7 +911,7 @@ class GoogleDriveHelper:
                         else:
                             self.switchServiceAccount()
                             LOGGER.info(f"Got: {reason}, Trying Again...")
-                            return self.download_file(file_id, path, filename, mime_type)
+                            return self.download_file(file_id, path, filename, mime_type)  # noqa: E501
                     else:
                         self.is_cancelled = True
                         LOGGER.info(f"Got: {reason}")
@@ -916,7 +922,7 @@ class GoogleDriveHelper:
         if self.dstatus is not None:
             chunk_size = self.dstatus.total_size * \
                 self.dstatus.progress() - self._file_downloaded_bytes
-            self._file_downloaded_bytes = self.dstatus.total_size * self.dstatus.progress()
+            self._file_downloaded_bytes = self.dstatus.total_size * self.dstatus.progress()  # noqa: E501
             self.downloaded_bytes += chunk_size
             self.dtotal_time += self.update_interval
 
@@ -931,4 +937,4 @@ class GoogleDriveHelper:
         elif self.is_uploading:
             LOGGER.info(f"Cancelling Upload: {self.name}")
             self.__listener.onUploadError(
-                'Unggahan Anda telah dihentikan dan data yang diunggah telah dihapus!')
+                'Unggahan Anda telah dihentikan dan data yang diunggah telah dihapus!')  # noqa: E501
