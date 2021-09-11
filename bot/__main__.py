@@ -121,9 +121,9 @@ def bot_help(update, context):
 
 /{BotCommands.DeleteCommand} [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
 
-/{BotCommands.WatchCommand} [youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /bantuan
+/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /bantuan
 
-/{BotCommands.TarWatchCommand} [youtube-dlp supported link]: Cermin melalui youtube-dlp dan tar sebelum mengunggah
+/{BotCommands.TarWatchCommand} [youtube-dlp/youtube-dl supported link]: Cermin melalui youtube-dlp dan tar sebelum mengunggah
 
 /{BotCommands.CancelMirror}: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
 

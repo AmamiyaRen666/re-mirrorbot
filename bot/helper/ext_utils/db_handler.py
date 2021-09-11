@@ -1,5 +1,4 @@
 import psycopg2
-from psycopg2 import Error
 from bot import AUTHORIZED_CHATS, DB_URI, LOGGER, SUDO_USERS
 
 
@@ -58,7 +57,6 @@ class DbManger:
             return self._extracted_from_db_addsudo_10(
                 sql, chat_id, 'Successfully Authorized and promoted as Sudo'
             )
-
 
     def _extracted_from_db_addsudo_10(self, sql, chat_id, arg2):
         self.cur.execute(sql)

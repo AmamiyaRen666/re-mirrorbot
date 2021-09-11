@@ -27,6 +27,7 @@ from bot.helper.telegram_helper.message_utils import sendMessage
 search_lock = asyncio.Lock()
 search_info = {False: dict(), True: dict()}
 
+
 async def return_search(query, page=1, sukebei=False):  # sourcery no-metrics
     page -= 1
     query = query.lower().strip()
