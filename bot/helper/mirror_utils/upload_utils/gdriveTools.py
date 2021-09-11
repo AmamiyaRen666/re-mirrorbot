@@ -585,14 +585,14 @@ class GoogleDriveHelper:
         prev_page = 0
         for content in self.telegraph_content:
             if nxt_page == 1:
-                content += f'<b><a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'  # noqa: E501
+                content += f'<b><a href="https://telegra.ph/{self.path[nxt_page]}">Maju</a></b>'  # noqa: E501
                 nxt_page += 1
             else:
                 if prev_page <= self.num_of_path:
-                    content += f'<b><a href="https://telegra.ph/{self.path[prev_page]}">Prev</a></b>'  # noqa: E501
+                    content += f'<b><a href="https://telegra.ph/{self.path[prev_page]}">Mundur</a></b>'  # noqa: E501
                     prev_page += 1
                 if nxt_page < self.num_of_path:
-                    content += f'<b> | <a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'  # noqa: E501
+                    content += f'<b> | <a href="https://telegra.ph/{self.path[nxt_page]}">Maju</a></b>'  # noqa: E501
                     nxt_page += 1
             Telegraph(access_token=telegraph_token).edit_page(path=self.path[prev_page],  # noqa: E501
                                                               title='re-mirrorbot pencarian',  # noqa: E501
@@ -646,7 +646,7 @@ class GoogleDriveHelper:
             if not response["files"]:
                 continue
             if not Title:
-                msg += f'<h4>Search Result For: {fileName}</h4><br><br>'
+                msg += f'<img src="{IMAGE_URL}" /><h4>Hasil Pencarian Untuk: {fileName}</h4><br><br>'
                 Title = True
             if len(DRIVES_NAMES) > 1 and DRIVES_NAMES[index] is not None:
                 msg += f'<img src="{IMAGE_URL}" /><h4>╾────────────╼<br><b>{DRIVES_NAMES[index]}</b><br>╾────────────╼</h4><br>'  # noqa: E501
