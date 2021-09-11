@@ -157,7 +157,7 @@ def bot_help(update, context):
 
 /{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.ShellCommand}: Jalankan perintah di Shell (Terminal)
+/{BotCommands.ShellCommand}: Jalankan perintah di Shell (Hanya pemilik bot)
 
 /{BotCommands.ExecHelpCommand}: Dapatkan bantuan untuk modul pelaksana
 
