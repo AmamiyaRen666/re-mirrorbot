@@ -10,7 +10,7 @@ from bot.helper.ext_utils.bot_utils import (MirrorStatus,
                                             get_readable_message,
                                             get_readable_time, setInterval)
 from telegram import InlineKeyboardMarkup
-from telegram.error import Timeout, Badrequest
+from telegram.error import BadRequest, TimedOut
 from telegram.message import Message
 from telegram.update import Update
 

@@ -229,10 +229,9 @@ botcmds = [
     (f"{BotCommands.PingCommand}", "berlomba cepat koneksi."),
     (f"{BotCommands.RestartCommand}", "Mulai ulang bot. [hanya owner/sudo]"),
     (f"{BotCommands.LogCommand}", "Dapatkan Log Bot [hanya owner/sudo]"),
-    (
-        f"{BotCommands.MediaInfoCommand}",
-        "Dapatkan info detail tentang media yang dibalas",
-    )(f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
+    (f"{BotCommands.MediaInfoCommand}",
+        "Dapatkan info detail tentang media yang dibalas"),
+    (f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
 ]
 
 

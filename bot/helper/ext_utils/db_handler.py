@@ -1,5 +1,5 @@
 import psycopg2
-
+from psycopg2 import Error
 from bot import AUTHORIZED_CHATS, DB_URI, LOGGER, SUDO_USERS
 
 
