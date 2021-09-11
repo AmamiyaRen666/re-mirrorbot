@@ -103,13 +103,8 @@ class TelegramDownloadHelper(DownloadHelper):
             if download:
                 if STOP_DUPLICATE:
                     LOGGER.info('Checking File/Folder if already in Drive...')
-                    if self.__listener.isTar:
-                        name = name + ".tar"
-                    if self.__listener.extract:
-                        smsg = None
-                    else:
-                        gd = GoogleDriveHelper()
-                        smsg, button = gd.drive_list(name)
+                    gd = GoogleDriveHelper()
+                    smsg, button = gd.drive_list(name, True)
                     if smsg:
                         sendMarkup(
                             "File/folder sudah tersedia di drive.\nBerikut adalah hasil pencarian:",

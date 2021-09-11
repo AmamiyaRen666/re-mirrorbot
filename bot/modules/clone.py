@@ -23,8 +23,8 @@ def cloneNode(update, context):
             sendMessage(res, context.bot, update)
             return
         if STOP_DUPLICATE:
-            LOGGER.info('Memeriksa File/Folder jika sudah di Drive...')
-            smsg, button = gd.drive_list(name)
+            LOGGER.info('Checking File/Folder if already in Drive...')
+            smsg, button = gd.drive_list(name, True)
             if smsg:
                 msg3 = "Memeriksa File/Folder sudah ada di Drive\nBerikut adalah hasil pencarian:"
                 sendMarkup(msg3, context.bot, update, button)

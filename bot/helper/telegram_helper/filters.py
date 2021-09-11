@@ -1,6 +1,7 @@
-from telegram.ext import MessageFilter
+from bot import (AUTHORIZED_CHATS, OWNER_ID, SUDO_USERS, download_dict,
+                 download_dict_lock)
 from telegram import Message
-from bot import AUTHORIZED_CHATS, SUDO_USERS, OWNER_ID, download_dict, download_dict_lock
+from telegram.ext import MessageFilter
 
 
 class CustomFilters:
@@ -42,7 +43,7 @@ class CustomFilters:
                 with download_dict_lock:
                     for message_id, status in download_dict.items():
                         if status.gid(
-                        ) == args[1] and status.message.from_user.id == user_id:
+                        ) == args[1] and status.message.from_user.id == user_id:  # noqa: E501
                             return True
                     else:
                         return False

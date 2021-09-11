@@ -12,7 +12,6 @@ import json
 import re
 import urllib.parse
 from base64 import standard_b64encode
-from os import popen
 from random import choice
 from urllib.parse import urlparse
 
@@ -22,7 +21,6 @@ import requests
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
-
 from bot import LOGGER, UPTOBOX_TOKEN
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -162,7 +160,7 @@ def sourceforge(url: str) -> str:
     """ SourceForge direct links generator
     Based on https://github.com/REBEL75/REBELUSERBOT """
     try:
-        link = re.findall(r"\bhttps?://sourceforge\.net\S+", url)[0] 
+        link = re.findall(r"\bhttps?://sourceforge\.net\S+", url)[0]
     except IndexError:
         return "`No SourceForge links found`\n"
     file_path = re.findall(r"files(.*)/download", link)[0]
@@ -177,9 +175,11 @@ def sourceforge(url: str) -> str:
         dl_url = (f'https://{mirror["id"]}.dl.sourceforge.net/project/{project}/{file_path}?viasf=1')
     return dl_url
 
+
 def sourceforge2(url: str) -> str:
     """ Sourceforge Master.dl bypass """
     return f"{url}" + "?viasf=1"
+
 
 def uptobox(url: str) -> str:
     """ Uptobox direct links generator
@@ -317,8 +317,7 @@ def onedrive(link: str) -> str:
         return "ERROR: Tautan tidak sah, tautannya mungkin pribadi"
     dl_link = resp.next.url
     file_name = dl_link.rsplit("/", 1)[1]
-    resp2 = requests.head(dl_link)
-    return dl_link
+    return requests.head(dl_link)
 
 
 def pixeldrain(url: str) -> str:
