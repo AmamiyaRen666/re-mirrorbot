@@ -47,12 +47,15 @@ if CONFIG_FILE_URL is not None:
 
 load_dotenv('config.env')
 
+PORT = os.environ.get('PORT', 'SERVER_PORT')
+web = subprocess.Popen([f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
 alive = subprocess.Popen(["python3", "alive.py"])
 
 subprocess.run(["mkdir", "-p", "qBittorrent/config"])
 subprocess.run(["cp", "qBittorrent.conf",
                "qBittorrent/config/qBittorrent.conf"])
 subprocess.run(["qbittorrent-nox", "-d", "--profile=."])
+time.sleep(0.5)
 
 Interval = []
 DRIVES_NAMES = []
@@ -164,7 +167,6 @@ try:
     if len(DB_URI) == 0:
         raise KeyError
 except KeyError:
-    logging.warning('Database not provided!')
     DB_URI = None
 if DB_URI is not None:
     try:
@@ -190,7 +192,7 @@ if DB_URI is not None:
 
 LOGGER.info("Generating USER_SESSION_STRING")
 app = Client(
-    ':memory:', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN  # noqa: E501
+    're-cerminbot', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN  # noqa: E501
 )  # noqa: E501
 
 # Generate Telegraph Token
@@ -370,14 +372,6 @@ try:
     IS_VPS = IS_VPS.lower() == 'true'
 except KeyError:
     IS_VPS = False
-try:
-    SERVER_PORT = getConfig('SERVER_PORT')
-    if len(SERVER_PORT) == 0:
-        SERVER_PORT = None
-except KeyError:
-    if IS_VPS:
-        logging.warning('SERVER_PORT not provided!')
-    SERVER_PORT = None
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:

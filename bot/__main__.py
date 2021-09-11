@@ -13,8 +13,8 @@ from telegram import ParseMode
 from telegram.ext import CommandHandler
 from wserver import start_server_async
 
-from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, SERVER_PORT,
-                 alive, app, bot, botStartTime, dispatcher, updater)
+from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, PORT,
+                 alive, app, bot, botStartTime, dispatcher, updater, web)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -88,6 +88,7 @@ def restart(update, context):
         f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
     fs_utils.clean_all()
     alive.terminate()
+    web.terminate()
     os.execl(executable, executable, "-m", "bot")
 
 
@@ -239,7 +240,7 @@ def main():
     fs_utils.start_cleanup()
 
     if IS_VPS:
-        asyncio.get_event_loop().run_until_complete(start_server_async(SERVER_PORT))
+        asyncio.get_event_loop().run_until_complete(start_server_async(PORT))
 
     # Check if the bot is restarting
     if os.path.isfile(".restartmsg"):
