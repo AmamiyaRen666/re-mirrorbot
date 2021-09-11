@@ -251,6 +251,11 @@ OR
 **NOTE**: If you want to use port other than 80, change it in [docker-compose.yml](https://github.com/SlamDevs/slam-mirrorbot/blob/master/docker-compose.yml)
 
 - Using Docker-compose, you can edit and build your image in seconds:
+
+```
+just a note if you have root access you can remove sudo as well except if you dont have it
+```
+
 ```
 sudo apt install docker-compose
 ```
@@ -282,6 +287,15 @@ sudo docker container prune
 ```
 sudo docker image prune -a
 ```
+## if you are a arm64 user
+
+please adding `--platform linux/arm64` for example
+
+```
+docker run --platform linux/arm64 -p 80:80 mirror-bot
+```
+you can add sudo before docker run if you not access root access
+
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
 
