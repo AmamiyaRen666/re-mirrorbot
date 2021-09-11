@@ -172,7 +172,7 @@ def get_readable_message():  # sourcery no-metrics skip: remove-redundant-pass
             if INDEX > COUNT + STATUS_LIMIT:
                 return None, None
             if dick_no > STATUS_LIMIT:
-                msg += f"Halaman: <code>{PAGE_NO}/{pages}</code> | <code>Tugas: {dick_no}</code>\n"
+                msg += f"<b>Halaman:</b> <code>{PAGE_NO}/{pages}</code> | <b>Tugas:</b> <code>{dick_no}</code>\n"
                 buttons = button_build.ButtonMaker()
                 buttons.sbutton("Sebelumnya", "pre")
                 buttons.sbutton("Selanjutnya", "nex")
