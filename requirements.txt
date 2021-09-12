@@ -4,7 +4,6 @@ appdirs
 anytree
 beautifulsoup4
 feedparser
-gitpython
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib

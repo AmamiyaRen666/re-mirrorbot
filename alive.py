@@ -13,13 +13,8 @@ try:
 except KeyError:
     BASE_URL = None
 
-try:
-    IS_VPS = os.environ.get('IS_VPS', 'False')
-    IS_VPS = IS_VPS.lower() == 'true'
-except KeyError:
-    IS_VPS = False
-
-if not IS_VPS and BASE_URL is not None:
+PORT = os.environ.get('PORT', None)
+if PORT is not None and BASE_URL is not None:
     while True:
         time.sleep(600)
         status = requests.get(BASE_URL).status_code

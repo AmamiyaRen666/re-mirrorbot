@@ -1,6 +1,6 @@
 from .download_helper import DownloadHelper
 import time
-from yt_dlp import YoutubeDL, DownloadError
+from youtube_dl import YoutubeDL, DownloadError
 from bot import download_dict_lock, download_dict
 from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 import logging
@@ -46,8 +46,7 @@ class YoutubeDLHelper(DownloadHelper):
             'usenetrc': True,
             'geo_bypass': True,
             'geo_bypass_country': 'ID',
-            'geo-bypass-ip-block': '10.100.0.0/14',
-            'compat_opts': 'youtube-dl',
+            'geo_bypass_ip_block': '10.100.0.0/14',
         }
         self.__download_speed = 0
         self.downloaded_bytes = 0
@@ -166,7 +165,6 @@ class YoutubeDLHelper(DownloadHelper):
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
             self.opts['format'] = 'bestaudio/best'
-            self.opts['compat_opts'] = ['filename']
             self.opts['postprocessors'] = [
                 {
                     'key': 'FFmpegExtractAudio',
