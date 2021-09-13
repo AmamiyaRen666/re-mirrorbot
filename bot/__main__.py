@@ -11,21 +11,49 @@ import pytz
 from pyrogram import idle
 from telegram import ParseMode
 from telegram.ext import CommandHandler
+from telegram.error import BadRequest, Unauthorized
 from wserver import start_server_async
 
-from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, PORT,
-                 alive, app, bot, botStartTime, dispatcher, updater, web)
+from bot import (
+    OWNER_ID,
+    AUTHORIZED_CHATS,
+    IGNORE_PENDING_REQUESTS,
+    IMAGE_URL,
+    IS_VPS,
+    PORT,
+    alive,
+    app,
+    bot,
+    botStartTime,
+    dispatcher,
+    updater,
+    web,
+)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
 
-from .helper.ext_utils.bot_utils import (get_readable_file_size,
-                                         get_readable_time)
+from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
-from .modules import (authorize, cancel_mirror, clone, count, delete, eval,
-                      list, mediainfo, mirror, mirror_status, reboot, shell,
-                      speedtest, torrent_search, usage, watch)
+from .modules import (
+    authorize,
+    cancel_mirror,
+    clone,
+    count,
+    delete,
+    eval,
+    list,
+    mediainfo,
+    mirror,
+    mirror_status,
+    reboot,
+    shell,
+    speedtest,
+    torrent_search,
+    usage,
+    watch,
+)
 
 now = datetime.now(pytz.timezone("Asia/Jakarta"))
 
@@ -53,7 +81,9 @@ def stats(update, context):
         f"<b>RAM:</b> <code>{memory}%</code> "
         f"<b>HDD:</b> <code>{disk}%</code>"
     )
-    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)  # noqa: E501
+    update.effective_message.reply_photo(
+        IMAGE_URL, stats, parse_mode=ParseMode.HTML
+    )  # noqa: E501
 
 
 def start(update, context):
@@ -81,7 +111,9 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 
 
 def restart(update, context):
-    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)  # noqa: E501
+    restart_message = sendMessage(
+        "Mulai ulang, Harap tunggu!", context.bot, update
+    )  # noqa: E501
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -229,8 +261,10 @@ botcmds = [
     (f"{BotCommands.PingCommand}", "berlomba cepat koneksi."),
     (f"{BotCommands.RestartCommand}", "Mulai ulang bot. [hanya owner/sudo]"),
     (f"{BotCommands.LogCommand}", "Dapatkan Log Bot [hanya owner/sudo]"),
-    (f"{BotCommands.MediaInfoCommand}",
-        "Dapatkan info detail tentang media yang dibalas"),
+    (
+        f"{BotCommands.MediaInfoCommand}",
+        "Dapatkan info detail tentang media yang dibalas",
+    ),
     (f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
 ]
 
@@ -247,6 +281,21 @@ def main():
             chat_id, msg_id = map(int, f)
         bot.edit_message_text("Berhasil memulai kembali!", chat_id, msg_id)
         os.remove(".restartmsg")
+
+    elif OWNER_ID:
+        try:
+            text = "<b>Bot Restarted!</b>"
+            bot.sendMessage(chat_id=OWNER_ID, text=text, parse_mode=ParseMode.HTML)
+            if AUTHORIZED_CHATS:
+                for i in AUTHORIZED_CHATS:
+                    bot.sendMessage(chat_id=i, text=text, parse_mode=ParseMode.HTML)
+        except Unauthorized:
+            LOGGER.warning(
+                "Bot isn't able to send message to OWNER_ID or AUTHORIZED_CHATS, go and check!"
+            )
+        except BadRequest as e:
+            LOGGER.warning(e.message)
+
     bot.set_my_commands(botcmds)
 
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
