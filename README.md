@@ -23,12 +23,12 @@ Source image from this [link](https://unsplash.com/photos/2m6wr8qMiio)
 ## what some different feature rather the original [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
 - adding more direct link generator
 - still using some old stuff like image url on speedtest,index link, mediainfo,usage and etc
-- ffmpeg custom to make your bot to be something powerfull (atleast all feature on decoding supported)
 - you can change yt-dlp or ytdl because the docker has been included to dependencies
 - still support and keep using latest updated slam-mirrorbot
 - refactored some code to make some good perfomance
 - Using Qbittorrent Enhanced Edition
 - Custom Progress bar
+- Supported arm64
 - dropped using button template (cli still supported or using whatever method)
 
 ## Additional Features On [slam-mirrorbot](https://github.com/SlamDevs/slam-mirrorbot)
