@@ -3,7 +3,6 @@ https://github.com/pawamoy/aria2p/archive/refs/heads/master.zip
 appdirs
 anytree
 beautifulsoup4
-feedparser
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
@@ -18,14 +17,15 @@ psutil
 psycopg2-binary
 pybase64
 urllib3
+feedparser
 https://github.com/pyrogram/pyrogram/archive/refs/heads/master.zip
 python-dotenv
 tenacity
-https://github.com/Ncode2014/cloudscraper/archive/refs/heads/master.zip
-requests
+https://github.com/nekaru-storage/cloudscraper/archive/refs/heads/master.zip
+https://github.com/psf/requests/archive/refs/heads/main.zip
 qbittorrent-api
 torrentool==1.1.0
-https://github.com/Ncode2014/gdown/archive/refs/heads/master.zip
+https://github.com/nekaru-storage/pyshorteners/archive/refs/heads/main.zip
 https://github.com/yt-dlp/yt-dlp/archive/refs/heads/master.zip
 https://github.com/ytdl-org/youtube-dl/archive/refs/heads/master.zip
 python-magic
@@ -34,4 +34,3 @@ pytz
 https://github.com/sivel/speedtest-cli/archive/refs/heads/master.zip
 telegraph
 TgCrypto
-pyshorteners
