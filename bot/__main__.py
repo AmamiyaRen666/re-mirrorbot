@@ -138,7 +138,7 @@ def bot_help(update, context):
     help_string_adm = f"""
 /{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
 
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive. Gunakan /{BotCommands.MirrorCommand} qb untuk mirror menggunakan qBittorrent, dan gunakan /{BotCommands.MirrorCommand} qbs untuk memilih file sebelum download
+/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive.
 
 /{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.tar) versi unduhan
 
@@ -148,15 +148,25 @@ def bot_help(update, context):
 
 /{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
 
+/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} untuk memilih file sebelum mengunduh
+
+/{BotCommands.QbTarMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
+
+/{BotCommands.QbZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent and unggah versi unduhan (.zip) yang diarsipkan
+
+/{BotCommands.QbUnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
+
 /{BotCommands.CountCommand} [drive_url]: Hitung file/folder dari Google Drive Links
 
 /{BotCommands.DeleteCommand} [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
 
-/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /bantuan
+/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /tolong
 
 /{BotCommands.TarWatchCommand} [youtube-dlp/youtube-dl supported link]: Cermin melalui youtube-dlp dan tar sebelum mengunggah
 
 /{BotCommands.CancelMirror}: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
+
+/{BotCommands.ZipWatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dl atau youtube-dlp dan zip sebelum mengunggah
 
 /{BotCommands.CancelAllCommand}: Batalkan semua tugas yang sedang berjalan
 
@@ -203,17 +213,27 @@ def bot_help(update, context):
 
 /{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
 
+/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} untuk memilih file sebelum mengunduh
+
+/{BotCommands.QbTarMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
+
+/{BotCommands.QbZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent and unggah versi unduhan (.zip) yang diarsipkan
+
+/{BotCommands.QbUnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
+
+/{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
+
 /{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah diarsipkan (.tar) version of the download
 
 /{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
 
-/{BotCommands.CloneCommand} [drive_url]: Salin file / folder ke Google Drive
-
 /{BotCommands.CountCommand} [drive_url]: Hitung file / folder dari tautan Google Drive
 
-/{BotCommands.WatchCommand} [youtube-dlp supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
+/{BotCommands.ZipWatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dl atau youtube-dlp dan zip sebelum mengunggah
 
-/{BotCommands.TarWatchCommand} [youtube-dlp supported link]: Mirror through youtube-dl and tar before uploading
+/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /tolong
+
+/{BotCommands.TarWatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dl atau youtube-dlp dan tar sebelum mengunggah
 
 /{BotCommands.CancelMirror}: Membalas pesan dimana undangan diinisiasi dan unduhan akan dibatalkan
 
@@ -237,6 +257,7 @@ def bot_help(update, context):
     else:
         sendMessage(help_string, context.bot, update)
 
+
 '''
 botcmds = [
     (f"{BotCommands.HelpCommand}", "Dapatkan bantuan terperinci"),
@@ -247,11 +268,16 @@ botcmds = [
     (f"{BotCommands.CloneCommand}", "Salin file/folder ke Drive"),
     (f"{BotCommands.CountCommand}", "Hitung file/folder dari link Drive"),
     (f"{BotCommands.DeleteCommand}", "Hapus file dari drive"),
+    (f'{BotCommands.QbMirrorCommand}','Mulai Mencerminkan menggunakan qBittorrent'),
+    (f'{BotCommands.QbTarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar menggunakan qb'),
+    (f'{BotCommands.QbZipMirrorCommand}','Mulai mirroring dan unggah sebagai .zip menggunakan qb'),
+    (f'{BotCommands.QbUnzipMirrorCommand}','Ekstrak file melalui qBitorrent'),
     (f"{BotCommands.WatchCommand}", "Mirror video/audio menggunakan YouTube-DL"),
     (
         f"{BotCommands.TarWatchCommand}",
         "Cermin tautan daftar putar YouTube sebagai .tar",
     ),
+    (f'{BotCommands.ZipWatchCommand}','Cerminkan tautan daftar putar Youtube sebagai .zip'),
     (f"{BotCommands.CancelMirror}", "Batalkan tugas"),
     (f"{BotCommands.CancelAllCommand}", "Batalkan semua tugas"),
     (f"{BotCommands.ListCommand}", "Mencari file dalam drive"),
@@ -267,6 +293,7 @@ botcmds = [
     (f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
 ]
 '''
+
 
 def main():
     fs_utils.start_cleanup()
@@ -287,7 +314,7 @@ def main():
                     bot.sendMessage(chat_id=i, text=text, parse_mode=ParseMode.HTML)
         except Exception as e:
             LOGGER.warning(e)
-    #bot.set_my_commands(botcmds)
+    # bot.set_my_commands(botcmds)
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(
         BotCommands.PingCommand,
