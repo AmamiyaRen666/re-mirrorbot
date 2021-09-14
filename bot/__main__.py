@@ -11,7 +11,6 @@ import pytz
 from pyrogram import idle
 from telegram import ParseMode
 from telegram.ext import CommandHandler
-from telegram.error import BadRequest, Unauthorized
 from wserver import start_server_async
 
 from bot import (
@@ -238,7 +237,7 @@ def bot_help(update, context):
     else:
         sendMessage(help_string, context.bot, update)
 
-
+'''
 botcmds = [
     (f"{BotCommands.HelpCommand}", "Dapatkan bantuan terperinci"),
     (f"{BotCommands.MirrorCommand}", "Mulai mirroring"),
@@ -267,21 +266,18 @@ botcmds = [
     ),
     (f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
 ]
-
+'''
 
 def main():
     fs_utils.start_cleanup()
-
     if IS_VPS:
         asyncio.get_event_loop().run_until_complete(start_server_async(PORT))
-
     # Check if the bot is restarting
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
         bot.edit_message_text("Berhasil memulai kembali!", chat_id, msg_id)
         os.remove(".restartmsg")
-
     elif OWNER_ID:
         try:
             text = "<b>Bot Restarted!</b>"
@@ -289,15 +285,9 @@ def main():
             if AUTHORIZED_CHATS:
                 for i in AUTHORIZED_CHATS:
                     bot.sendMessage(chat_id=i, text=text, parse_mode=ParseMode.HTML)
-        except Unauthorized:
-            LOGGER.warning(
-                "Bot isn't able to send message to OWNER_ID or AUTHORIZED_CHATS, go and check!"
-            )
-        except BadRequest as e:
-            LOGGER.warning(e.message)
-
-    bot.set_my_commands(botcmds)
-
+        except Exception as e:
+            LOGGER.warning(e)
+    #bot.set_my_commands(botcmds)
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(
         BotCommands.PingCommand,
