@@ -200,7 +200,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `SHORTENER`: if you want to use Shortener in G-Drive and index link, fill Shortener URL here. Examples:
 ```
 exe.io, gplinks.in, shrinkme.io, urlshortx.com, shortzon.com, bit.ly,
-shorte.st, link-to.net, up-to-down.net, direct-link.net, file-link.net
+shorte.st, linkvertise.com , ouo.io
 ```
 
 Above are the supported URL Shorteners. Except these only some URL Shorteners are supported.
@@ -307,8 +307,7 @@ you can add sudo before docker run if you not access root access
 <p><a href="https://github.com/SlamDevs/slam-mirrorbot/wiki/Deploying-slam-mirrorbot-on-Heroku-with-Github-Workflows"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
 
 # Using Service Accounts for uploading to avoid user rate limit
-For Service Account to work, you must set `USE_SERVICE_ACCOUNTS`="True" in config file or environment variables, 
-Many thanks to [AutoRClone](https://github.com/xyou365/AutoRclone) for the scripts.
+For Service Account to work, you must set `USE_SERVICE_ACCOUNTS` = "True" in config file or environment variables.
 **NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
 ## Generate Service Accounts. [What is Service Account](https://cloud.google.com/iam/docs/service-accounts)
