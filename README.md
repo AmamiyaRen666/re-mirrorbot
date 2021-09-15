@@ -196,7 +196,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `SERVER_PORT`: Only For VPS even if `IS_VPS` is `False` --> Base URL Port
 - `BASE_URL_OF_BOT`: (Required for Heroku to avoid sleep/idling) Valid BASE URL of app where the bot is deployed. IP/Domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: Do not put slash at the end), still got idling? You can use http://cron-job.org to ping your Heroku app.
 - `IMAGE_URL`: Show Image/Logo in /start message, Use telegra.ph or any direct link image
-- `RECURSIVE_SEARCH`: Search in Subfolders (**NOTE**: Only for teamdriveid or root, you can't with folderid)
+- `RECURSIVE_SEARCH`: Search in Subfolders (**NOTE**: Only for teamdriveid or root, you can't with folderid), if you want set it to `True`.
 - `SHORTENER_API`: Fill your Shortener API key if you are using Shortener.
 - `SHORTENER`: if you want to use Shortener in G-Drive and index link, fill Shortener URL here. Examples:
 ```
