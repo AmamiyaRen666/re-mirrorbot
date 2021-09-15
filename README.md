@@ -191,11 +191,11 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `HEROKU_APP_NAME`: (Only if you deploying on Heroku) Your Heroku app name.
 - `IGNORE_PENDING_REQUESTS`: If you want the bot to ignore pending requests after it restarts, set this to `True`.
 - `STATUS_LIMIT`: Limit the no. of tasks shown in status message with button. (**NOTE**: Recommended limit is `4` tasks at max).
-- `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any port you want to use.
+- `IS_VPS`: (Only for VPS) Don't set this to `True` even if you are using VPS, unless facing error with web server. Also go to start.sh and replace `$PORT` by `80` or any other port you want to use.
 - `SERVER_PORT`: Only For VPS even if `IS_VPS` is `False` --> Base URL Port
-- `BASE_URL_OF_BOT`: (Required for Heroku to avoid sleep/idling) Valid BASE URL of app where the bot is deployed. IP/Domain of your bot like `http://myip` or if you have chosen other port then `80` then `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: Do not put slash at the end), still got idling? You can use http://cron-job.org to ping your Heroku app.
+- `BASE_URL_OF_BOT`: (Required for Heroku to avoid sleep/idling) Valid BASE URL of app where the bot is deployed. Format of URL should be `http://myip` (where `myip` is the IP/Domain of your bot) or if you have chosen other port than `80` then fill in this format `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: Do not put slash at the end), still got idling? You can use http://cron-job.org to ping your Heroku app.
 - `IMAGE_URL`: Show Image/Logo in /start message, Use telegra.ph or any direct link image
-- `RECURSIVE_SEARCH`: Search in Subfolders (**NOTE**: Only for teamdriveid or root, you can't with folderid), if you want set it to `True`.
+- `RECURSIVE_SEARCH`: Set this to `True` to search in sub-folders with `/list` (**NOTE**: This will only work with shared-drive root ID. Folder IDs are not compatible with it.)
 - `SHORTENER_API`: Fill your Shortener API key if you are using Shortener.
 - `SHORTENER`: if you want to use Shortener in G-Drive and index link, fill Shortener URL here. Examples:
 ```
@@ -205,7 +205,7 @@ shorte.st, linkvertise.com , ouo.io
 
 Above are the supported URL Shorteners. Except these only some URL Shorteners are supported.
 ### Add more buttons (Optional Field)
-Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are below entries, simply leave them, don't fill anything in them.
+Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are the below entries, simply leave them, don't fill anything in them.
 - `BUTTON_FOUR_NAME`:
 - `BUTTON_FOUR_URL`:
 - `BUTTON_FIVE_NAME`:
@@ -229,9 +229,9 @@ qbzipmirror - Start mirroring and upload as .zip using qb
 qbunzipmirror - Extract files using qBittorrent
 clone - Copy file/folder to Drive
 count - Count file/folder of Drive link
-watch - Mirror Youtube-dl support link
-tarwatch - Mirror Youtube playlist link as .tar
-zipwatch - Mirror Youtube playlist link as .zip
+watch - Mirror Youtube-dl supported link
+tarwatch - Mirror Youtube playlist link and upload as .tar
+zipwatch - Mirror Youtube playlist link and upload as .zip
 status - Get Mirror Status message
 list -  [query] Searches files in Drive
 cancel - Cancel a task
@@ -239,7 +239,7 @@ cancelall - Cancel all tasks
 del - [drive_url] Delete file from Drive
 log - Get the Bot Log [owner/sudo only]
 shell - Run commands in Shell [owner only]
-restart - Restart the bot [owner/sudo only]
+restart - Restart the Bot [owner/sudo only]
 stats - Bot Usage Stats
 ping - Ping the Bot
 ```
@@ -328,7 +328,7 @@ you can add sudo before docker run if you not access root access
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
 
-- Video from Tortoolkit repo
+- Tutorial video from Tortoolkit repo
 <p><a href="https://youtu.be/c8_TU1sPK08"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
 
 ## Deploying on Heroku
