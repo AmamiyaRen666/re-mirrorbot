@@ -99,7 +99,9 @@ class MirrorListener(listeners.MirrorListeners):
             name = f"{download.name()}".replace('/', '')
             gid = download.gid()
             size = download.size_raw()
-            if name == "None" or self.isQbit:  # when pyrogram's media.file_name is of NoneType
+            if (
+                name == "None" or self.isQbit
+            ):  # when pyrogram's media.file_name is of NoneType
                 name = os.listdir(f'{DOWNLOAD_DIR}{self.uid}')[0]
             m_path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
         if self.isTar:
@@ -126,18 +128,33 @@ class MirrorListener(listeners.MirrorListeners):
                 if os.path.isdir(m_path):
                     for dirpath, subdir, files in os.walk(m_path, topdown=False):
                         for file in files:
-                            suffixes = (".part1.rar", ".part01.rar", ".part001.rar", ".part0001.rar")
-                            if (file.endswith(".rar") and "part" not in file) or file.endswith(suffixes):
+                            suffixes = (
+                                ".part1.rar",
+                                ".part01.rar",
+                                ".part001.rar",
+                                ".part0001.rar",
+                            )
+                            if (
+                                file.endswith(".rar") and "part" not in file
+                            ) or file.endswith(suffixes):
                                 m_path = os.path.join(dirpath, file)
                                 if pswd is not None:
-                                    result = subprocess.run(["7z", "x", f"-p{pswd}", m_path, f"-o{dirpath}"])
+                                    result = subprocess.run(
+                                        ["7z", "x", f"-p{pswd}", m_path, f"-o{dirpath}"]
+                                    )
                                 else:
-                                    result = subprocess.run(["7z", "x", m_path, f"-o{dirpath}"])
+                                    result = subprocess.run(
+                                        ["7z", "x", m_path, f"-o{dirpath}"]
+                                    )
                                 if result.returncode != 0:
-                                    LOGGER.warning('Unable to extract archive!')
+                                    LOGGER.warning("Unable to extract archive!")
                                 break
                         for file in files:
-                            if file.endswith(".rar") or fnmatch(file, "*.r[0-9]") or fnmatch(file, "*.r[0-9]*"):
+                            if (
+                                file.endswith(".rar")
+                                or fnmatch(file, "*.r[0-9]")
+                                or fnmatch(file, "*.r[0-9]*")
+                            ):
                                 del_path = os.path.join(dirpath, file)
                                 os.remove(del_path)
                     path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
@@ -151,7 +168,7 @@ class MirrorListener(listeners.MirrorListeners):
                         os.remove(m_path)
                         LOGGER.info(f"Deleting archive: {m_path}")
                     else:
-                        LOGGER.warning('Unable to extract archive! Uploading anyway')
+                        LOGGER.warning("Unable to extract archive! Uploading anyway")
                         path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
                 LOGGER.info(f'got path: {path}')
 
@@ -217,12 +234,12 @@ class MirrorListener(listeners.MirrorListeners):
                 buttons.buildbutton("☁️ Link Drive", surl)
             else:
                 buttons.buildbutton("☁️ Link Drive", link)
-            LOGGER.info(f'Done Uploading {download_dict[self.uid].name()}')
+            LOGGER.info(f"Done Uploading {download_dict[self.uid].name()}")
             if INDEX_URL is not None:
-                url_path = requests.utils.quote(f'{download_dict[self.uid].name()}')
-                share_url = f'{INDEX_URL}/{url_path}'
+                url_path = requests.utils.quote(f"{download_dict[self.uid].name()}")
+                share_url = f"{INDEX_URL}/{url_path}"
                 if os.path.isdir(
-                    f'{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}'
+                    f"{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}"
                 ):
                     share_url += "/"
                     if SHORTENER is not None and SHORTENER_API is not None:
@@ -452,8 +469,10 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
 def mirror(update, context):
     _mirror(context.bot, update)
 
+
 def tar_mirror(update, context):
     _mirror(context.bot, update, True)
+
 
 def unzip_mirror(update, context):
     _mirror(context.bot, update, extract=True)
@@ -462,34 +481,71 @@ def unzip_mirror(update, context):
 def zip_mirror(update, context):
     _mirror(context.bot, update, True, isZip=True)
 
+
 def qb_mirror(update, context):
     _mirror(context.bot, update, isQbit=True)
+
 
 def qb_tar_mirror(update, context):
     _mirror(context.bot, update, True, isQbit=True)
 
+
 def qb_unzip_mirror(update, context):
     _mirror(context.bot, update, extract=True, isQbit=True)
+
 
 def qb_zip_mirror(update, context):
     _mirror(context.bot, update, True, isZip=True, isQbit=True)
 
-mirror_handler = CommandHandler(BotCommands.MirrorCommand, mirror,
-                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-tar_mirror_handler = CommandHandler(BotCommands.TarMirrorCommand, tar_mirror,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-unzip_mirror_handler = CommandHandler(BotCommands.UnzipMirrorCommand, unzip_mirror,
-                                      filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-zip_mirror_handler = CommandHandler(BotCommands.ZipMirrorCommand, zip_mirror,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-qb_mirror_handler = CommandHandler(BotCommands.QbMirrorCommand, qb_mirror,
-                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-qb_tar_mirror_handler = CommandHandler(BotCommands.QbTarMirrorCommand, qb_tar_mirror,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-qb_unzip_mirror_handler = CommandHandler(BotCommands.QbUnzipMirrorCommand, qb_unzip_mirror,
-                                      filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-qb_zip_mirror_handler = CommandHandler(BotCommands.QbZipMirrorCommand, qb_zip_mirror,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+
+mirror_handler = CommandHandler(
+    BotCommands.MirrorCommand,
+    mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+tar_mirror_handler = CommandHandler(
+    BotCommands.TarMirrorCommand,
+    tar_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+unzip_mirror_handler = CommandHandler(
+    BotCommands.UnzipMirrorCommand,
+    unzip_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+zip_mirror_handler = CommandHandler(
+    BotCommands.ZipMirrorCommand,
+    zip_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+qb_mirror_handler = CommandHandler(
+    BotCommands.QbMirrorCommand,
+    qb_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+qb_tar_mirror_handler = CommandHandler(
+    BotCommands.QbTarMirrorCommand,
+    qb_tar_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+qb_unzip_mirror_handler = CommandHandler(
+    BotCommands.QbUnzipMirrorCommand,
+    qb_unzip_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+qb_zip_mirror_handler = CommandHandler(
+    BotCommands.QbZipMirrorCommand,
+    qb_zip_mirror,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
 dispatcher.add_handler(mirror_handler)
 dispatcher.add_handler(tar_mirror_handler)
 dispatcher.add_handler(unzip_mirror_handler)

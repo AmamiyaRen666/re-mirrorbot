@@ -4,12 +4,12 @@ from telegram import Bot, Update
 from telegram.ext import CommandHandler
 
 from bot import DOWNLOAD_DIR, LOGGER, dispatcher
-from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import \
-    YoutubeDLHelper
+from bot.helper.mirror_utils.download_utils.youtube_dl_download_helper import (
+    YoutubeDLHelper,
+)
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.filters import CustomFilters
-from bot.helper.telegram_helper.message_utils import (sendMessage,
-                                                      sendStatusMessage)
+from bot.helper.telegram_helper.message_utils import sendMessage, sendStatusMessage
 
 from .mirror import MirrorListener
 
@@ -52,7 +52,7 @@ def _watch(bot: Bot, update, isTar=False, isZip=False):
     ydl = YoutubeDLHelper(listener)
     threading.Thread(
         target=ydl.add_download,
-        args=(link, f'{DOWNLOAD_DIR}{listener.uid}', qual, name)
+        args=(link, f'{DOWNLOAD_DIR}{listener.uid}', qual, name),
     ).start()
     sendStatusMessage(update, bot)
 
@@ -60,19 +60,33 @@ def _watch(bot: Bot, update, isTar=False, isZip=False):
 def watchTar(update, context):
     _watch(context.bot, update, True)
 
+
 def watchZip(update, context):
     _watch(context.bot, update, True, True)
+
 
 def watch(update, context):
     _watch(context.bot, update)
 
 
-mirror_handler = CommandHandler(BotCommands.WatchCommand, watch,
-                                filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-tar_mirror_handler = CommandHandler(BotCommands.TarWatchCommand, watchTar,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
-zip_mirror_handler = CommandHandler(BotCommands.ZipWatchCommand, watchZip,
-                                    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+mirror_handler = CommandHandler(
+    BotCommands.WatchCommand,
+    watch,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+tar_mirror_handler = CommandHandler(
+    BotCommands.TarWatchCommand,
+    watchTar,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
+zip_mirror_handler = CommandHandler(
+    BotCommands.ZipWatchCommand,
+    watchZip,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
 
 
 dispatcher.add_handler(mirror_handler)
