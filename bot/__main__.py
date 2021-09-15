@@ -148,7 +148,7 @@ def bot_help(update, context):
 
 /{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
 
-/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} untuk memilih file sebelum mengunduh
+/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} s untuk memilih file sebelum mengunduh
 
 /{BotCommands.QbTarMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
 
@@ -209,11 +209,11 @@ def bot_help(update, context):
     help_string = f"""
 /{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
 
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive. Gunakan /{BotCommands.MirrorCommand} qb untuk mirror menggunakan qBittorrent, dan gunakan /{BotCommands.MirrorCommand} qbs untuk memilih file sebelum download
+/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive
 
 /{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
 
-/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} untuk memilih file sebelum mengunduh
+/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} s untuk memilih file sebelum mengunduh
 
 /{BotCommands.QbTarMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
 
