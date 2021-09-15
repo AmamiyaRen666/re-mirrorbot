@@ -9,8 +9,9 @@ from sys import executable
 import psutil
 import pytz
 from pyrogram import idle
-from telegram import ParseMode
+from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.ext import CommandHandler
+from telegraph import Telegraph
 from wserver import start_server_async
 
 from bot import (
@@ -27,6 +28,7 @@ from bot import (
     dispatcher,
     updater,
     web,
+    telegraph_token,
 )
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
@@ -135,48 +137,50 @@ def log(update, context):
 
 
 def bot_help(update, context):
-    help_string_adm = f"""
-/{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
+    help_string_telegraph = f'''<br>
+<b>/{BotCommands.HelpCommand}</b>: To get this message
+<br><br>
+<b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Start mirroring the link to Google Drive.
+<br><br>
+<b>/{BotCommands.TarMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and upload the archived (.tar) version of the download
+<br><br>
+<b>/{BotCommands.ZipMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and upload the archived (.zip) version of the download
+<br><br>
+<b>/{BotCommands.UnzipMirrorCommand}</b> [download_url][magnet_link]: Starts mirroring and if downloaded file is any archive, extracts it to Google Drive
+<br><br>
+<b>/{BotCommands.QbMirrorCommand}</b> [magnet_link]: Start Mirroring using qBittorrent, Use /{BotCommands.QbMirrorCommand} s to select files before downloading
+<br><br>
+<b>/{BotCommands.QbTarMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and upload the archived (.tar) version of the download
+<br><br>
+<b>/{BotCommands.QbZipMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and upload the archived (.zip) version of the download
+<br><br>
+<b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link]: Starts mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
+<br><br>
+<b>/{BotCommands.CloneCommand}</b> [drive_url]: Copy file/folder to Google Drive
+<br><br>
+<b>/{BotCommands.CountCommand}</b> [drive_url]: Count file/folder of Google Drive Links
+<br><br>
+<b>/{BotCommands.DeleteCommand}</b> [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
+<br><br>
+<b>/{BotCommands.WatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
+<br><br>
+<b>/{BotCommands.TarWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and tar before uploading
+<br><br>
+<b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
+<br><br>
+<b>/{BotCommands.CancelMirror}</b>: Reply to the message by which the download was initiated and that download will be cancelled
+<br><br>
+<b>/{BotCommands.CancelAllCommand}</b>: Cancel all running tasks
+<br><br>
+<b>/{BotCommands.ListCommand}</b> [search term]: Searches the search term in the Google Drive, If found replies with the link
+<br><br>
+<b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
+<br><br>
+<b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+'''
 
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive.
-
-/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.tar) versi unduhan
-
-/{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
-
-/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
-
-/{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
-
-/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} s untuk memilih file sebelum mengunduh
-
-/{BotCommands.QbTarMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
-
-/{BotCommands.QbZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent and unggah versi unduhan (.zip) yang diarsipkan
-
-/{BotCommands.QbUnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
-
-/{BotCommands.CountCommand} [drive_url]: Hitung file/folder dari Google Drive Links
-
-/{BotCommands.DeleteCommand} [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
-
-/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /tolong
-
-/{BotCommands.TarWatchCommand} [youtube-dlp/youtube-dl supported link]: Cermin melalui youtube-dlp dan tar sebelum mengunggah
-
-/{BotCommands.CancelMirror}: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
-
-/{BotCommands.ZipWatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dl atau youtube-dlp dan zip sebelum mengunggah
-
-/{BotCommands.CancelAllCommand}: Batalkan semua tugas yang sedang berjalan
-
-/{BotCommands.ListCommand} [search term]: Mencari istilah pencarian di Google Drive, Jika ditemukan balasan dengan tautan
-
-/{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
-
-/{BotCommands.StatsCommand}: Tampilkan Statistik Mesin The Bot diselenggarakan
-
-/{BotCommands.PingCommand}: Periksa berapa lama untuk melakukan ping bot
+    help_string = f'''
+/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
 
 /{BotCommands.AuthorizeCommand}: Otorisasi obrolan atau pengguna untuk menggunakan BOT (hanya dapat dipanggil oleh pemilik & sudo bot)
 
@@ -198,64 +202,14 @@ def bot_help(update, context):
 
 /{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.ShellCommand}: Jalankan perintah di Shell (Hanya pemilik bot)
-
-/{BotCommands.ExecHelpCommand}: Dapatkan bantuan untuk modul pelaksana
-
-/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
-
-"""
-
-    help_string = f"""
-/{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
-
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive
-
-/{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
-
-/{BotCommands.QbMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} s untuk memilih file sebelum mengunduh
-
-/{BotCommands.QbTarMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
-
-/{BotCommands.QbZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent and unggah versi unduhan (.zip) yang diarsipkan
-
-/{BotCommands.QbUnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring menggunakan qBittorrent dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
-
-/{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
-
-/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah diarsipkan (.tar) version of the download
-
-/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
-
-/{BotCommands.CountCommand} [drive_url]: Hitung file / folder dari tautan Google Drive
-
-/{BotCommands.ZipWatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dl atau youtube-dlp dan zip sebelum mengunggah
-
-/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /tolong
-
-/{BotCommands.TarWatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dl atau youtube-dlp dan tar sebelum mengunggah
-
-/{BotCommands.CancelMirror}: Membalas pesan dimana undangan diinisiasi dan unduhan akan dibatalkan
-
-/{BotCommands.ListCommand} [search term]: Mencari istilah pencarian di Google Drive, jika ditemukan balasan dengan tautan
-
-/{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
-
-/{BotCommands.StatsCommand}: Tampilkan Statistik Mesin The Bot diselenggarakan
-
-/{BotCommands.PingCommand}: Periksa berapa lama untuk melakukan ping bot
-
-/{BotCommands.SpeedCommand}: Periksa kecepatan internet tuan rumah
-
-/{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
-
-/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
-"""
-
-    if CustomFilters.sudo_user(update) or CustomFilters.owner_filter(update):
-        sendMessage(help_string_adm, context.bot, update)
-    else:
-        sendMessage(help_string, context.bot, update)
+/{BotCommands.TsHelpCommand}: Get help for Torrent search module
+'''
+    help = Telegraph(access_token=telegraph_token).create_page(title = 'Slam Mirrorbot Search', author_name='Slam Mirrorbot',
+                                                               author_url='https://github.com/SlamDevs/slam-mirrorbot', html_content=help_string_telegraph)["path"]
+    button = button_build.ButtonMaker()
+    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
+    reply_markup = InlineKeyboardMarkup(button.build_menu(1))
+    sendMarkup(help_string, context.bot, update, reply_markup)
 
 
 '''
