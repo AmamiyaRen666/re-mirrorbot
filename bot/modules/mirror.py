@@ -418,7 +418,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
     if bot_utils.is_gdrive_link(link):
         if not isTar and not extract:
             sendMessage(
-                f"Gunakan /{BotCommands.CloneCommand} untuk mengkloning file/folder Google Drive\nGunakan /{BotCommands.TarMirrorCommand} to make tar of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} untuk mengekstrak arsip file Google Drive",
+                f"Gunakan /{BotCommands.CloneCommand} untuk mengkloning file/folder Google Drive\nGunakan /{BotCommands.TarMirrorCommand} untuk membuat tar folder Google Drive\nGunakan /{BotCommands.UnzipMirrorCommand} untuk mengekstrak arsip file Google Drive",
                 bot,
                 update,
             )
