@@ -138,45 +138,45 @@ def log(update, context):
 
 def bot_help(update, context):
     help_string_telegraph = f'''<br>
-<b>/{BotCommands.HelpCommand}</b>: To get this message
+<b>/{BotCommands.HelpCommand}</b>: Untuk mendapatkan pesan ini
 <br><br>
-<b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Start mirroring the link to Google Drive.
+<b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive.
 <br><br>
-<b>/{BotCommands.TarMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and upload the archived (.tar) version of the download
+<b>/{BotCommands.TarMirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.tar) versi unduhan
 <br><br>
-<b>/{BotCommands.ZipMirrorCommand}</b> [download_url][magnet_link]: Start mirroring and upload the archived (.zip) version of the download
+<b>/{BotCommands.ZipMirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.zip) versi unduhan
 <br><br>
-<b>/{BotCommands.UnzipMirrorCommand}</b> [download_url][magnet_link]: Starts mirroring and if downloaded file is any archive, extracts it to Google Drive
+<b>/{BotCommands.UnzipMirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
 <br><br>
-<b>/{BotCommands.QbMirrorCommand}</b> [magnet_link]: Start Mirroring using qBittorrent, Use /{BotCommands.QbMirrorCommand} s to select files before downloading
+<b>/{BotCommands.QbMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} s untuk memilih file sebelum mengunduh
 <br><br>
-<b>/{BotCommands.QbTarMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and upload the archived (.tar) version of the download
+<b>/{BotCommands.QbTarMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
 <br><br>
-<b>/{BotCommands.QbZipMirrorCommand}</b> [magnet_link]: Start mirroring using qBittorrent and upload the archived (.zip) version of the download
+<b>/{BotCommands.QbZipMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.zip) yang diarsipkan
 <br><br>
-<b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link]: Starts mirroring using qBittorrent and if downloaded file is any archive, extracts it to Google Drive
+<b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
 <br><br>
-<b>/{BotCommands.CloneCommand}</b> [drive_url]: Copy file/folder to Google Drive
+<b>/{BotCommands.CloneCommand}</b> [drive_url]: Salin file/folder ke Google Drive
 <br><br>
-<b>/{BotCommands.CountCommand}</b> [drive_url]: Count file/folder of Google Drive Links
+<b>/{BotCommands.CountCommand}</b> [drive_url]: Hitung file/folder dari Google Drive Links
 <br><br>
-<b>/{BotCommands.DeleteCommand}</b> [drive_url]: Delete file from Google Drive (Only Owner & Sudo)
+<b>/{BotCommands.DeleteCommand}</b> [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
 <br><br>
-<b>/{BotCommands.WatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
+<b>/{BotCommands.WatchCommand}</b> [youtube-dl/yt-dlp supported link]: Cermin melalui yt-dlp/youtube-dl. Ketik /{BotCommands.WatchCommand} atau ketik /tolong
 <br><br>
-<b>/{BotCommands.TarWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and tar before uploading
+<b>/{BotCommands.TarWatchCommand}</b> [youtube-dl/yt-dlp supported link]: Cermin melalui yt-dlp/youtube-dl dan tar sebelum mengunggah
 <br><br>
-<b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl supported link]: Mirror through youtube-dl and zip before uploading
+<b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl/yt-dlp supported link]: Cermin melalui youtube-dl atau yt-dlp dan zip sebelum mengunggah
 <br><br>
-<b>/{BotCommands.CancelMirror}</b>: Reply to the message by which the download was initiated and that download will be cancelled
+<b>/{BotCommands.CancelMirror}</b>: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
 <br><br>
-<b>/{BotCommands.CancelAllCommand}</b>: Cancel all running tasks
+<b>/{BotCommands.CancelAllCommand}</b>: Batalkan semua tugas yang sedang berjalan
 <br><br>
-<b>/{BotCommands.ListCommand}</b> [search term]: Searches the search term in the Google Drive, If found replies with the link
+<b>/{BotCommands.ListCommand}</b> [search term]: Mencari istilah pencarian di Google Drive, Jika ditemukan balasan dengan tautan
 <br><br>
-<b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
+<b>/{BotCommands.StatusCommand}</b>: Menunjukkan status semua unduhan
 <br><br>
-<b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+<b>/{BotCommands.StatsCommand}</b>: Tampilkan Statistik Mesin The Bot diselenggarakan
 '''
 
     help_string = f'''
@@ -202,12 +202,12 @@ def bot_help(update, context):
 
 /{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.TsHelpCommand}: Get help for Torrent search module
+/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
 '''
-    help = Telegraph(access_token=telegraph_token).create_page(title = 'Slam Mirrorbot Search', author_name='Slam Mirrorbot',
-                                                               author_url='https://github.com/SlamDevs/slam-mirrorbot', html_content=help_string_telegraph)["path"]
+    help = Telegraph(access_token=telegraph_token).create_page(title = 'bantuan re-cerminbot', author_name='re-cerminbot',
+                                                               author_url='https://github.com/Ncode2014/re-cerminbot', html_content=help_string_telegraph)["path"]
     button = button_build.ButtonMaker()
-    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
+    button.buildbutton("Perintah lainnya", f"https://telegra.ph/{help}")
     reply_markup = InlineKeyboardMarkup(button.build_menu(1))
     sendMarkup(help_string, context.bot, update, reply_markup)
 

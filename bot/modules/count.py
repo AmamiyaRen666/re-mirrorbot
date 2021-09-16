@@ -29,7 +29,7 @@ def countNode(update, context):
         sendMessage(result + cc, context.bot, update)
     else:
         sendMessage(
-            "Provide G-Drive Shareable Link to Count.", context.bot, update
+            "Berikan Tautan yang Dapat Dibagikan G-Drive untuk Menghitung.", context.bot, update
         )
 
 

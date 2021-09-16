@@ -774,8 +774,8 @@ class GoogleDriveHelper:
 
         for content in self.telegraph_content:
             self.path.append(Telegraph(access_token=telegraph_token).create_page(  # noqa: E501
-                title='re-mirrorbot pencarian',
-                author_name='re-mirrorbot',
+                title='pencarian re-cerminbot',
+                author_name='re-cerminbot',
                 author_url='https://github.com/Ncode2014/re-cerminbot',
                 html_content=content
             )['path'])
