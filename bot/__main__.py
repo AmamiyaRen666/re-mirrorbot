@@ -9,23 +9,52 @@ from sys import executable
 import psutil
 import pytz
 from pyrogram import idle
-from telegram import ParseMode
+from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.ext import CommandHandler
+from telegraph import Telegraph
 from wserver import start_server_async
 
-from bot import (IGNORE_PENDING_REQUESTS, IMAGE_URL, IS_VPS, PORT,
-                 alive, app, bot, botStartTime, dispatcher, updater, web)
+from bot import (
+    OWNER_ID,
+    AUTHORIZED_CHATS,
+    IGNORE_PENDING_REQUESTS,
+    IMAGE_URL,
+    IS_VPS,
+    PORT,
+    alive,
+    app,
+    bot,
+    botStartTime,
+    dispatcher,
+    updater,
+    web,
+    telegraph_token,
+)
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper import button_build
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
 
-from .helper.ext_utils.bot_utils import (get_readable_file_size,
-                                         get_readable_time)
+from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
-from .modules import (authorize, cancel_mirror, clone, count, delete, eval,
-                      list, mediainfo, mirror, mirror_status, reboot, shell,
-                      speedtest, torrent_search, usage, watch)
+from .modules import (
+    authorize,
+    cancel_mirror,
+    clone,
+    count,
+    delete,
+    eval,
+    list,
+    mediainfo,
+    mirror,
+    mirror_status,
+    reboot,
+    shell,
+    speedtest,
+    torrent_search,
+    usage,
+    watch,
+)
 
 now = datetime.now(pytz.timezone("Asia/Jakarta"))
 
@@ -53,7 +82,9 @@ def stats(update, context):
         f"<b>RAM:</b> <code>{memory}%</code> "
         f"<b>HDD:</b> <code>{disk}%</code>"
     )
-    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)  # noqa: E501
+    update.effective_message.reply_photo(
+        IMAGE_URL, stats, parse_mode=ParseMode.HTML
+    )  # noqa: E501
 
 
 def start(update, context):
@@ -81,7 +112,9 @@ Tipe /{BotCommands.HelpCommand} untuk mendapatkan daftar perintah yang tersedia
 
 
 def restart(update, context):
-    restart_message = sendMessage("Mulai ulang, Harap tunggu!", context.bot, update)  # noqa: E501
+    restart_message = sendMessage(
+        "Mulai ulang, Harap tunggu!", context.bot, update
+    )  # noqa: E501
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -104,38 +137,50 @@ def log(update, context):
 
 
 def bot_help(update, context):
-    help_string_adm = f"""
-/{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
+    help_string_telegraph = f'''<br>
+<b>/{BotCommands.HelpCommand}</b>: Untuk mendapatkan pesan ini
+<br><br>
+<b>/{BotCommands.MirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive.
+<br><br>
+<b>/{BotCommands.TarMirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.tar) versi unduhan
+<br><br>
+<b>/{BotCommands.ZipMirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.zip) versi unduhan
+<br><br>
+<b>/{BotCommands.UnzipMirrorCommand}</b> [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
+<br><br>
+<b>/{BotCommands.QbMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent, Gunakan /{BotCommands.QbMirrorCommand} s untuk memilih file sebelum mengunduh
+<br><br>
+<b>/{BotCommands.QbTarMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.tar) yang diarsipkan
+<br><br>
+<b>/{BotCommands.QbZipMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent dan unggah versi unduhan (.zip) yang diarsipkan
+<br><br>
+<b>/{BotCommands.QbUnzipMirrorCommand}</b> [magnet_link]: Mulai mirroring menggunakan qBittorrent dan jika file yang diunduh adalah arsip apa pun, ekstrak ke Google Drive
+<br><br>
+<b>/{BotCommands.CloneCommand}</b> [drive_url]: Salin file/folder ke Google Drive
+<br><br>
+<b>/{BotCommands.CountCommand}</b> [drive_url]: Hitung file/folder dari Google Drive Links
+<br><br>
+<b>/{BotCommands.DeleteCommand}</b> [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
+<br><br>
+<b>/{BotCommands.WatchCommand}</b> [youtube-dl/yt-dlp supported link]: Cermin melalui yt-dlp/youtube-dl. Ketik /{BotCommands.WatchCommand} atau ketik /tolong
+<br><br>
+<b>/{BotCommands.TarWatchCommand}</b> [youtube-dl/yt-dlp supported link]: Cermin melalui yt-dlp/youtube-dl dan tar sebelum mengunggah
+<br><br>
+<b>/{BotCommands.ZipWatchCommand}</b> [youtube-dl/yt-dlp supported link]: Cermin melalui youtube-dl atau yt-dlp dan zip sebelum mengunggah
+<br><br>
+<b>/{BotCommands.CancelMirror}</b>: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
+<br><br>
+<b>/{BotCommands.CancelAllCommand}</b>: Batalkan semua tugas yang sedang berjalan
+<br><br>
+<b>/{BotCommands.ListCommand}</b> [search term]: Mencari istilah pencarian di Google Drive, Jika ditemukan balasan dengan tautan
+<br><br>
+<b>/{BotCommands.StatusCommand}</b>: Menunjukkan status semua unduhan
+<br><br>
+<b>/{BotCommands.StatsCommand}</b>: Tampilkan Statistik Mesin The Bot diselenggarakan
+'''
 
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive. Gunakan /{BotCommands.MirrorCommand} qb untuk mirror menggunakan qBittorrent, dan gunakan /{BotCommands.MirrorCommand} qbs untuk memilih file sebelum download
-
-/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah yang diarsipkan (.tar) versi unduhan
-
-/{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
-
-/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
-
-/{BotCommands.CloneCommand} [drive_url]: Salin file/folder ke Google Drive
-
-/{BotCommands.CountCommand} [drive_url]: Hitung file/folder dari Google Drive Links
-
-/{BotCommands.DeleteCommand} [drive_url]: Hapus file dari Google Drive (Hanya Pemilik & Sudo)
-
-/{BotCommands.WatchCommand} [youtube-dl/youtube-dlp supported link]: Cermin melalui youtube-dlp. Ketik /{BotCommands.WatchCommand} atau ketik /bantuan
-
-/{BotCommands.TarWatchCommand} [youtube-dlp/youtube-dl supported link]: Cermin melalui youtube-dlp dan tar sebelum mengunggah
-
-/{BotCommands.CancelMirror}: Balas pesan di mana unduhan dimulai dan unduhan itu akan dibatalkan
-
-/{BotCommands.CancelAllCommand}: Batalkan semua tugas yang sedang berjalan
-
-/{BotCommands.ListCommand} [search term]: Mencari istilah pencarian di Google Drive, Jika ditemukan balasan dengan tautan
-
-/{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
-
-/{BotCommands.StatsCommand}: Tampilkan Statistik Mesin The Bot diselenggarakan
-
-/{BotCommands.PingCommand}: Periksa berapa lama untuk melakukan ping bot
+    help_string = f'''
+/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
 
 /{BotCommands.AuthorizeCommand}: Otorisasi obrolan atau pengguna untuk menggunakan BOT (hanya dapat dipanggil oleh pemilik & sudo bot)
 
@@ -157,56 +202,17 @@ def bot_help(update, context):
 
 /{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
 
-/{BotCommands.ShellCommand}: Jalankan perintah di Shell (Hanya pemilik bot)
-
-/{BotCommands.ExecHelpCommand}: Dapatkan bantuan untuk modul pelaksana
-
 /{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
-
-"""
-
-    help_string = f"""
-/{BotCommands.HelpCommand}: Untuk mendapatkan pesan ini
-
-/{BotCommands.MirrorCommand} [download_url][magnet_link]: Mulai mirroring tautan ke Google Drive. Gunakan /{BotCommands.MirrorCommand} qb untuk mirror menggunakan qBittorrent, dan gunakan /{BotCommands.MirrorCommand} qbs untuk memilih file sebelum download
-
-/{BotCommands.ZipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah versi unduhan yang diarsipkan (.zip)
-
-/{BotCommands.TarMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan unggah diarsipkan (.tar) version of the download
-
-/{BotCommands.UnzipMirrorCommand} [download_url][magnet_link]: Mulai mirroring dan file yang diunduh adalah arsip, mengekstraknya ke Google Drive
-
-/{BotCommands.CloneCommand} [drive_url]: Salin file / folder ke Google Drive
-
-/{BotCommands.CountCommand} [drive_url]: Hitung file / folder dari tautan Google Drive
-
-/{BotCommands.WatchCommand} [youtube-dlp supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
-
-/{BotCommands.TarWatchCommand} [youtube-dlp supported link]: Mirror through youtube-dl and tar before uploading
-
-/{BotCommands.CancelMirror}: Membalas pesan dimana undangan diinisiasi dan unduhan akan dibatalkan
-
-/{BotCommands.ListCommand} [search term]: Mencari istilah pencarian di Google Drive, jika ditemukan balasan dengan tautan
-
-/{BotCommands.StatusCommand}: Menunjukkan status semua unduhan
-
-/{BotCommands.StatsCommand}: Tampilkan Statistik Mesin The Bot diselenggarakan
-
-/{BotCommands.PingCommand}: Periksa berapa lama untuk melakukan ping bot
-
-/{BotCommands.SpeedCommand}: Periksa kecepatan internet tuan rumah
-
-/{BotCommands.MediaInfoCommand}: Dapatkan info terperinci tentang Media Jawab (hanya untuk file telegram)
-
-/{BotCommands.TsHelpCommand}: Dapatkan bantuan untuk modul pencarian Torrent
-"""
-
-    if CustomFilters.sudo_user(update) or CustomFilters.owner_filter(update):
-        sendMessage(help_string_adm, context.bot, update)
-    else:
-        sendMessage(help_string, context.bot, update)
+'''
+    help = Telegraph(access_token=telegraph_token).create_page(title = 'bantuan re-cerminbot', author_name='re-cerminbot',
+                                                               author_url='https://github.com/Ncode2014/re-cerminbot', html_content=help_string_telegraph)["path"]
+    button = button_build.ButtonMaker()
+    button.buildbutton("Perintah lainnya", f"https://telegra.ph/{help}")
+    reply_markup = InlineKeyboardMarkup(button.build_menu(1))
+    sendMarkup(help_string, context.bot, update, reply_markup)
 
 
+'''
 botcmds = [
     (f"{BotCommands.HelpCommand}", "Dapatkan bantuan terperinci"),
     (f"{BotCommands.MirrorCommand}", "Mulai mirroring"),
@@ -216,11 +222,16 @@ botcmds = [
     (f"{BotCommands.CloneCommand}", "Salin file/folder ke Drive"),
     (f"{BotCommands.CountCommand}", "Hitung file/folder dari link Drive"),
     (f"{BotCommands.DeleteCommand}", "Hapus file dari drive"),
+    (f'{BotCommands.QbMirrorCommand}','Mulai Mencerminkan menggunakan qBittorrent'),
+    (f'{BotCommands.QbTarMirrorCommand}','Mulai mirroring dan unggah sebagai .tar menggunakan qb'),
+    (f'{BotCommands.QbZipMirrorCommand}','Mulai mirroring dan unggah sebagai .zip menggunakan qb'),
+    (f'{BotCommands.QbUnzipMirrorCommand}','Ekstrak file melalui qBitorrent'),
     (f"{BotCommands.WatchCommand}", "Mirror video/audio menggunakan YouTube-DL"),
     (
         f"{BotCommands.TarWatchCommand}",
         "Cermin tautan daftar putar YouTube sebagai .tar",
     ),
+    (f'{BotCommands.ZipWatchCommand}','Cerminkan tautan daftar putar Youtube sebagai .zip'),
     (f"{BotCommands.CancelMirror}", "Batalkan tugas"),
     (f"{BotCommands.CancelAllCommand}", "Batalkan semua tugas"),
     (f"{BotCommands.ListCommand}", "Mencari file dalam drive"),
@@ -229,26 +240,35 @@ botcmds = [
     (f"{BotCommands.PingCommand}", "berlomba cepat koneksi."),
     (f"{BotCommands.RestartCommand}", "Mulai ulang bot. [hanya owner/sudo]"),
     (f"{BotCommands.LogCommand}", "Dapatkan Log Bot [hanya owner/sudo]"),
-    (f"{BotCommands.MediaInfoCommand}",
-        "Dapatkan info detail tentang media yang dibalas"),
+    (
+        f"{BotCommands.MediaInfoCommand}",
+        "Dapatkan info detail tentang media yang dibalas",
+    ),
     (f"{BotCommands.TsHelpCommand}", "Dapatkan bantuan untuk modul pencarian Torrent"),
 ]
+'''
 
 
 def main():
     fs_utils.start_cleanup()
-
     if IS_VPS:
         asyncio.get_event_loop().run_until_complete(start_server_async(PORT))
-
     # Check if the bot is restarting
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
         bot.edit_message_text("Berhasil memulai kembali!", chat_id, msg_id)
         os.remove(".restartmsg")
-    bot.set_my_commands(botcmds)
-
+    elif OWNER_ID:
+        try:
+            text = "<b>Bot Restarted!</b>"
+            bot.sendMessage(chat_id=OWNER_ID, text=text, parse_mode=ParseMode.HTML)
+            if AUTHORIZED_CHATS:
+                for i in AUTHORIZED_CHATS:
+                    bot.sendMessage(chat_id=i, text=text, parse_mode=ParseMode.HTML)
+        except Exception as e:
+            LOGGER.warning(e)
+    # bot.set_my_commands(botcmds)
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(
         BotCommands.PingCommand,

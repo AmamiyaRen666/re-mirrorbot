@@ -24,7 +24,7 @@ def cloneNode(update, context):
             return
         if STOP_DUPLICATE:
             LOGGER.info('Checking File/Folder if already in Drive...')
-            smsg, button = gd.drive_list(name, True)
+            smsg, button = gd.drive_list(name, True, True)
             if smsg:
                 msg3 = "Memeriksa File/Folder sudah ada di Drive\nBerikut adalah hasil pencarian:"
                 sendMarkup(msg3, context.bot, update, button)
@@ -71,7 +71,7 @@ def cloneNode(update, context):
         else:
             sendMarkup(result + cc, context.bot, update, button)
     else:
-        sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
+        sendMessage('Berikan Tautan yang Dapat Dibagikan G-Drive ke Klon.', context.bot, update)
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
